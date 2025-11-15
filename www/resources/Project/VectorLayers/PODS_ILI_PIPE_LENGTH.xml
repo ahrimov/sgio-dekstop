@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_ILI_PIPE_LENGTH</id>
+      <label>Данные ВТД. Труб. журнал</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>ili_inspection_id</id>
+          <label>Обследование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>weld_number</id>
+          <label>Номер нач. стыка</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>nominal_wall_thickness</id>
+          <label>Ном толщина стенки мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>seam_orientation_deg</id>
+          <label>Ориент. прод. шва час</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>start_odometer</id>
+          <label>Одом. дистанция м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>sequence_number</id>
+          <label>Номер трубы</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>       
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFCC9900</colorFill>
+        <widthLine>2</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#CC9900</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_TEST_LEAD</id>
+      <label>Оборудование ЭХЗ. КИП</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |TESTLEAD_TYPE_01#Коммутационно-измерительный пункт КИП по ТУ 3663-001-73898500-2005|TESTLEAD_TYPE_02# "Энергомера" типа КИП по ТУ 4318-013-22136119-2002|TESTLEAD_TYPE_03#Стойки контрольно-измерительного пункта городского типа СКИП-Г  по ТУ ИЖСК.301421.007|TESTLEAD_TYPE_04#Датчик скорости коррозии тип ДСК-1 ТУ 4311-017-22136119-2005|TESTLEAD_TYPE_05#Контрольно-измерительная колонка типа КИК по ТУ 3663-001-73898500-2005|TESTLEAD_TYPE_06#Контрольно-измерительная колонка городская типа КИК-Г по ТУ 3663-001-73898500-2005|TESTLEAD_TYPE_07#Контрольно-измерительный пункт с вехой типа КИК с вехой по ТУ 3663-001-73898500-2005|TESTLEAD_TYPE_08#Контрольно-измерительный пункт|TESTLEAD_TYPE_09#Контрольно-измерительная колонка|TESTLEAD_TYPE_10#Контрольно-диагностический пункт|TESTLEAD_TYPE_20#Доступное место измерения</options>
+        </attribute>
+		 <attribute type="STRING">
+          <id>name</id>
+          <label>Наименование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>status_cl</id>
+          <label>Статус</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |TEST_LEAD_ST_01#Рабочее состояние|TEST_LEAD_ST_02#Требует ремонта|TEST_LEAD_ST_03#Находится в консервации|TEST_LEAD_ST_04#Выведен из строя|TEST_LEAD_ST_05#Выведен из эксплуатации</options>
+        </attribute>       
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF0070C0</colorFill>
+        <colorBorder>#FF8DB4E3</colorBorder>
+        <sizePoint>3</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#0070C0</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#8DB4E3</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>square</WellKnownName>
+              </Mark>
+              <Size>3.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

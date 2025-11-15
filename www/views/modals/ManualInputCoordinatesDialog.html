@@ -1,0 +1,118 @@
+<template id="manualInputCoordinates">
+    <ons-dialog id="manual-input-coordinates">
+        <ons-toolbar class="dialog-toolbar">
+            <div class="center dialog-toolbar-content">
+                Ручной ввод координат
+            </div>
+            <div class="right">
+                  <ons-toolbar-button onclick="hideDialog('manual-input-coordinates')">
+                      <ons-icon icon="md-close" class="icon dialog-close"></ons-icon>
+                  </ons-toolbar-button>
+            </div>
+        </ons-toolbar>
+        <div class="manual-input-coordinates-content">
+            <div class="type-coordinatees-switcher">
+                <span class="type-coordinatees-switcher-label" style="display: flex; justify-content: center; font-size: 1.6rem;">
+                    Форма ввода координат
+                </span>
+                <div class="type-coordinatees-switcher-buttons">
+                    <div style="display: flex;">
+                        <ons-radio name="type-coordinatees-switcher" input-id="meters" id="type-coordinatees-switcher-meters" checked></ons-radio>
+                        <label for="meters" class="type-coordinatees-switcher-radio-label">
+                            ГГ°ГГГГГ
+                        </label>
+                    </div>
+                    <div style="display: flex;">
+                        <ons-radio name="type-coordinatees-switcher" input-id="degrees" id="type-coordinatees-switcher-degrees"></ons-radio>
+                        <label for="degrees" class="type-coordinatees-switcher-radio-label">
+                            ГГ°ММ'СС.СС"
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="manual-edit-geometry-add-coordinate-button-container">
+                <ons-button id="manual-edit-geometry-add-coordinate-button" style="float:right;">
+                    Добавить координату
+                </ons-button>
+            </div>
+            <div class="table-coordinates-container">
+                <table class="table-coordinates">
+                    <thead>
+                        <tr class="manual-input-coordinates-tr">
+                            <td class="manual-input-coordinates-td"></td>
+                            <td class="manual-input-coordinates-td">Широта (L)</td>
+                            <td class="manual-input-coordinates-td">Долгота (B)</td>
+                            <td class="manual-input-coordinates-td"></td>  
+                        </tr>
+                    </thead>
+                    <tbody class="table-coordinates-tbody"></tbody>
+                </table>
+            </div>
+            <div class="edit-geometry-bottom-buttons">
+                <ons-button id="edit-geometry-cancel-changes">Отмена</ons-button>
+                <ons-button id="edit-geometry-save-changes">Сохранить</ons-button>
+            </div>
+            </div>
+        </div>
+    </ons-dialog>
+</template>
+
+<template id="manualInputCoordinatesTable">
+    <tr class="manual-input-coordinates-tr">
+        <td class="manual-input-coordinates-td numberOfCoordinate"></td>
+        <td class="manual-input-coordinates-td latitude"></td>
+        <td class="manual-input-coordinates-td longtitude"></td>
+        <td class="manual-input-coordinates-td delete-button">
+            <ons-icon class='icon' icon="md-close"></ons-icon>
+        </td>
+    </tr>
+</template>
+
+<template id="dialogEditCoordinate">
+    <ons-dialog id="dialog-edit-coordinate">
+        <ons-toolbar class="dialog-toolbar">
+            <div class="center dialog-toolbar-content">
+                Ввод
+            </div>
+            <div class="right">
+                  <ons-toolbar-button onclick="hideDialog('dialog-edit-coordinate')">
+                      <ons-icon icon="md-close" class="icon dialog-close"></ons-icon>
+                  </ons-toolbar-button>
+            </div>
+        </ons-toolbar>
+        <div class="dialog-edit-coordinate-content">
+            <div class="dialog-edit-coordinate-inputs"></div>
+            <template id="dialog-edit-coordinate-inputs-meters">
+                <div class="dialog-edit-coordinate-inputs-meters-container">
+                    <div class="dialog-edit-coordinate-inputs-meters-block">
+                        <span class="dialog-edit-coordinate-label-input">Широта:</span>
+                        <ons-input id="latitude" class="number-input input-meters" type="number" modifier="underbar" float></ons-input>
+                    </div>
+                    <div class="dialog-edit-coordinate-inputs-meters-block">
+                        <span class="dialog-edit-coordinate-label-input">Долгота:</span>
+                        <ons-input id="longtitude" class="number-input input-meters" type="number" modifier="underbar" float></ons-input>
+                    </div>
+                </div>
+            </template>
+            <template id="dialog-edit-coordinate-inputs-degrees">
+                <div class="dialog-edit-coordinate-inputs">
+                    <template id="input-degrees">
+                        <div class="input-degrees-container">
+                            <div class="dialog-edit-coordinate-label-input"></div>
+                            <ons-input type="number" class="number-input input-degrees idegree"></ons-input>
+                            °
+                            <ons-input type="number" class="number-input input-degrees iminute"></ons-input>
+                            '
+                            <ons-input type="number" class="number-input input-degrees isec"></ons-input>
+                            "
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <div class="edit-geometry-bottom-buttons">
+                <ons-button id="edit-coordinate-cancel-changes">Отмена</ons-button>
+                <ons-button id="edit-coordinate-save-changes">Сохранить</ons-button>
+            </div>
+        </div>
+    </ons-dialog>
+</template>

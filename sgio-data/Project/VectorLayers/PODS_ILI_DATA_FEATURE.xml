@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_ILI_DATA_FEATURE</id>
+      <label>Данные ВТД. Особенности трассы</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+         <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>ili_inspection_id</id>
+          <label>Обследование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>weld_number</id>
+          <label>Номер шва</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>absolute_odometer</id>
+          <label>Одом. дист. м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>anomaly_type_cl</id>
+          <label>Тип аномалии</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>0</default>
+		  <options>0#Неизвестно|1#вмятина|2#изгиб|3#овальность|4#прилегание мет.предм.|5#гофр|6#коррозия|7#КОРРОЗИЯ по всей длине трубы|8#Дефектный сварной стык (поперечный)|9#группа аномалий|10#заварка|11#сегм.поворот|12#приварка|13#стресс-коррозия|14#продольная трещина|17#гнутый изгиб|18#сегментный изгиб|121#аномалия|122#каверна|123#дефект проката|124#царапина|125#Продольная канавка|126#Зона продольных трещин|127#Механическое повреждение|128#Продольные канавки|129#Технологический дефект|130#Прокатные полосы|131#Вмятины|132#Поперечная канавка|133#Задир|134#Прогрев|135#Препятствие|136#Наплыв|137#Эксцентричность патрона|138#Поперечные канавки|139#Язва|140#Дефект не обнаружен|141#Язвы|142#Отложение|143#Подварка|144#Расслоение|145#Включения|146#Поперечная трещина|147#Утонение|148#Внутренний дефект|149#Сужение|150#Металлургический дефект|151#Зашлифовка|152#Расслоение выходящее на поверхность|153#Нарушение изоляции|154#Выпуклость|155#Дефектный сварной стык (продольный)|156#Потеря металла|157#Наложения|158#риска|159#риска (корроз.) (поперечн.)|160#риска (корроз.) (продольн.)|161#аномалия спирального шва|162#зона коррозии|501#Дефект не отшурфован|1001#Отвод|1003#Кран|1004#Магнитный маркер|1005#Узел подключения технической перемычки|1006#Вход в патрон|1007#Секущий кран КЗ|1008#Секущий кран КП|1009#Тройник|1010#Выход из патрона|1011#Отметка оператора|1012#Окно|1013#Камера приема/запуска|1014#Неизвестный тип особенности|2001#начало|2002#конец|2003#одиночный|3001#Прямошовная|3002#Бесшовная|3003#Невыявленный шов|3004#Одношовная|3005#Двухшовная|3006#Спиралешовная|3007#Листовая продольносваренная двухшовная|3008#Листовые, продольносваренные|3009#Прямошовная с одним продольным швом|3010#Электросварная|3011#кран-секция|3012#тройник-секция|4001#Муфта ремонтная композитная замкнутая|4002#Муфта ремонтная композитная не замкнутая|4003#Ремонт поперечного сварного стыка|4004#заварка, муфта|4005#Облицовка шва|4006#Зачистка и изоляция|4007#Ремонт мультиметаллом|4008#Заварка дефекта|4009#Замена участка|4010#Вставка катушки, муфта|4011#Зашлифовка дефекта|4012#Заварка технологического окна|4013#Усиление шва|4014#Ремонт не проведен|4015#Ремонт продольного сварного стыка|4016#Наплавка|4017#Устранен|4018#муфта|4019#Переоблицовка|4020#Установка уплотнительных муфт|4021#Стальная ремонтная муфта|4022#Вышлифовка и изоляция|4023#Вварка заплаты|4024#Ремонт не требуется|4025#Переизоляция|4026#Замена трубы|4027#Вставка катушки|4028#Холодная сварка|4029#Композитная муфта|5001#Поперечный шов|5002#Изменение категории трубы ПШ->СШ|5003#Изменение категории трубы СШ->ПШ|5004#Изменение толщины стенки трубы|5005#Кривая вставка|5006#кривая вставка|5007#Несваренный стык патрона|5008#Обойма|5009#Отвод (поворот) конец|5010#Отвод (поворот) начало|5011#Прямая врезка|5012#сегментная вставка|5013#Сегментный участок (конец)|5014#Сегментный участок (начало)|5015#Точечная коррозия|5016#Трубная арматура|5017#Урез воды|5018#Участок пригрузов конец|5019#Участок пригрузов начало|5020#Элемент обустройства|5021#Пригруз кольцевой|5022#Трещиноподобный дефект|5024#Непровар / утяжина|5025#Смещение кромок|5026#Коррозия на кольцевом шве|5027#Вмятина с дефектами потери металла|5028#Правка кромок|5029#Провис корня шва|5030#Трещина на кольцевом шве|5031#Трещина на продольном шве|5032#Несплошность плоскостного типа</options>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>anomaly_extension_cl</id>
+          <label>Группа аномалий</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |ANOMALY_EXT_001#Коррозионный дефект|ANOMALY_EXT_002#Металлургический дефект|ANOMALY_EXT_003#Дефект геометрии трубы|ANOMALY_EXT_004#Прочие|ANOMALY_EXT_005#Стресс-коррозионный дефект|ANOMALY_EXT_006#Дефект сварного шва|ANOMALY_EXT_007#Технологические дефекты|ANOMALY_EXT_008#Недопустимые конструктивные элементы|ANOMALY_EXT_009#Механические повреждения</options>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>length</id>
+          <label>Длина м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>width</id>
+          <label>Ширина м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>average_depth</id>
+          <label>Глубина %</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>orientation_deg</id>
+          <label>Ориен- тация час</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>nominal_wall_thickness</id>
+          <label>Ном. толщ. стенки мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>feature_description</id>
+          <label>Идентификация</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFFFF00</colorFill>
+        <colorBorder>#FF000000</colorBorder>
+        <sizePoint>5</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#FFFF00</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#000000</CssParameter>
+                  <CssParameter name="stroke-width">2.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>circle</WellKnownName>
+              </Mark>
+              <Size>5.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

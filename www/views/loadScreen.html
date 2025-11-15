@@ -1,0 +1,31 @@
+<ons-page>
+    <div class="load-screen">
+        <div class="load-info">
+            <img src="../sgio-data/resources/sgio.png" width="40" height="40"/>
+            <br/>
+            <p>Подождите, проект загружается...</p>
+            <ons-progress-circular indeterminate></ons-progress-circular>
+            <p id="load_stage"></p>
+        </div>
+    </div>
+    <style>
+        .load-screen{
+            background-color: white;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .load-info{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            text-align: center;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+</ons-page>

@@ -1,0 +1,18 @@
+.toolbar-button {
+    display: block;
+    padding: 0;
+}
+
+#layers-button {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+#side-menu-button {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 10px;
+    font-size: 24px;
+}

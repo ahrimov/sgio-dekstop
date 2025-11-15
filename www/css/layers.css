@@ -1,0 +1,207 @@
+#base-raster-layers-list{
+    margin-bottom: 50px;
+}
+
+.icon {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button--material {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.list-group {
+    padding-left: 0;
+    margin-bottom: 7px;
+}
+
+.list-group-item{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.icon-layer{
+    width: 30px;
+    height: 30px;
+}
+
+.icon-layer[src=""]{
+    visibility: hidden;
+}
+
+.icon-base-raster-layers{
+    width: 50px;
+    height: 50px;
+}
+
+.label-base-raster-layer{
+    margin-left: 2vw;
+    font-size: 1.4rem;
+}
+
+.layer-list-header{
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.base-layer-expandable{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.base-layer-switch{
+    display: flex;
+    gap: 10px;
+    margin-left: 4vw;
+}
+
+.base-raster-switch-label{
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#dialog-file-chooser-content{
+  word-break: break-all;
+  max-height: 70vh;
+  max-width: 60vh;
+  overflow: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+#dialog-file-chooser-content::-webkit-scrollbar {
+    display: block !important;
+    width: 5px;
+    height: 0px;
+}
+
+#dialog-file-chooser-content::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+}
+
+#dialog-file-chooser-content::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+
+#dialog-list-properties::-webkit-scrollbar {
+    display: block !important;
+    width: 5px;
+    height: 0px;
+}
+
+#dialog-list-properties::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+}
+
+#dialog-list-properties::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+
+#dialog-list-properties{
+    overflow: auto;
+    max-height: 45vh;
+}
+
+.comparison-KML-bottom-buttons{
+    position: sticky;
+    bottom: 0;
+    right: 0;
+    padding-top: 2vh;
+    height: 7vh;
+}
+
+#dialog-comparison-KML-content{
+    margin-top: 2vh;
+    max-height: 70vh;
+    overflow: auto;
+    margin-left: 2vh;
+    margin-right: 2vh;
+    margin-bottom: 1vh;
+}
+
+#dialog-comparison-KML-content p{
+    font-size: 12px;
+}
+
+.dialog-comparison-KML-table{
+    border-spacing: 2vw 1vh;
+    border-collapse: separate;
+}
+
+.left_property{
+    width: 50%;
+    word-break: break-all;
+}
+
+.layers-more-button{
+    color: black;
+}
+
+.layer-label{
+    display: inline-flex;
+    justify-content: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: 80%;
+}
+
+.layer-list-right{
+    display: flex;
+    position: absolute;
+    right: 1%;
+}
+
+.block-icon{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    float: right;
+
+}
+
+#path-chooser-KML{
+    max-height: 70vh;
+    max-width: 60vh;
+    overflow: scroll;
+    font-size: 12px;
+    padding-top: 1vh;
+    padding-bottom: 0.3vh;
+}
+
+
+.list-item--material__center{
+    padding-right: 4vw;
+}
+
+#buttonFileChooser{
+    margin-right: 1vw;
+    margin-bottom: 0.3vh;
+}
+
+.addNewLayerButton{
+    position: fixed;
+    bottom: 3%;
+    right: 2%;
+    z-index: 1000;
+}
+
+.addNewLayerButton .fab {
+    background-color: #2375fa;
+    color: white;
+}

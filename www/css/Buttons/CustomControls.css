@@ -1,0 +1,100 @@
+
+.zoom-plus{
+    position: absolute;
+    right: 13px;
+    bottom: 135px;
+  }
+  
+  .zoom-minus{
+    position: absolute;
+    right: 13px;
+    bottom: 90px;
+  }
+  
+  .buttons{
+    width: 1%;
+    height: 100%;
+  }
+  
+  .gps-button{
+    position: absolute;
+    top: 83%;
+    left: 2%;
+  }
+  
+  .draw-button{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+  }
+  
+  .draw-button .fab{
+    background-color: #2375fa;
+    color: white;
+  }
+  
+  .accept-draw-button{
+    display: none;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+  }
+  
+  .accept-draw-button .fab{
+    background-color: #2375fa;
+    color: white;
+  }
+
+  .accept-modify-button{
+    display: none;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+  }
+  
+  .accept-modify-button .fab{
+    background-color: #2375fa;
+    color: white;
+  }
+  
+  .cancel-button{
+    display: none;
+    position: absolute;
+    right: 13px;
+    top: 20px;
+  }
+  
+.dot {
+  height: 12px;
+  width: 12px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.dot.online {
+  background-color: #4CAF50;
+}
+
+  .dot.offline {
+    background-color: #bbb;
+    animation: none;
+  }
+  
+  .att {
+    border-radius: 25px;
+    padding: 3px;
+    border: 1px solid black;
+    width: 90px;
+    height: 25px;
+    background-color: white;
+    opacity: .7;
+    position: absolute;
+    left: 5px;
+    bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  

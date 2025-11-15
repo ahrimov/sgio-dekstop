@@ -1,0 +1,121 @@
+#map-container {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: sans-serif;
+  z-index: 1;
+}
+
+#downbar-wrapper {
+  width: 100%;
+  height: 10%;
+      
+  display: none;
+  grid-template-columns: 15% 70% 15%;
+  background-color: white;
+}
+
+.downbar {
+  width: 100%;
+  height: 10%;
+      
+  display: none;
+  background-color: white;
+}
+
+.carousel-item-content{
+  text-align: center; 
+  padding: 5%;
+  color: black;
+  height: 100%;
+  width: 100%;
+  white-space: pre-line;
+  font-size: 0.9rem;
+  line-height: 1.3rem;
+  word-break: break-all;
+  display: table;
+  &:hover{
+    background-color: #61b3ff17;
+  }
+}
+
+.carousel-button-text{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  font-size: 13px;
+}
+
+.button-icon{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.dialog-toolbar{
+  background-color: #2375fa;
+  position: relative !important;
+}
+
+.dialog-toolbar-content{
+  font-size: 12pt;
+  color: white;
+  word-break: break-all;
+  line-height: 1.45rem;
+  white-space: pre-line;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: translateY(-0.8vh);
+}
+
+.dialog-close{
+  color: white;
+}
+#dialog-features-content{
+  margin-top: 2vh;
+  max-height: 70vh;
+  overflow: scroll;
+}
+
+.dialog{
+  border-radius: 10px;
+}
+
+.dialog-draw-instrument-coordinate-content{
+  max-height: 70vh;
+  overflow: scroll;
+  margin: 2vh 2vh 1vh 2vh;
+}
+
+.dialog-draw-instrument-coordinate-block{
+  display: flex;
+  flex-direction: column;
+  grid-gap: 1.2vh;
+  margin-bottom: 1vh;
+}
+
+.coordinate-block{
+  display: flex;
+  justify-content: center;
+}
+
+.coordinate-label{
+  transform: translateY(15%);
+}
+
+.coordinate-input{
+  width: 23vw;
+  margin-left: 1vw;
+}
+
+input[type=radio]:focus{
+  outline: none;
+}

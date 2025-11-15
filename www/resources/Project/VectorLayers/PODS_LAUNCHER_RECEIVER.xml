@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_LAUNCHER_RECEIVER</id>
+      <label>Арматура. КЗ/КП</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип камеры</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |LAUNCH_R_TYPE_01#Временная камера|LAUNCH_R_TYPE_02#Стационарная камера|LAUNCH_R_TYPE_03#Камера запуска снарядов-дефектоскопов|LAUNCH_R_TYPE_04#Камера запуска-приема очистных поршней|LAUNCH_R_TYPE_05#Другое|LAUNCH_R_TYPE_06#Стационарная камера запуска|LAUNCH_R_TYPE_07#Стационарная камера приема|LAUNCH_R_TYPE_08#БКЗ 1400-10,0-П|LAUNCH_R_TYPE_09#БКП 1400-10,0-П|LAUNCH_R_TYPE_10#ИИБК 22.01.00.000-01|LAUNCH_R_TYPE_11#ИИБК 22.02.00.000-01П</options>
+        </attribute>
+		<attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>name</id>
+          <label>Наименование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>trap_pressure_rating</id>
+          <label>Раб. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>overbore_diameter_gcl</id>
+          <label>Внутр. диаметр камеры мм</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>0</default>
+          <options>0|15|16|17|18|19|20|21|22|23|24|25|26|27|28|30|32|33|34|35|36|38|40|42|45|48|50|51|53|54|57|60|63|65|67|68|70|73|75|76|80|83|88|89|90|95|100|102|104|108|110|114|125|127|130|133|140|145|146|148|150|152|159|160|165|168|171|175|178|180|194|200|219|225|228|245|250|273|275|315|320|325|350|356|375|377|406|426|445|478|500|530|534|630|720|820|920|1020|1120|1220|1420|1620|1720</options>
+        </attribute>
+		<attribute type="ENUM">
+          <id>trap_valve_diameter_gcl</id>
+          <label>Диаметр ЗРА мм</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>0</default>
+          <options>0|15|16|17|18|19|20|21|22|23|24|25|26|27|28|30|32|33|34|35|36|38|40|42|45|48|50|51|53|54|57|60|63|65|67|68|70|73|75|76|80|83|88|89|90|95|100|102|104|108|110|114|125|127|130|133|140|145|146|148|150|152|159|160|165|168|171|175|178|180|194|200|219|225|228|245|250|273|275|315|320|325|350|356|375|377|406|426|445|478|500|530|534|630|720|820|920|1020|1120|1220|1420|1620|1720</options>
+        </attribute>
+		<attribute type="ENUM">
+          <id>trap_valve_type_gcl</id>
+          <label>Тип ЗРА</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |{CODE}#Кран на перемычке|VALVE_TYPE#Кран обводной|VALVE_TYPE_#Кран охранный|VALVE_TYPE__#кран отсечной|VALVE_TYPE___#кран резервный|VALVE_TYPE_01#Кран СОГ|VALVE_TYPE_02#Кран свечной прбковый|VALVE_TYPE_03#Кран продувочный|VALVE_TYPE_04#Клапан (вентиль) СОГ|VALVE_TYPE_07#Задвижка|VALVE_TYPE_08#Затвор|VALVE_TYPE_10#Регулятор давления|VALVE_TYPE_11#Регулятор уровня жидкости|VALVE_TYPE_1111#Кран |VALVE_TYPE_12#Дросселирующая арматура|VALVE_TYPE_13#Конденсатоотводчик|VALVE_TYPE_14#Кран линейный|VALVE_TYPE_15#Кран отводной|VALVE_TYPE_16#Кран свечной|VALVE_TYPE_17#Кран шаровой муфтовый|VALVE_TYPE_18#Кран шаровой штуцерный|VALVE_TYPE_19#Кран шаровой с пневмогидроприводом|VALVE_TYPE_20#Кран шаровой с ручным приводом|VALVE_TYPE_21#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления ЭПУУ-5, с ААЗК, климатическое исполнение У, с заводской антикоррозийной изоляцией|VALVE_TYPE_22#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления БУК-1, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_23#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления ЭПУУ-5, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_24#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления ЭПУУ-6, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_25#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления ЭПУУ-8, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_26#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления ЭПУУ-5-1, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_27#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления БУК-1, с ААЗК, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_28#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления БУК-1, климатическое исполнение У, с заводской антикоррозийной изоляцией для неагрессивного природного газа|VALVE_TYPE_29#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления ЭПУУ-6, климатическое исполнение У, с заводской антикоррозийной изоляцией для неагрессивного природного газа|VALVE_TYPE_30#Кран шаровой с пневмогидроприводом, подземная установка, под приварку, с узлом управления БУК-1, с ААЗК, климатическое исполнение У, с заводской антикоррозийной изоляцией для неагрессивного природного газа|VALVE_TYPE_31#Кран шаровой с ручным приводом, надземная установка, под приварку, климатическое исполнение У, с заводской антикоррозийной изоляцией|VALVE_TYPE_32#Кран шаровой с ручным приводом, надземная установка, под приварку, климатическое исполнение ХЛ, с заводской антикоррозийной изоляцией.|VALVE_TYPE_33#Кран шаровой с ручным приводом, под приварку, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_34#Кран шаровой с ручным приводом, подземная установка, под приварку, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_35#Кран шаровой с изолирующим соединением, с ручным приводом, надземная установка, под приварку, климатическое исполнение У, с заводской антикоррозийной изоляцией.|VALVE_TYPE_36#КШ.ЭГ.ПД.У.И|VALVE_TYPE_37#КШ.ЭГ.ПД.У.С.00И|VALVE_TYPE_38#КШ.ЭГ.ПД.У.С.03И|VALVE_TYPE_39#Клапан обратный муфтовый|VALVE_TYPE_40#Клапан обратный под приварку|VALVE_TYPE_41#Клапан обратный питательный муфтовый|VALVE_TYPE_42#Клапан обратный поворотный с ответными фланцами под приварку|VALVE_TYPE_43#Клапан обратный поворотный с ответными фланцами|VALVE_TYPE_44#Клапан регулирующий под приварку|VALVE_TYPE_45#Клапан регулирующий с ответными фланцами|VALVE_TYPE_46#Клапан невозвратный проходной|VALVE_TYPE_47#Клапан обратный под приварку, подземная установка|VALVE_TYPE_48#Клапан предохранительный пружинный с ответными фланцами под приварку|VALVE_TYPE_49#Клапан регулирующий</options>
+        </attribute>     
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFF0000</colorFill>
+        <colorBorder>#FF000000</colorBorder>
+        <sizePoint>5</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#FF0000</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#000000</CssParameter>
+                  <CssParameter name="stroke-width">2.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>square</WellKnownName>
+              </Mark>
+              <Size>5.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

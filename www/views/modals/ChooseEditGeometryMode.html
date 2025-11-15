@@ -1,0 +1,33 @@
+<template id="chooseTypeEditGeometry">
+    <ons-dialog id="choose-type-edit-geometry">
+        <ons-toolbar class="dialog-toolbar">
+            <div class="center dialog-toolbar-content">
+                Выбор режима работы с координатами
+            </div>
+            <div class="right">
+                  <ons-toolbar-button onclick="hideDialog('choose-type-edit-geometry')">
+                      <ons-icon icon="md-close" class="icon dialog-close"></ons-icon>
+                  </ons-toolbar-button>
+            </div>
+        </ons-toolbar>
+        <ons-list class="choose-type-edit-geometry-list">
+          <ons-list-item tappable class="choose-type-edit-geometry-list-item">
+            <label class="left">
+              <ons-radio name="type-editing" input-id="map" id="choose-type-edit-geometry-map"  checked></ons-radio>
+            </label>
+            <label for="map" class="center">
+              На карте
+            </label>
+          </ons-list-item>
+          <ons-list-item tappable class="choose-type-edit-geometry-list-item">
+            <label class="left">
+              <ons-radio name="type-editing" input-id="manual" id="choose-type-edit-geometry-manual"></ons-radio>
+            </label>
+            <label for="manual" class="center">
+              Вручную
+            </label>
+          </ons-list-item>
+        </ons-list>
+        <ons-button modifier="quiet" id="choose-type-edit-geometry-button" style="float:right; margin-right: 2vw; margin-bottom: 1vh;">Далее</ons-button>  
+    </ons-dialog>
+</template>

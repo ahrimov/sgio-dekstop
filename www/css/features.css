@@ -1,0 +1,50 @@
+.features {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+    background-color: white;
+}
+
+
+.features thead th{
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    
+}
+
+.features thead th ons-select{
+    margin: 3%;
+}
+
+.features thead th ons-select select{
+    color: #2375fa;
+}
+
+.features td div{
+    margin: 3%;
+}
+
+.features td, .features th {
+  border: 1px solid;
+  border-color: #e6e8e8;
+  width: 50%;
+}
+
+.features tr:hover{
+    background-color:#c0c2c2;
+}
+
+.dialog-search-content{
+    margin-top: 2vh;
+    max-height: 70vh;
+    overflow: scroll;
+    margin-left: 1vh;
+    margin-right: 1vh;
+    margin-bottom: 1vh;
+}
+
+#select-value-dialog-search{
+    margin-top: 2vh;
+}

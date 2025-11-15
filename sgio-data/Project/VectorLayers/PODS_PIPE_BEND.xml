@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_PIPE_BEND</id>
+      <label>Труб. арматура. Отводы</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+         <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |PIPEBEND_TYPE_01#Кривая вставка из одной трубы по ГОСТ 24950|PIPEBEND_TYPE_02#Кривая вставка из одной трубы с применением на период гибки второй инвентарной трубы или патрона-удлинителя по ГОСТ 24950|PIPEBEND_TYPE_03#Крутоизогнутый по ГОСТ 17375-2001|PIPEBEND_TYPE_04#Сварной секторный по ТУ 51-29-81|PIPEBEND_TYPE_05#Штампосварной по ТУ 102-488-95|PIPEBEND_TYPE_06#Седловой|PIPEBEND_TYPE_07#Отвод гнутый типа 1</options>
+        </attribute>
+		<attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>technique_cl</id>
+          <label>Способ гибки</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |PIPEBEND_TECH_01#На трубогибочном оборудовании способом поперечной гибки труб в холодном состоянии|PIPEBEND_TECH_02#Методом горячей протяжки|PIPEBEND_TECH_03#ГОСТ 24950-81|PIPEBEND_TECH_04#ТУ 1469-004-48733781-2010|PIPEBEND_TECH_05#ТУ 1469-008-49102539-2010|PIPEBEND_TECH_06#ТУ 1468-002-74238272-07|PIPEBEND_TECH_07#ГОСТ Р 52079-2003|PIPEBEND_TECH_09#ТУ 1469-001-54436739-2011|PIPEBEND_TECH_10#CRC EVANS PB 48-60 - Трубогибочная машина PB 48-60|PIPEBEND_TECH_11#ГТ-1424 - Станок для холодной гибки труб (трубогиб)</options>
+        </attribute>
+		<attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>fabricator_name_cl</id>
+          <label>Изготовитель</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |BEND_FAB_NAME_01#ООО Нова |BEND_FAB_NAME_02#ООО Нефтьмонтаж |BEND_FAB_NAME_03#ОАО Пурпетрубопроводстрой |BEND_FAB_NAME_04#ООО Нефтегазстрой |BEND_FAB_NAME_05#ЗАО  Газкомплект |BEND_FAB_NAME_06#ЗАО  Сибпромкомплект |BEND_FAB_NAME_07#ООО  Юкорт |BEND_FAB_NAME_08#ЗАО Соединительные отводы трубопроводов|BEND_FAB_NAME_09#ООО СМУ-4|BEND_FAB_NAME_10#ООО ИСК Клевер|BEND_FAB_NAME_11#ЗАО Трубостан|BEND_FAB_NAME_12#ОАО СУ-2|BEND_FAB_NAME_13#ООО Востокнефтеспецмонтаж</options>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+	  <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFCC9900</colorFill>
+        <widthLine>2</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#CC9900</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

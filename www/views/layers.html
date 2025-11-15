@@ -1,0 +1,138 @@
+<ons-page>
+    <ons-toolbar>
+      <div class="left">
+        <ons-toolbar-button>
+            <ons-back-button>Back</ons-back-button>
+        </ons-toolbar-button>
+      </div>
+      <div class="center">
+        Слои
+      </div>
+    </ons-toolbar>
+
+    <div id="layerListWithHandle" class="list-group"></div>
+
+    <div class="addNewLayerButton">
+      <ons-fab>
+          <ons-icon class='icon' icon='md-plus' onclick="addNewLayer()"></ons-icon>
+      </ons-fab>
+    </div>
+
+    <ons-list id="base-raster-layers-list">
+      <ons-list-header class="layer-list-header">
+        <span class="layer-list-header-label">Растровые слои</span>
+      </ons-list-header>
+      <div id="base-raster-layers-list-content"></div>
+    </ons-list>
+
+    <template id="baseRasterLayerListItem">
+      <ons-list-item expandable>
+        <image class="icon-base-raster-layers"></image>
+        <span class="label-base-raster-layer"></span>
+        <div class="expandable-content">
+          <div class="base-layer-expandable">
+            <div class="base-layer-switch">
+              <ons-switch class="base-raster-local-switch"></ons-switch>
+              <span class="base-raster-switch-label">Использовать локальные тайлы</span>
+            </div>
+            <div class="base-layer-switch">
+              <ons-switch class="base-raster-switch-visible"></ons-switch>
+              <span class="base-raster-switch-label">Показывать слой</span>
+            </div>
+          </div>
+        </div>
+      </ons-list-item>
+    </template>
+
+    <template id="layerListItem">
+      <div class="list-group-item" onclick="changeVisible(this)">
+          <ons-icon icon="md-reorder" class="reorder-move" size="150%"></ons-icon>
+          <image class="icon-layer" src=""></image>
+          <span class="layer-label"></span>
+          <div class="layer-list-right">
+            <ons-icon class='block-icon' icon='md-block'></ons-icon>
+            <ons-button modifier="quiet" class="layers-more-button">
+              <ons-icon icon='md-more-vert'></ons-icon>
+            </ons-button>
+          </div>
+      </div>
+    </template>
+
+    <template id="file_chooser">
+      <ons-dialog id="file-chooser">
+              <ons-toolbar class="dialog-toolbar">
+                  <div class="center dialog-toolbar-content">
+                      Выберите файл KML
+                  </div>
+                  <div class="right">
+                      <ons-toolbar-button onclick="hideDialog('file-chooser')">
+                          <ons-icon icon="md-close" class="dialog-close"></ons-icon>
+                      </ons-toolbar-button>
+                  </div>
+              </ons-toolbar>
+              <ons-list id="dialog-file-chooser-content">
+              </ons-list>
+      </ons-dialog>
+  </template>
+
+  <template id="comparison_KML">
+    <ons-dialog id="comparison-KML">
+            <ons-toolbar class="dialog-toolbar">
+                <div class="center dialog-toolbar-content">
+                    Сопоставление атрибутов
+                </div>
+                <div class="right">
+                    <ons-toolbar-button onclick="hideDialog('comparison-KML')">
+                        <ons-icon icon="md-close" class="dialog-close"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            <div id="dialog-comparison-KML-content">
+                <p>Соотнесите служебные имена характеристик в левой части (атрибуты из панели свойств)
+                     и имена характеристик в правой (полученные из импортируемого Вами файла)</p>
+                <div id="dialog-list-properties">
+                </div>
+                <div class="comparison-KML-bottom-buttons">
+                  <ons-button modifier="quiet" id="acceptImportKML" style="float:right;">Применить</ons-button>
+                  <ons-button modifier="quiet" onclick="hideDialog('comparison-KML')" style="float:right;">Отмена</ons-button>
+                </div>
+            </div>
+    </ons-dialog>
+</template>
+
+<template id="choose_path_to_KML">
+  <ons-dialog id="choose-path-to-KML">
+    <ons-toolbar class="dialog-toolbar">
+      <div class="center dialog-toolbar-content">
+          Выберите путь к KML
+      </div>
+      <div class="right">
+          <ons-toolbar-button onclick="hideDialog('choose-path-to-KML')">
+              <ons-icon icon="md-close" class="dialog-close"></ons-icon>
+          </ons-toolbar-button>
+      </div>
+    </ons-toolbar>
+    <ons-list id="path-chooser-KML">
+      <ons-list-item tappable class="path-chooser-kml-list-item">
+        <label class="left">
+          <ons-radio name="pathToKML" input-id="media" id="media-path" checked></ons-radio>
+        </label>
+        <label for="media" class="center" id="path-chooser-kml-media-label"></label>
+      </ons-list-item>
+      <ons-list-item tappable class="path-chooser-kml-list-item">
+        <label class="left">
+          <ons-radio name="pathToKML" input-id="iternal" id="iternal-path"></ons-radio>
+        </label>
+        <label for="iternal" class="center" id="path-chooser-kml-iternal-label"></label>
+      </ons-list-item>
+    </ons-list>
+    <ons-button modifier="quiet" id="buttonFileChooser" style="float:right;">Далее</ons-button>
+  </ons-dialog>
+</template>
+
+    <script>
+        ons.getScriptPage().onInit = function() {
+          layersScriptInit();
+        }
+    </script>
+</ons-page>

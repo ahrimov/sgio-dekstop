@@ -1,0 +1,41 @@
+<ons-page>
+    <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button>
+              <ons-back-button>Back</ons-back-button>
+          </ons-toolbar-button>
+        </div>
+        <div class="center toolbar-label">
+          Добавление нового элемента
+        </div>
+      </ons-toolbar>
+      <div id="add-feature-content" class="page-content">
+      </div>
+
+      <div class="under-bar" id="save-feature-bar">
+        <ons-button id='saveFeatureButton' style="float:right; margin: 1%;">Сохранить</ons-button>
+        <ons-button id="backButton" style="float:right; margin: 1%;">Отмена</ons-button>
+      </div>
+
+      <template id="photogallery">
+        <div id="photos">
+          <ons-button modifier="outline light" id="addNewPhoto">
+              <div>
+                  <ons-icon icon="md-plus" size="30px"></ons-icon>
+                  <p>Нажмите, чтобы<br/>добавить фотографию</p>
+              </div>
+          </ons-button>
+        </div>
+      </template>
+
+      <script>
+        ons.getScriptPage().onInit = function() {
+            transformUIToOrientation();
+            let layer = this.data.layer;
+            let feature = this.data.feature;
+            const fromMap = this.data.fromMap;
+            newFeatureScipt(layer, feature, fromMap);
+        }
+
+      </script>
+</ons-page>

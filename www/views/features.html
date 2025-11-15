@@ -1,0 +1,49 @@
+ <ons-page>
+    <ons-toolbar>
+        <div class="left">
+            <ons-toolbar-button>
+                <ons-back-button>Back</ons-back-button>
+            </ons-toolbar-button>
+        </div>
+        <div class="center" id="title">
+            Таблица
+        </div>
+        <div class="right">
+            <ons-toolbar-button id="tool-search">
+                <ons-icon class='icon' icon="md-search"></ons-icon>
+            </ons-toolbar-button>
+        </div>
+    </ons-toolbar>
+    <div id="features-list"></div>
+
+    <template id="dialog_search">
+        <ons-dialog id="dialog-search">
+                <ons-toolbar class="dialog-toolbar">
+                    <div class="center dialog-toolbar-content">
+                        Поиск
+                    </div>
+                    <div class="right">
+                        <ons-toolbar-button onclick="hideDialog('dialog-search')">
+                            <ons-icon icon="md-close" class="icon dialog-close"></ons-icon>
+                        </ons-toolbar-button>
+                    </div>
+                </ons-toolbar>
+                <div class="dialog-search-content">
+                    <p>Имя столбца</p>
+                        <ons-select id='ons-select-dialog-search' modifier="material">
+                            <select id='select-dialog-search' required></select>
+                        </ons-select>
+                    <div id="select-value-dialog-search"></div>
+                    <ons-button id="accept-filter-button" modifier="quiet" style="float:right;">Установить</ons-button>
+                    <ons-button id="clear-filter-button" modifier="quiet" style="float:right;">Очистить фильтр</ons-button>
+                </div>
+        </ons-dialog>
+    </template>
+
+
+    <script>
+        ons.getScriptPage().onInit = function() {
+            featuresInit(this.data.layerID);
+        }
+    </script>
+</ons-page>

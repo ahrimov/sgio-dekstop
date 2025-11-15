@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_STRUCTURE</id>
+      <label>Обустройство. Площадки крановые</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOLYGON</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |STRUCT_TYPE_01#Индивидуальный дом|STRUCT_TYPE_02#Многоквартирный дом|STRUCT_TYPE_03#Гостиница|STRUCT_TYPE_04#Административное здание|STRUCT_TYPE_05#Церковь|STRUCT_TYPE_06#Ограда крановой площадки, установки катодной защиты|STRUCT_TYPE_07#Ферма линейная|STRUCT_TYPE_08#Оттяжка|STRUCT_TYPE_11#Дом оператора|STRUCT_TYPE_12#Аварийный запас труб|STRUCT_TYPE_13#Вертолетная площадка|STRUCT_TYPE_14#Строения|STRUCT_TYPE_15#Ферма|STRUCT_TYPE_16#Объекты ЭХЗ. Блок-бокс|STRUCT_TYPE_17#Объекты ЭХЗ. Комплексная трансформаторная станция|STRUCT_TYPE_18#Объекты связи. Будка связи|STRUCT_TYPE_19#Объекты ЭХЗ. Реклоузел|STRUCT_TYPE_20#Объекты ЭХЗ. Секционирующий пункт</options>
+        </attribute>
+		<attribute type="STRING">
+          <id>name</id>
+          <label>Наименование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>occupant_count</id>
+          <label>Кол-во людей</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>       
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFFFFFF</colorFill>
+        <colorBorder>#FF4D4D4D</colorBorder>
+        <widthBorder>1</widthBorder>
+        <Rule>
+          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Fill>
+              <CssParameter name="fill">#FFFFFF</CssParameter>
+              <CssParameter name="fill-opacity">1.0</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#4D4D4D</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

@@ -1,0 +1,259 @@
+<ons-page>
+    <ons-toolbar>
+        <div class="left">
+          <ons-toolbar-button>
+              <ons-back-button id="style-editor-back-button">Back</ons-back-button>
+          </ons-toolbar-button>
+        </div>
+        <div class="center toolbar-label">
+          Стиль
+        </div>
+      </ons-toolbar>
+      
+        <div class="page-content">
+            <div id="style-preview-map"></div>
+            <div id="style-editor-content" class="style-editor-page"></div>
+        </div>
+
+        <div id="color-picker-container" style="display: none;"></div>
+
+        <div class="under-bar" id="save-feature-bar">
+            <ons-button id='saveLayerStyle' style="float:right; margin: 1%;">Сохранить</ons-button>
+            <ons-button id="backButtonStyleEditor" style="float:right; margin: 1%;">Отмена</ons-button>
+        </div>
+
+      <template id="point-editor">
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg id="style-select-icon" viewBox="0 0 200 200" width="24" height="24"></svg>
+            </div>
+            <div class="form-select">
+                <label for="style-select-shape" class="style-field-label">Фигура</label>
+                <ons-select id="style-select-shape" class="style-select-field" onclick="handleClickStyleShape(event)" onchange="handleEditStyleShape(event)">
+                    <option value="circle">Круг</option>
+                    <option value="square">Квадрат</option>
+                    <option value="triangle">Треугольник</option>
+                </ons-select>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <img src="../sgio-data/resources/expand.png" width="24" height="24"></img>
+            </div>
+            <div class="form-select">
+                <label for="style-input-size" class="style-field-label">Размер</label>
+                <ons-input 
+                    id="style-input-size" 
+                    class="style-input-field" 
+                    type="number" 
+                    max="100" 
+                    min="1" 
+                    value="1" 
+                    onchange="handleCustomInput(event, 'style-input-size', 'increment-style-size', 'decrement-style-size', 1, 100)">
+                </ons-input>
+                <div class="input-buttons">
+                    <div id="decrement-style-size" onclick="decrementInput('style-input-size')" class="input-button-container">
+                        <img src="../sgio-data/resources/minus.png" class="input-button-icon">
+                    </div>
+                    <div id="increment-style-size" onclick="incrementInput('style-input-size')" class="input-button-container">
+                        <img src="../sgio-data/resources/plus.png" class="input-button-icon">
+                    </div>
+                </div>
+                <span>пикс.</span>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg id="style-select-icon" viewBox="0 0 200 200" width="24" height="24">
+                    <circle id="point-color-preview" cx="100" cy="100" r="80" fill="#000000"/>
+                </svg>
+            </div>
+            <div class="form-select">
+                <label for="color-input" class="style-field-label">Цвет</label>
+                <ons-input id="color-input" class="style-input-field" onclick="showColorPicker('color-input', 'point-color-preview')" readonly></ons-input>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <img src="../sgio-data/resources/split.png" width="24" height="24"></img>
+            </div>
+            <div class="form-select">
+                <label for="color-input" class="style-field-label">Толщина штриха</label>
+                <ons-input 
+                    id="style-input-border" 
+                    class="style-input-field" 
+                    type="number" 
+                    max="10" 
+                    min="0" 
+                    value="0" 
+                    onchange="handleCustomInput(event, 'style-input-border', 'increment-style-border', 'decrement-style-border', 0, 10)">
+                </ons-input>
+                <div class="input-buttons">
+                    <div id="decrement-style-border" onclick="decrementInput('style-input-border')" class="input-button-container">
+                        <img src="../sgio-data/resources/minus.png" class="input-button-icon">
+                    </div>
+                    <div id="increment-style-border" onclick="incrementInput('style-input-border')" class="input-button-container">
+                        <img src="../sgio-data/resources/plus.png" class="input-button-icon">
+                    </div>
+                </div>
+                <span>пикс.</span>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg width="24" height="24" viewBox="0 0 100 100">
+                    <path
+                        id="point-border-color-preview"
+                        d="M50,10 A40,40 0 0 1 90,50 A40,40 0 0 1 50,90 A40,40 0 0 1 10,50 A40,40 0 0 1 50,10
+                        M50,30 A20,20 0 0 0 30,50 A20,20 0 0 0 50,70 A20,20 0 0 0 70,50 A20,20 0 0 0 50,30 Z" 
+                        fill="black"
+                        stroke-width="1"
+                    />
+                </svg>
+            </div>
+            <div class="form-select">
+                <label for="border-color-input" class="style-field-label">Цвет штриха</label>
+                <ons-input id="border-color-input" class="style-input-field" onclick="showColorPicker('border-color-input', 'point-border-color-preview')" readonly></ons-input>
+            </div>
+        </div>
+      </template>
+
+      <template id="line-editor">
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg id="style-select-icon" viewBox="0 0 200 200" width="24" height="24"></svg>
+            </div>
+            <div class="form-select">
+                <label for="style-select-shape" class="style-field-label">Шаблон</label>
+                <ons-select id="style-select-pattern" class="style-select-field" onclick="handleClickStylePattern(event)" onchange="handleEditStylePattern(event)">
+                    <option value="solid">Сплошная</option>
+                    <option value="dotted">Пунктирная</option>
+                </ons-select>
+            </div>
+        </div> 
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <img src="../sgio-data/resources/split-vertical.png" width="24" height="24"></img>
+            </div>
+            <div class="form-select">
+                <label for="style-input-size" class="style-field-label">Ширина</label>
+                <ons-input 
+                    id="style-input-size" 
+                    class="style-input-field" 
+                    type="number" 
+                    max="20" 
+                    min="1" 
+                    value="1" 
+                    onchange="handleCustomInput(event, 'style-input-size', 'increment-style-size', 'decrement-style-size', 1, 20)">
+                </ons-input>
+                <div class="input-buttons">
+                    <div id="decrement-style-size" onclick="decrementInput('style-input-size')" class="input-button-container">
+                        <img src="../sgio-data/resources/minus.png" class="input-button-icon">
+                    </div>
+                    <div id="increment-style-size" onclick="incrementInput('style-input-size')" class="input-button-container">
+                        <img src="../sgio-data/resources/plus.png" class="input-button-icon">
+                    </div>
+                </div>
+                <span>пикс.</span>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg id="style-select-icon" viewBox="0 0 200 200" width="24" height="24">
+                    <circle id="point-color-preview" cx="100" cy="100" r="80" fill="#000000"/>
+                </svg>
+            </div>
+            <div class="form-select">
+                <label for="color-input" class="style-field-label">Цвет</label>
+                <ons-input id="color-input" class="style-input-field" onclick="showColorPicker('color-input', 'point-color-preview')" readonly></ons-input>
+            </div>
+        </div>
+      </template>
+
+      <template id="polygon-editor">
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg viewBox="0 0 200 200" width="24" height="24">
+                    <circle id="point-color-preview" cx="100" cy="100" r="80" fill="#000000"/>
+                </svg>
+            </div>
+            <div class="form-select">
+                <label for="color-input" class="style-field-label">Цвет</label>
+                <ons-input id="color-input" class="style-input-field" onclick="showColorPicker('color-input', 'point-color-preview')" readonly></ons-input>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg id="style-select-icon" viewBox="0 0 200 200" width="24" height="24"></svg>
+            </div>
+            <div class="form-select">
+                <label for="style-select-shape" class="style-field-label">Шаблон штриховки</label>
+                <ons-select id="style-select-pattern" class="style-select-field" onclick="handleClickStylePattern(event)" onchange="handleEditStylePattern(event)">
+                    <option value="solid">Сплошная</option>
+                    <option value="dotted">Пунктирная</option>
+                </ons-select>
+            </div>
+        </div> 
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <img src="../sgio-data/resources/split.png" width="24" height="24"></img>
+            </div>
+            <div class="form-select">
+                <label for="color-input" class="style-field-label">Толщина штриха</label>
+                <ons-input 
+                    id="style-input-border" 
+                    class="style-input-field" 
+                    type="number" 
+                    max="10" 
+                    min="0" 
+                    value="0" 
+                    onchange="handleCustomInput(event, 'style-input-border', 'increment-style-border', 'decrement-style-border', 0, 10)">
+                </ons-input>
+                <div class="input-buttons">
+                    <div id="decrement-style-border" onclick="decrementInput('style-input-border')" class="input-button-container">
+                        <img src="../sgio-data/resources/minus.png" class="input-button-icon">
+                    </div>
+                    <div id="increment-style-border" onclick="incrementInput('style-input-border')" class="input-button-container">
+                        <img src="../sgio-data/resources/plus.png" class="input-button-icon">
+                    </div>
+                </div>
+                <span>пикс.</span>
+            </div>
+        </div>
+
+        <div class="style-editor-field">
+            <div class="style-icon">
+                <svg width="24" height="24" viewBox="0 0 100 100">
+                    <path
+                        id="point-border-color-preview"
+                        d="M50,10 A40,40 0 0 1 90,50 A40,40 0 0 1 50,90 A40,40 0 0 1 10,50 A40,40 0 0 1 50,10
+                        M50,30 A20,20 0 0 0 30,50 A20,20 0 0 0 50,70 A20,20 0 0 0 70,50 A20,20 0 0 0 50,30 Z" 
+                        fill="black"
+                        stroke-width="1"
+                    />
+                </svg>
+            </div>
+            <div class="form-select">
+                <label for="border-color-input" class="style-field-label">Цвет штриха</label>
+                <ons-input id="border-color-input" class="style-input-field" onclick="showColorPicker('border-color-input', 'point-border-color-preview')" readonly></ons-input>
+            </div>
+        </div>
+      </template>
+
+      <script>
+        ons.getScriptPage().onInit = function() {
+            transformUIToOrientation();
+            const layer = this.data.layer;
+            const callback = this.data.callback;
+            styleEditor(layer, callback);
+        }
+      </script>
+</ons-page>

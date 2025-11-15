@@ -1,0 +1,17 @@
+{
+  "name": "sgio-dekstop",
+  "version": "1.0.0",
+  "description": "Your Electron app",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron": "^39.0.0",
+    "electron-reload": "^2.0.0-alpha.1",
+    "spatialite": "^0.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}
