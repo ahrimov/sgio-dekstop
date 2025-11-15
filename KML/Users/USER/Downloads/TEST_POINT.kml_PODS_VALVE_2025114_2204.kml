@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?><kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="\Users\USER\Downloads\TEST_POINT.kml_PODS_VALVE" id="PODS_VALVE">
+	<SimpleField name="ID" type="string"/>
+	<SimpleField name="EVENT_ID" type="string"/>
+	<SimpleField name="EVENT_GUID" type="string"/>
+	<SimpleField name="VALVE_IDENTIFIER" type="string"/>
+	<SimpleField name="NOMINAL_DIAMETER_INLET_GCL" type="string"/>
+	<SimpleField name="NOMINAL_DIAMETER_OUTLET_GCL" type="string"/>
+	<SimpleField name="TYPE_CL" type="string"/>
+	<SimpleField name="SERIAL_NUMBER" type="string"/>
+	<SimpleField name="MODEL" type="string"/>
+	<SimpleField name="MANUFACTURER_CL" type="string"/>
+	<SimpleField name="DATE_MANUFACTURED" type="string"/>
+	<SimpleField name="SPECIFICATION_CL" type="string"/>
+	<SimpleField name="MILL_TEST_PRESSURE" type="string"/>
+	<SimpleField name="NOMINAL_PRESSURE_RATING" type="string"/>
+	<SimpleField name="NOMINAL_PRESSURE_RATING_INLET" type="string"/>
+	<SimpleField name="NOMINAL_PRESSURE_RATING_OUTLET" type="string"/>
+	<SimpleField name="DATE_INSTALLED" type="string"/>
+	<SimpleField name="FUNCTION_CL" type="string"/>
+	<SimpleField name="JOINT_TYPE_CL" type="string"/>
+	<SimpleField name="MATERIAL_CL" type="string"/>
+	<SimpleField name="SOURCE_GCL" type="string"/>
+	<SimpleField name="COMMENTS" type="string"/>
+	<SimpleField name="ADD_TYPE_CL" type="string"/>
+	<SimpleField name="ADD_1" type="string"/>
+	<SimpleField name="TYPE" type="string"/>
+<SimpleField xmlns="" name="geometryType" type="string" actualType="Point"/></Schema>
+<Folder><name>PODS_VALVE</name>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\TEST_POINT.kml_PODS_VALVE_2025114_2204.kml_style</styleUrl>
+	<name>Задвижка</name>
+	<description>Задвижка</description>
+	<ExtendedData><SchemaData schemaUrl="#PODS_VALVE">
+		<SimpleData name="ID">748193</SimpleData>
+		<SimpleData name="EVENT_ID">748193</SimpleData>
+		<SimpleData name="EVENT_GUID"/>
+		<SimpleData name="VALVE_IDENTIFIER">494</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_INLET_GCL">50</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_OUTLET_GCL">50</SimpleData>
+		<SimpleData name="TYPE_CL">VALVE_TYPE_07</SimpleData>
+		<SimpleData name="SERIAL_NUMBER">б/н</SimpleData>
+		<SimpleData name="MODEL"/>
+		<SimpleData name="MANUFACTURER_CL">UNKNOWN</SimpleData>
+		<SimpleData name="DATE_MANUFACTURED"/>
+		<SimpleData name="SPECIFICATION_CL">UNKNOWN</SimpleData>
+		<SimpleData name="MILL_TEST_PRESSURE"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING">0.003</SimpleData>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_INLET">3</SimpleData>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_OUTLET">3</SimpleData>
+		<SimpleData name="DATE_INSTALLED">01.09.2022</SimpleData>
+		<SimpleData name="FUNCTION_CL">VALVE_FUNCT_01</SimpleData>
+		<SimpleData name="JOINT_TYPE_CL">VAL_JOINTTYPE_02</SimpleData>
+		<SimpleData name="MATERIAL_CL">VALVE_MAT_09</SimpleData>
+		<SimpleData name="SOURCE_GCL">UNKNOWN</SimpleData>
+		<SimpleData name="COMMENTS"/>
+		<SimpleData name="ADD_TYPE_CL">VALVE_TYPE_50</SimpleData>
+		<SimpleData name="ADD_1"/>
+		<SimpleData name="TYPE">VALVE_TYPE_50</SimpleData>
+	<SimpleData xmlns="" name="name">Задвижка</SimpleData><SimpleData xmlns="" name="description">Задвижка</SimpleData></SchemaData></ExtendedData>
+      
+  <Point xmlns=""><coordinates>50.21715559204387,56.33654283335093</coordinates></Point></Placemark>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\TEST_POINT.kml_PODS_VALVE_2025114_2204.kml_style</styleUrl>
+	<name>Кран шаровой АЛСО</name>
+	<description/>
+	<ExtendedData><SchemaData schemaUrl="#PODS_VALVE">
+		<SimpleData name="ID">1146541</SimpleData>
+		<SimpleData name="EVENT_ID">1146541</SimpleData>
+		<SimpleData name="EVENT_GUID"/>
+		<SimpleData name="VALVE_IDENTIFIER">600</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_INLET_GCL">100</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_OUTLET_GCL">0</SimpleData>
+		<SimpleData name="TYPE_CL">UNKNOWN</SimpleData>
+		<SimpleData name="SERIAL_NUMBER">б/н</SimpleData>
+		<SimpleData name="MODEL"/>
+		<SimpleData name="MANUFACTURER_CL">VALVE_MAN_68</SimpleData>
+		<SimpleData name="DATE_MANUFACTURED"/>
+		<SimpleData name="SPECIFICATION_CL">VALVE_CPEC_100</SimpleData>
+		<SimpleData name="MILL_TEST_PRESSURE"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING">0.003</SimpleData>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_INLET"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_OUTLET"/>
+		<SimpleData name="DATE_INSTALLED">16.06.2023</SimpleData>
+		<SimpleData name="FUNCTION_CL">UNKNOWN</SimpleData>
+		<SimpleData name="JOINT_TYPE_CL">VAL_JOINTTYPE_09</SimpleData>
+		<SimpleData name="MATERIAL_CL">UNKNOWN</SimpleData>
+		<SimpleData name="SOURCE_GCL">UNKNOWN</SimpleData>
+		<SimpleData name="COMMENTS"/>
+		<SimpleData name="ADD_TYPE_CL">VALVE_TYPE_50</SimpleData>
+		<SimpleData name="ADD_1">КШ.Ф.П.GAS100.16-01</SimpleData>
+		<SimpleData name="TYPE">VALVE_TYPE_50</SimpleData>
+	<SimpleData xmlns="" name="name">Кран шаровой АЛСО</SimpleData><SimpleData xmlns="" name="description"/></SchemaData></ExtendedData>
+      
+  <Point xmlns=""><coordinates>50.2697002608,56.337124921300045</coordinates></Point></Placemark>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\TEST_POINT.kml_PODS_VALVE_2025114_2204.kml_style</styleUrl>
+	<name>Кран шаровой АЛСО</name>
+	<description/>
+	<ExtendedData><SchemaData schemaUrl="#PODS_VALVE">
+		<SimpleData name="ID">1146546</SimpleData>
+		<SimpleData name="EVENT_ID">1146546</SimpleData>
+		<SimpleData name="EVENT_GUID"/>
+		<SimpleData name="VALVE_IDENTIFIER">601</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_INLET_GCL">100</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_OUTLET_GCL">0</SimpleData>
+		<SimpleData name="TYPE_CL">UNKNOWN</SimpleData>
+		<SimpleData name="SERIAL_NUMBER">б/н</SimpleData>
+		<SimpleData name="MODEL"/>
+		<SimpleData name="MANUFACTURER_CL">VALVE_MAN_68</SimpleData>
+		<SimpleData name="DATE_MANUFACTURED"/>
+		<SimpleData name="SPECIFICATION_CL">VALVE_CPEC_100</SimpleData>
+		<SimpleData name="MILL_TEST_PRESSURE"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING">0.003</SimpleData>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_INLET"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_OUTLET"/>
+		<SimpleData name="DATE_INSTALLED">16.06.2023</SimpleData>
+		<SimpleData name="FUNCTION_CL">UNKNOWN</SimpleData>
+		<SimpleData name="JOINT_TYPE_CL">VAL_JOINTTYPE_09</SimpleData>
+		<SimpleData name="MATERIAL_CL">UNKNOWN</SimpleData>
+		<SimpleData name="SOURCE_GCL">UNKNOWN</SimpleData>
+		<SimpleData name="COMMENTS"/>
+		<SimpleData name="ADD_TYPE_CL">VALVE_TYPE_50</SimpleData>
+		<SimpleData name="ADD_1">КШ.Ф.П.GAS100.16-01</SimpleData>
+		<SimpleData name="TYPE">VALVE_TYPE_50</SimpleData>
+	<SimpleData xmlns="" name="name">Кран шаровой АЛСО</SimpleData><SimpleData xmlns="" name="description"/></SchemaData></ExtendedData>
+      
+  <Point xmlns=""><coordinates>50.2697236464,56.33618513639999</coordinates></Point></Placemark>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\TEST_POINT.kml_PODS_VALVE_2025114_2204.kml_style</styleUrl>
+	<name>Test</name>
+	<description/>
+	<ExtendedData><SchemaData schemaUrl="#PODS_VALVE">
+		<SimpleData name="ID">1111</SimpleData>
+		<SimpleData name="EVENT_ID">test_id</SimpleData>
+		<SimpleData name="EVENT_GUID"/>
+		<SimpleData name="VALVE_IDENTIFIER">601</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_INLET_GCL">100</SimpleData>
+		<SimpleData name="NOMINAL_DIAMETER_OUTLET_GCL">0</SimpleData>
+		<SimpleData name="TYPE_CL">UNKNOWN</SimpleData>
+		<SimpleData name="SERIAL_NUMBER">б/н</SimpleData>
+		<SimpleData name="MODEL"/>
+		<SimpleData name="MANUFACTURER_CL">VALVE_MAN_68</SimpleData>
+		<SimpleData name="DATE_MANUFACTURED"/>
+		<SimpleData name="SPECIFICATION_CL">VALVE_CPEC_100</SimpleData>
+		<SimpleData name="MILL_TEST_PRESSURE"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING">0.003</SimpleData>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_INLET"/>
+		<SimpleData name="NOMINAL_PRESSURE_RATING_OUTLET"/>
+		<SimpleData name="DATE_INSTALLED">16.06.2023</SimpleData>
+		<SimpleData name="FUNCTION_CL">UNKNOWN</SimpleData>
+		<SimpleData name="JOINT_TYPE_CL">VAL_JOINTTYPE_09</SimpleData>
+		<SimpleData name="MATERIAL_CL">UNKNOWN</SimpleData>
+		<SimpleData name="SOURCE_GCL">UNKNOWN</SimpleData>
+		<SimpleData name="COMMENTS"/>
+		<SimpleData name="ADD_TYPE_CL">VALVE_TYPE_50</SimpleData>
+		<SimpleData name="ADD_1">КШ.Ф.П.GAS100.16-01</SimpleData>
+		<SimpleData name="TYPE">VALVE_TYPE_50</SimpleData>
+	<SimpleData xmlns="" name="name">Test</SimpleData><SimpleData xmlns="" name="description"/></SchemaData></ExtendedData>
+       
+  <LineString xmlns=""><coordinates>50.2136699483344,56.332755292924304 50.2138462290895,56.33268408530449</coordinates></LineString></Placemark>
+</Folder>
+<Style xmlns="" id="\Users\USER\Downloads\TEST_POINT.kml_PODS_VALVE_2025114_2204.kml_style"><ExtendedData><Data name="ol_style_shape"><value>square</value></Data><Data name="ol_style_radius"><value>18</value></Data><Data name="ol_style_fill_color"><value>#838383</value></Data><Data name="ol_style_stroke_color"><value>#000000</value></Data><Data name="ol_style_stroke_width"><value>3</value></Data></ExtendedData></Style></Document></kml>

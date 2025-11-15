@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="\Users\USER\Downloads\_Линия_.kml_Линия" id="Линия">
+	<SimpleField name="Символьное" type="string"/>
+	<SimpleField name="целое" type="int"/>
+	<SimpleField name="Десятичное" type="float"/>
+<SimpleField xmlns="" name="ID" type="string"/></Schema>
+<Folder><name>Линия</name>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\_Линия_.kml_Линия_2025114_215358.kml_style</styleUrl>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#Линия">
+		<SimpleData name="Символьное">тест1</SimpleData>
+		<SimpleData name="целое">1</SimpleData>
+		<SimpleData name="Десятичное">1.00</SimpleData>
+	<SimpleData xmlns="" name="ID">0</SimpleData></SchemaData></ExtendedData>
+      <LineString><coordinates>30.312593,59.936407 30.28744,59.856352 30.355244,59.896928 30.431796,59.934762 30.40883,59.849773</coordinates></LineString>
+  </Placemark>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\_Линия_.kml_Линия_2025114_215358.kml_style</styleUrl>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#Линия">
+		<SimpleData name="Символьное">тест2</SimpleData>
+		<SimpleData name="целое">2</SimpleData>
+		<SimpleData name="Десятичное">222.33</SimpleData>
+	<SimpleData xmlns="" name="ID">1</SimpleData></SchemaData></ExtendedData>
+      <LineString><coordinates>30.274317,59.851418 30.331184,59.82784 30.401175,59.843741</coordinates></LineString>
+  </Placemark>
+  <Placemark><styleUrl xmlns="">#\Users\USER\Downloads\_Линия_.kml_Линия_2025114_215358.kml_style</styleUrl>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#Линия">
+		<SimpleData name="Символьное">тест3</SimpleData>
+		<SimpleData name="целое">3</SimpleData>
+		<SimpleData name="Десятичное">39999.00</SimpleData>
+	<SimpleData xmlns="" name="ID">2</SimpleData></SchemaData></ExtendedData>
+      <LineString><coordinates>30.303844,59.844838 30.36618,59.842096</coordinates></LineString>
+  </Placemark>
+</Folder>
+<Style xmlns="" id="\Users\USER\Downloads\_Линия_.kml_Линия_2025114_215358.kml_style"><ExtendedData><Data name="ol_style_pattern"><value>dotted</value></Data><Data name="ol_style_color"><value>#ffce56</value></Data><Data name="ol_style_width"><value>6</value></Data></ExtendedData></Style></Document></kml>
