@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_ILI_CLUSTER</id>
+      <label>Данные ВТД. Группы дефектов</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>ili_inspection_id</id>
+          <label>Обследование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DATE">
+          <id>create_date</id>
+          <label>Дата создания</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_bpr_calculated</id>
+          <label>Факт. коэф. зап. проч.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_bpr_pig</id>
+          <label>КБД</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_rpr_calculated</id>
+          <label>Безоп.P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_bpr_variance</id>
+          <label>Разруш. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_rpr_variance</id>
+          <label>Норм.коэф.зап.проч.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_depth</id>
+          <label>Глубина</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_length</id>
+          <label>Сред. длина мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_orientation</id>
+          <label>Ориен-тация час</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>avg_width</id>
+          <label>Сред. ширина мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>effective_length</id>
+          <label>Сумм. длина мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>effective_width</id>
+          <label>Сумм. ширина мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>effective_area</id>
+          <label>Площадь кв.мм.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>safety_factor</id>
+          <label>Макс КБД</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>anomaly_count</id>
+          <label>Кол-во де-фектов</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>max_wall_loss</id>
+          <label>Макс глубина</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFC00000</colorFill>
+        <widthLine>3</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#C00000</CssParameter>
+              <CssParameter name="stroke-width">3.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

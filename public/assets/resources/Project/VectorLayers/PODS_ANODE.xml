@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_ANODE</id>
+      <label>Оборудование ЭХЗ. Аноды</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+         <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+	      <options>UNKNOWN#Неизвестно                                                                                                                                                            |ANODE_TYPE_01#Браслет|ANODE_TYPE_02#Горизонтально установленный протектор|ANODE_TYPE_03#Вертикально установленный протектор|ANODE_TYPE_04#Протяженный протектор</options>
+        </attribute>
+		<attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>model</id>
+          <label>Модель</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>material_cl</id>
+          <label>Материал</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+	      <options>UNKNOWN#Неизвестно                                                                                                                                                            |ANODE_MAT_01#Сплав на основе стали|ANODE_MAT_02#Сплав на основе алюминия|ANODE_MAT_03#Сплав на основе магния|ANODE_MAT_04#Сплав на основе цинка|ANODE_MAT_05#Стальная труба</options>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>anode_diameter</id>
+          <label>Диаметр мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>anode_length</id>
+          <label>Длина мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>depth_of_cover</id>
+          <label>Глубина залож. м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>back_fill_material_gcl</id>
+          <label>Материал засыпки</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+	      <options>UNKNOWN#Неизвестно                                                                                                                                                            |BACK_FILL_MAT_01#Кокс|BACK_FILL_MAT_02#Грунт</options>
+        </attribute>
+		<attribute type="ENUM">
+          <id>manufacturer_cl</id>
+          <label>Изготовитель</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+	      <options>UNKNOWN#Неизвестно                                                                                                                                                            </options>
+        </attribute>
+		<attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>       
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF0070C0</colorFill>
+        <colorBorder>#FF8DB4E3</colorBorder>
+        <sizePoint>3</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#0070C0</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#8DB4E3</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>square</WellKnownName>
+              </Mark>
+              <Size>3.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

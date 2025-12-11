@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_PI_CIS_READING</id>
+      <label>Данные ЭХЗ. Замеры интенс.</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>ИД</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>srv_district_lbl</id>
+          <label>ЛПУ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>route_type_lbl</id>
+          <label>ТИП_ГАЗОПРОВОДА</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>line_id_lbl</id>
+          <label>ГАЗОПРОВОД</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>station</id>
+          <label>КИЛОМЕТР</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>ps_on</id>
+          <label>ПОТЕНЦИАЛ_ВКЛ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>ps_off</id>
+          <label>ПОТЕНЦИАЛ_ВЫКЛ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>static</id>
+          <label>U_ПОЛЯР</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DATE">
+          <id>inspection_date</id>
+          <label>ДАТА_ОБСЛЕДОВАНИЯ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>grad_vkl_left</id>
+          <label>ГРАД_ЛЕВ_ВКЛ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>grad_vkl_right</id>
+          <label>ГРАД_ПОЛ_ВКЛ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>upol</id>
+          <label>U_ПОЛЯР_2</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>utz_vikl</id>
+          <label>ПОТЕНЦИАЛ_ВЫКЛ_2</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>utz_vkl</id>
+          <label>ПОТЕНЦИАЛ_ВКЛ_2</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>comments</id>
+          <label>Комментарии</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>1</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF002060</colorFill>
+        <colorBorder>#FF66FF66</colorBorder>
+        <sizePoint>3</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#002060</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#66FF66</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>circle</WellKnownName>
+              </Mark>
+              <Size>3.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

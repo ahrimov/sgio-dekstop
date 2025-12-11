@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_METER</id>
+      <label>Арматура. Измер. прибор</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+ 
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |METER_TYPE_01#Датчик давления|METER_TYPE_02#Датчик температуры|METER_TYPE_03#Манометр (дифманометр) самопишущий|METER_TYPE_05#U-образный манометр|METER_TYPE_06#Манометр электроконтактный|METER_TYPE_07#Термометр|METER_TYPE_08#Устройство измерения расхода газа|METER_TYPE_09#Счетчик газовый|METER_TYPE_10#Манометр|METER_TYPE_11#Измерительный узел|METER_TYPE_12#Манометр шкала 0-100|METER_TYPE_13#Манометр шкала 0-5|METER_TYPE_14#Репер для контроля просадок и деформаций подземных трубопроводов</options>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>nominal_pressure_rating</id>
+          <label>Раб. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>manufacturer_cl</id>
+          <label>Изготовитель</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |METER_MAN_01#Emerson|METER_MAN_02#ЗАО "ПО ФизТех" 634061, Россия, г.Томск, ул. Вершинина, д. 9|METER_MAN_03#ОАО "Теплоконтроль" 420054, Россия, г.Казань, ул. Владимира Кулагина, 1</options> 
+        </attribute>
+		  <attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>    
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFFFFFF</colorFill>
+        <colorBorder>#FF000000</colorBorder>
+        <sizePoint>3</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#FFFFFF</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#000000</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>square</WellKnownName>
+              </Mark>
+              <Size>3.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

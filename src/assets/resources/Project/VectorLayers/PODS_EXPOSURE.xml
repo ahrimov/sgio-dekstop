@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_EXPOSURE</id>
+      <label>Переходы. Воздушные</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+         <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+         <attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |EXP_TYPE_01#Арочный|EXP_TYPE_02#Вантовый|EXP_TYPE_03#Шпрингельный|EXP_TYPE_04#Балочный</options>
+        </attribute>
+        <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>height</id>
+          <label>Высота м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="ENUM">
+          <id>support_type_cl</id>
+          <label>Тип поддерживающего сооружения</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |EXP_SUP_TYPE_01#Неподвижный|EXP_SUP_TYPE_02#Продольно-подвижный|EXP_SUP_TYPE_03#Свободно-подвижный</options>
+        </attribute>		
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFCC9900</colorFill>
+        <widthLine>2</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#CC9900</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

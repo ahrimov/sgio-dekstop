@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>WEB50_KADASTR_PODS_MDR</id>
+      <label>МДР. Зоны</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOLYGON</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>description</id>
+          <label>Название</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>obj_type</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>station_begin</id>
+          <label>Нач. км.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>station_end</id>
+          <label>Кон. км.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>      
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFFCCCC</colorFill>
+        <colorBorder>#FFFF0000</colorBorder>
+        <widthBorder>1</widthBorder>
+        <Rule>
+          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Fill>
+              <CssParameter name="fill">#FFCCCC</CssParameter>
+              <CssParameter name="fill-opacity">1.0</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#FF0000</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

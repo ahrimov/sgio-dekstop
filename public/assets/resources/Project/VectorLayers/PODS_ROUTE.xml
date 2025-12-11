@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>pods_route</id>
+      <label>Трубопроводы. Оси</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип труб-да</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+          <options>UNKNOWN#Неизвестно                                                                                                                                                            |ROUTE_TYPE_01#Трубопровод|ROUTE_TYPE_0111#Обвязка кранового узла|ROUTE_TYPE_02#Соединительная перемычка|ROUTE_TYPE_03#Нитка обвязки технологических узлов|ROUTE_TYPE_04#Отвод|ROUTE_TYPE_05#Нитка перехода через преграду|ROUTE_TYPE_06#Распределительный низкого давления|ROUTE_TYPE_07#Распределительный среднего давления|ROUTE_TYPE_08#Распределительный высокого давления 1 категории|ROUTE_TYPE_09#Распределительный высокого давления 2 категории|ROUTE_TYPE_10#Магистральный|ROUTE_TYPE_11#Резервный|ROUTE_TYPE_12#Лупинг</options>
+        </attribute>
+        <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>station_begin</id>
+          <label>Нач. км.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>station_end</id>
+          <label>Кон. км.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>	
+        <attribute type="ENUM">
+          <id>operating_status_gcl</id>
+          <label>Операц. статус</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+          <options>UNKNOWN#Неизвестно                                                                                                                                                            |ABANDONED#Выведен из эксплуатации|ACTIVE#Эксплуатируемый|CONSTRUCTION#Строящийся|IDLE#Готовый к эксплуатации|INACTIVE#Эксплуатируемый, не под давлением|PROPOSED#Проектируемый|REMOVED#Демонтирован|SOLD#Продан|TRANSFERRED#Демонтирован и перенесен</options>
+        </attribute>		
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFF0000</colorFill>
+        <widthLine>2</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#FF0000</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

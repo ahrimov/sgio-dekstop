@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_PI_CASING_READING</id>
+      <label>Данные ЭХЗ. Повреждения ЛКП</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>ИД</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+       <attribute type="DOUBLE">
+          <id>current_reading</id>
+          <label>Уровень фонового сигнала, мВ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+       <attribute type="DOUBLE">
+          <id>potential_reading</id>
+          <label>Потенциал в месте дефекта U«т-з», В</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+       <attribute type="DOUBLE">
+          <id>resistance_reading</id>
+          <label>Уровень сигнала над дефектом, мВ</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DATE">
+          <id>inspection_date</id>
+          <label>Дата обследования</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>comments</id>
+          <label>Комментарии</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>1</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF002060</colorFill>
+        <colorBorder>#FF66FF66</colorBorder>
+        <sizePoint>5</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#002060</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#66FF66</CssParameter>
+                  <CssParameter name="stroke-width">2.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>circle</WellKnownName>
+              </Mark>
+              <Size>5.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>WEB50_POI_TRACK</id>
+      <label>Навигация. Треки</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+ 
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>name</id>
+          <label>Название</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>descr</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DATE">
+          <id>ctime</id>
+          <label>Дата создания</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+    
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFC5D9F1</colorFill>
+        <widthLine>5</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#C5D9F1</CssParameter>
+              <CssParameter name="stroke-width">5.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

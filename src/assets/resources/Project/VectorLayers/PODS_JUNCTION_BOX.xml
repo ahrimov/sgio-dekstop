@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_JUNCTION_BOX</id>
+      <label>Связь. НУП</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>name</id>
+          <label>Наименование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>box_size</id>
+          <label>Габариты</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>       
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF00B050</colorFill>
+        <colorBorder>#FF00B050</colorBorder>
+        <sizePoint>3</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#00B050</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#00B050</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>triangle</WellKnownName>
+              </Mark>
+              <Size>3.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_EXTERNAL_COATING</id>
+      <label>Труб. арматура. Внеш. покрытие</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTILINESTRING</geometry>
+      <attributes>
+ 
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>coating_material_gcl</id>
+          <label>Конструкция покрытия</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |COATING_MAT_01#Нормальный|COATING_MAT_02#Усиленный|COATING_MAT_03#Весьма усиленный|COATING_MAT_04#Полиэтилен Borealis Borcoat HE-3450, адгезив Borealis Borcoat ME-0420, эпоксидный порошок Scotchkote 226N Slow|COATING_MAT_05#Нет покрытия|COATING_MAT_06#Термоусаживающая манжета ТИАЛ-МГП|COATING_MAT_07#Термоусаживающая манжета Новорад СТ-60|COATING_MAT_08#3 слоя ПЭ (3-L-PE)|COATING_MAT_09#Полиэтилен HDPE 4206B, адгезив Orevac 18342N, эпоксидная краска Eurokote 712PP|COATING_MAT_10#Полиэтилен Lupolen 4552D, адгезив Lucalen G 3710E, эпоксидная краска Basepox PE 50-1081|COATING_MAT_11#Полиэтилен Метален АПЭ-1, адгезив Метален ПЭ-1, эпоксидный праймер Eurokote 712 PP|COATING_MAT_12#Полиэтилен Yuhva Hiden P601 KUBL R, адгезив Glusin A015E, эпоксидный праймер Eurokote 712 PP|COATING_MAT_13#Грунт-двухкомпонентный эпоксидный праймер UP-1000, наружный слой-двухкомпонентное полиуретановое покрытие FRUCS 1000A|COATING_MAT_14#Новорад СТ-40|COATING_MAT_15#Covalence DIRAX|COATING_MAT_16#БИАСКПЛЕН НК|COATING_MAT_17#Полиэтилен Borealis Borcoat HE-3450, адгезив Borealis Borcoat ME-0420, эпоксидная краска BASF Basepox РЕ-50-7191, Тризомат СТ-122|COATING_MAT_18#Полиэтилен Lupolen 4552D, адгезив Lucalen G 3710E, эпоксидная краска Corro-Coat EP-F2002 HW "JOTUN"|COATING_MAT_19#Полиэтилен Borealis Borcoat HE-3450, адгезив Borealis Borcoat ME-0420, эпоксидная краска Resicoat R-726LD (HLF21R)|COATING_MAT_20#Полиэтилен Метален АПЭ-1, адгезив Метален ПЭ-1, эпоксидный праймер Eurokote 712 PP|COATING_MAT_21#Полиэтилен Borealis Borcoat HE-3450, адгезив Borealis Borcoat ME-0420, эпоксидный праймер Eurokote 712 PP|COATING_MAT_22#Полиэтилен HDPE 4206B, адгезив Orevac 18342N, эпоксидная краска Eurokote 712PP|COATING_MAT_23#УРИЗОЛ|COATING_MAT_24#БИУР|COATING_MAT_25#ТЕРМА-СТМП|COATING_MAT_26#Полиэтилен MDPE 2006 PBK 35, адгезив Fusabond E MB 158D, эпоксидный праймер Eurokote 712 PP|COATING_MAT_27#Полиуретановое покрытие Scotchkote Copon Hycote 165|COATING_MAT_28#Эпоксидное покрытие COPON EP2306|COATING_MAT_29#Жидкое эпоксидное|COATING_MAT_30#Основа Hempels HS Gas Pipe Coating 87638, отвердитель Hempels HS Curing Agent 97693|COATING_MAT_31#Основа Hempel 87839, отвердитель Hempel 95830, растворитель Hempel 99610|COATING_MAT_32#Полиэтилен Lupolen 4552D, адгезив Lucalen G 3710E, эпоксидная краска Corro-Coat EP-F2002 HW "JOTUN"|COATING_MAT_33#Полипропилен Moplen Coat EP/60 Bianco, адгезив Basell Hifax EP 2015/60, эпоксидная краска BASF Basepox РЕ-50-7191, Basomat PT|COATING_MAT_34#PROTEGOL UR Coating 32-55H двухкомпонентный полиуретановый материал без растворителей|COATING_MAT_35#PROTEGOL UR Coating 32-55R двухкомпонентный полиуретановый материал без растворителей|COATING_MAT_36#Эпоксидная краска Sika Permacor 337/96|COATING_MAT_37#Эпоксидная краска Sika Permacor 337 VHS A, отвердитель Sika Permakor-Haerter 337 VHS B, растворитель Verduennungsmittel E+B|COATING_MAT_38#Основной компонент Teknopox, отвердитель Teknopox Hardener, растворитель Teknosolv|COATING_MAT_39#Геотекстильное полотно иглопробивное для балластировки трубопроводов Геоком Б-450 (поверхн. плотностью 450 г/кв. м)|COATING_MAT_40#Деревянные рейки|COATING_MAT_41#Праймер двухкомпонентный А+Б|COATING_MAT_42#Основа: смола АС-100, активатор: Изоцианат Б-100|COATING_MAT_43#Мат футеровочный МФ-1220|COATING_MAT_44#Мат футеровочный МФ-1420 для железобетонных утяжелителей типа УБО, УБО-М, УБК-М|COATING_MAT_45#Мягкий минеральный грунт|COATING_MAT_46#Полотнище из нетканного синтетического материала|COATING_MAT_47#Изоляционная лента Полилен-ОБ на основе термосветостабилизированного полиэтилена и бутилкаучука, изготовленная методом со-экструзии.|COATING_MAT_48#Праймер|COATING_MAT_49#Предохранительные коврики|COATING_MAT_50#Футеровочное полотенце ПФ-1-1420 (два слоя НСМ)|COATING_MAT_51#Скальный лист СЛ-1420 двухслойный|COATING_MAT_52#Скальный лист СЛП-142 усиленный полимерный |COATING_MAT_53#Скальный лист СЛП-122У полимерный усиленный|COATING_MAT_54#Термоусаживающиеся манжеты ТЕРМА-Р|COATING_MAT_55#Термоусаживающиеся манжеты ТЕРМА-Р3|COATING_MAT_56#Уплотнительный коврик из скального лист для утяжелителей УТК УКСЛ УТК-1420|COATING_MAT_57#Стеклохолст|COATING_MAT_58#Бризол|COATING_MAT_59#Полилен О|COATING_MAT_60#ЛИАМ-Л|COATING_MAT_61#НИТТО|COATING_MAT_62#Поликен|COATING_MAT_63#Алтене|COATING_MAT_64#РАМ|COATING_MAT_65#Raychem</options>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>coating_applicator_gcl</id>
+          <label>Исполнитель работ</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |COAT_APP_01#ЗАО "ИТЗ"|COAT_APP_02#ОАО "МТЗК"|COAT_APP_03#ОАО "ВТЗ"|COAT_APP_04#ОАО "ВМЗ"|COAT_APP_05#ОАО "ЧТПЗ"|COAT_APP_06#ООО "НОВА"|COAT_APP_07#ООО "Геоинформ"|COAT_APP_08#ЗАО "Лискимонтажконструкция"|COAT_APP_09#ООО "Север-Лес"|COAT_APP_10#СУМТ-7|COAT_APP_11#ООО СРСУ|COAT_APP_12#ООО ЗСНХМ|COAT_APP_13#ООО  ГК  РГЭС|COAT_APP_14#ООО СП ВИС-МОС|COAT_APP_15#СМУ-4|COAT_APP_16#ООО Сургутнефтепроводстрой|COAT_APP_17#ООО ППТР|COAT_APP_18#ООО НЕФТЕГАЗСТРОЙ|COAT_APP_19#СУМТ-3|COAT_APP_20#ТСП-2|COAT_APP_21#ООО Трубострой|COAT_APP_22#СУ-2|COAT_APP_23#ООО СМ Деталь|COAT_APP_24#ООО УЦЗП|COAT_APP_25#ЗАО Соединительные отводы трубопроводов|COAT_APP_26#ООО Нефтьмонтаж|COAT_APP_27#ООО НГСК|COAT_APP_28#ООО Нефтегаздеталь|COAT_APP_29#ОАО Трубодеталь|COAT_APP_30#ООО АПС-Север|COAT_APP_31#EUROPIPE GmbH Postfach|COAT_APP_32#Industria meccanica BASSI LUIGI, C. s.p.a.|COAT_APP_33#NIPPON Steel Corporation|COAT_APP_34#NUOVA GIUNGAS S.R.L.|COAT_APP_35#ЗАО ИХК Татгазинвест|COAT_APP_36#ЗАО Центргазтрубопроводстрой|COAT_APP_37#ЗАО БлокТрубоПровдСтрой|COAT_APP_38#ЗАО НИ и ПИ Газстройпроект|COAT_APP_39#ОАО Краснодаргазстрой|COAT_APP_40#ОАО Ленгазспецстрой|COAT_APP_41#ОАО Сварочно-монтажный трест|COAT_APP_42#ОАО Смоленсктрубопроводстрой|COAT_APP_43#ОАО Южтрубопроводстрой|COAT_APP_44#ОАО Подводтрубопроводстрой|COAT_APP_45#ООО Петербург-НефтеГазЛогистика|COAT_APP_46#ООО СК ИМОНИКА|COAT_APP_47#ООО Стройнефтегаз|COAT_APP_48#ООО Яхонт|COAT_APP_49#ООО Газпромстройинвест|COAT_APP_50#ООО Ортэкс|COAT_APP_51#ООО ТехСпецПроект|COAT_APP_52#СУПР ДОАО Спецгазавтотранс|COAT_APP_54#ООО Атом|COAT_APP_55#Оренбурггазпром|COAT_APP_56#ООО Центр-ДИС|COAT_APP_57#СУ-4 Стройгазспецстрой|COAT_APP_58#ООО Востокнефтеспецмонтаж|COAT_APP_59#АОЗТ Трубопроводстрой|COAT_APP_61#СМУ-5|COAT_APP_62#ЗАО АПМК-23|COAT_APP_63#УАВР|COAT_APP_64#СМУ-2</options>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>coating_manufacturer_gcl</id>
+          <label>Изготовитель</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |COAT_MAN_01#ЗАО "ИТЗ"|COAT_MAN_02#ОАО "МТЗК"|COAT_MAN_03#ОАО "ВТЗ"|COAT_MAN_04#ОАО "ВМЗ"|COAT_MAN_05#ОАО "ЧТПЗ"|COAT_MAN_06#ТИАЛ|COAT_MAN_07#ООО НОВАТЭК-ПОЛИМЕР|COAT_MAN_08#ЗАО "Лискимонтажконструкция"|COAT_MAN_09#БИАСКПЛЕН НК|COAT_MAN_10#RAYCHEM|COAT_MAN_11#Borelias+Basf|COAT_MAN_12#Borelias+Не определено|COAT_MAN_13#ЗАО Соединительные отводы трубопроводов|COAT_MAN_14#ЗАО Лискимонтажконструкция|COAT_MAN_15#ООО Нефтегаздеталь|COAT_MAN_16#ОАО Трубодеталь|COAT_MAN_17#ООО "СМ Деталь"|COAT_MAN_18#ТЕРМА|COAT_MAN_19#EUROPIPE GmbH Postfach|COAT_MAN_20#NIPPON Steel Corporation|COAT_MAN_21#NUOVA GIUNGAS S.R.L.|COAT_MAN_22#TIB Chemicals AG|COAT_MAN_23#Tyco International Ltd|COAT_MAN_24#Бризол|COAT_MAN_25#Константиновский завод стеклоизделий|COAT_MAN_26#ПО Трубоизоляция|COAT_MAN_27#ООО НИЦ Поиск|COAT_MAN_28#Nitto Denko Corp, Япония|COAT_MAN_29#Kendall-Polyken, США|COAT_MAN_30#Alta|COAT_MAN_31#ООО Комплексные системы изоляции|COAT_MAN_32#БИУРС</options>
+        </attribute>
+		 <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>where_coating_applied_gcl</id>
+          <label>Условия нанесения покрытия</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |WHERE_COAT_AP_01#В заводских условиях|WHERE_COAT_AP_02#В трассовых условиях до монтажа|WHERE_COAT_AP_03#В трассовых условиях после монтажа|WHERE_COAT_AP_04#Нет изоляции|WHERE_COAT_AP_05#Изоляция на трассе</options>
+        </attribute>
+		 <attribute type="STRING">
+          <id>product_name</id>
+          <label>Наименование покрытия</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DATE">
+          <id>date_applied</id>
+          <label>Дата нанесения</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>type_scl</id>
+          <label>Тип покрытия</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |COAT_TYPE_01#На основе полиэтилена|COAT_TYPE_01#На основе поливинилхлорида|COAT_TYPE_01#На основе  кремнийорганики|COAT_TYPE_01#Изоляционное покрытие|COAT_TYPE_01#На основе битума|COAT_TYPE_01#Лакокрасочный материал|COAT_TYPE_02#Консервационная|COAT_TYPE_02#Грунтовка под изоляционное покрытие|COAT_TYPE_02#Полимерная|COAT_TYPE_02#Битумно-полимерная|COAT_TYPE_03#Армирующее покрытие|COAT_TYPE_03#Холст стекловолокнистый|COAT_TYPE_04#Оберточное покрытие|COAT_TYPE_04#Ленточного типа|COAT_TYPE_04#Пленочного типа|COAT_TYPE_05#Металлическое покрытие|COAT_TYPE_05#Металл|COAT_TYPE_06#Усиленное  трехслойное полимерное: грунтовка на основе термореактивных смол; термоплавкий полимерный подслой; защитный слой на основе экструдированного полиолефина|COAT_TYPE_07#Антикоррозионное на основе лакокрасочных материалов|COAT_TYPE_08#Гладкостное на основе эпоксидной смолы|COAT_TYPE_09#Усиленное на основе термоусаживающихся материалов|COAT_TYPE_10#Усиленное на основе полиуретановых смол|COAT_TYPE_10#Усиленное на основе эпоксидных красок|COAT_TYPE_11#Усиленное стеклоэмалевое двухслойное|COAT_TYPE_12#Усиленное стеклоэмалевое однослойное|COAT_TYPE_13#Усиленное мастичное полимерное армированное|COAT_TYPE_14#Усиленное мастичное|COAT_TYPE_15#Усиленное ленточное полимерное термостойкое|COAT_TYPE_16#Усиленное ленточное полимерное с вулканизирующимся слоем (адгезивом)|COAT_TYPE_17#Усиленное ленточное полимерно-битумное|COAT_TYPE_18#Усиленное ленточное полимерное|COAT_TYPE_19#Усиленное комбинированное на основе мастики и экструдированного полиолефина|COAT_TYPE_20#Усиленное комбинированное, на основе мастики и полимерной ленты|COAT_TYPE_21#Усиленное комбинированное на основе полимерной ленты и экструдированного полиолефина|COAT_TYPE_22#Усиленное двухслойное полимерное: термоплавкий полимерный подслой; защитный слой на основе экструдированного полиолефина|COAT_TYPE_23#Защита изоляции - футеровка|COAT_TYPE_24#Защита изоляции - подушка|COAT_TYPE_25#Защита изоляции - подушка|COAT_TYPE_26#Защита изоляции - подушка и обсыпка|COAT_TYPE_27#Защита изоляции - подсыпка|COAT_TYPE_31#Нормальная / Праймер рулонный армированный материал, обертка "Рам" (нормальная)|COAT_TYPE_36#Усиленное покрытие ,тип 3</options>
+        </attribute> 
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFCC9900</colorFill>
+        <widthLine>2</widthLine>
+        <Rule>
+          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Stroke>
+              <CssParameter name="stroke">#CC9900</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </LineSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

@@ -1,0 +1,53 @@
+{
+  "name": "sgio-dekstop",
+  "version": "1.0.0",
+  "description": "Your Electron app",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "npm run build-react && electron-builder",
+    "build-react": "webpack --mode production",
+    "dev-react": "webpack serve --mode development",
+    "dev-full": "npm run dev-react & npm run electron-dev"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "antd": "^6.0.1",
+    "css-to-react-native": "^3.2.0",
+    "ol": "^10.7.0",
+    "proj4": "^2.20.2",
+    "react": "^19.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dom": "^19.2.0",
+    "react-sortablejs": "^6.1.4",
+    "spatialite": "^0.1.0",
+    "sqlite3": "^5.1.7",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "@eslint/js": "^9.39.1",
+    "babel-loader": "^10.0.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "css-loader": "^7.1.2",
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12",
+    "electron-reload": "^2.0.0-alpha.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-webpack-plugin": "^5.0.2",
+    "file-loader": "^6.2.0",
+    "globals": "^16.5.0",
+    "html-webpack-plugin": "^5.6.4",
+    "prettier": "^3.6.2",
+    "style-loader": "^4.0.0",
+    "typescript-eslint": "^8.48.0",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  }
+}

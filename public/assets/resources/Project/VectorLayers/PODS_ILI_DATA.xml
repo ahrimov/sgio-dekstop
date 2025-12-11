@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_ILI_DATA</id>
+      <label>Данные ВТД. Дефекты</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>weld_number</id>
+          <label>Номер шваНомер шва</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>absolute_odometer</id>
+          <label>Одом. дист. м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>anomaly_type_cl</id>
+          <label>Тип аномалии</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |CROS_MAT_01#Стальной трубопровод|CROS_MAT_02#Полимерный трубопровод|CROS_MAT_03#Кабель в стальной оплетке|CROS_MAT_04#Кабель в полимерной изоляции</options>
+        </attribute>
+		 <attribute type="ENUM">
+          <id>anomaly_extension_cl</id>
+          <label>Группа аномалий</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |ANOMALY_EXT_001#Коррозионный дефект|ANOMALY_EXT_002#Металлургический дефект|ANOMALY_EXT_003#Дефект геометрии трубы|ANOMALY_EXT_004#Прочие|ANOMALY_EXT_005#Стресс-коррозионный дефект|ANOMALY_EXT_006#Дефект сварного шва|ANOMALY_EXT_007#Технологические дефекты|ANOMALY_EXT_008#Недопустимые конструктивные элементы|ANOMALY_EXT_009#Механические повреждения</options>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>length</id>
+          <label>Длина мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>width</id>
+          <label>Ширин. мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>average_depth</id>
+          <label>Глуб. %</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>bpr_pig</id>
+          <label>КБД</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>rpr_calculated</id>
+          <label>Безоп. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>bpr_calculated</id>
+          <label>Факт. коэф. зап. проч.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>bpr_variance</id>
+          <label>Разруш. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>rpr_variance</id>
+          <label>Норм. коэф. зап. проч.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>orientation_deg</id>
+          <label>Ориен. час</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>nominal_wall_thickness</id>
+          <label>Ном. толщ. стенки мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>feature_description</id>
+          <label>Идентификация</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFC00000</colorFill>
+        <colorBorder>#FF000000</colorBorder>
+        <sizePoint>5</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#FFC00000</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#000000</CssParameter>
+                  <CssParameter name="stroke-width">2.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>circle</WellKnownName>
+              </Mark>
+              <Size>5.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

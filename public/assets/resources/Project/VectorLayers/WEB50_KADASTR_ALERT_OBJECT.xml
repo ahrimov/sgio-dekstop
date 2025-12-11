@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>WEB50_KADASTR_ALERT_OBJECT</id>
+      <label>МДР. Нарушения</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOLYGON</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>obj_type</id>
+          <label>Тип объекта нарушения</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>owner_name</id>
+          <label>Данные владельца</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
+          <id>address</id>
+          <label>Адрес объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="DOUBLE">
+          <id>square</id>
+          <label>Площ. м.кв.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFD700D7</colorFill>
+        <colorBorder>#FFFFFFFF</colorBorder>
+        <widthBorder>1</widthBorder>
+        <Rule>
+          <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Fill>
+              <CssParameter name="fill">#D700D7</CssParameter>
+              <CssParameter name="fill-opacity">1.0</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#FFFFFF</CssParameter>
+              <CssParameter name="stroke-width">2.00</CssParameter>
+              <CssParameter name="stroke-opacity">1.0</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

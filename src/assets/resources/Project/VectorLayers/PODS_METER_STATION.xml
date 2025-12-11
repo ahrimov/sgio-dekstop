@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_METER_STATION</id>
+      <label>ГИС</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |METER_ST_TYPE_01#Турбинные расходомеры|METER_ST_TYPE_02#Ротационные расходомеры|METER_ST_TYPE_03#Вихревые расходомеры|METER_ST_TYPE_04#Ультразвуковые расходомеры|METER_ST_TYPE_05#Сужающие устройства|METER_ST_TYPE_06#Осредняющие напорные трубки</options>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>class_cl</id>
+          <label>Класс станции</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            </options>
+        </attribute>
+		  <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="STRING">
+          <id>station_number</id>
+          <label>Номер станции</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>status_cl</id>
+          <label>Состояние</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |METER_ST_STAT_01#Исправна|METER_ST_STAT_02#Неисправна|METER_ST_STAT_03#Не прошла проверку</options>
+        </attribute>
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF0070C0</colorFill>
+        <colorBorder>#FF0070C0</colorBorder>
+        <sizePoint>7</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#0070C0</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#0070C0</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>square</WellKnownName>
+              </Mark>
+              <Size>7.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

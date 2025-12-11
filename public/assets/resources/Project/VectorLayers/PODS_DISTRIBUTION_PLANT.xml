@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_DISTRIBUTION_PLANT</id>
+      <label>ГРС</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+        <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+          <options>UNKNOWN#Неизвестно                                                                                                                                                            |DP_TYPE_01#Газорегуляторный пункт шкафной|DP_TYPE_02#Газорегуляторная установка|DP_TYPE_03#Пункт газорегуляторный блочный|DP_TYPE_04#Стационарный газорегуляторный пункт|DP_TYPE_05#Газораспределительная станция</options>
+        </attribute>
+		<attribute type="ENUM">
+          <id>nominal_diameter_inlet_gcl</id>
+          <label>Вход. Dn мм</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>0</default>
+          <options>0|15|16|17|18|19|20|21|22|23|24|25|26|27|28|30|32|33|34|35|36|38|40|42|45|48|50|51|53|54|57|60|63|65|67|68|70|73|75|76|80|83|88|89|90|95|100|102|104|108|110|114|125|127|130|133|140|145|146|148|150|152|159|160|165|168|171|175|178|180|194|200|219|225|228|245|250|273|275|315|320|325|350|356|375|377|406|426|445|478|500|530|534|630|720|820|920|1020|1120|1220|1420|1620|1720</options>
+        </attribute>
+		<attribute type="ENUM">
+          <id>nominal_diameter_outlet_gcl</id>
+          <label>Выход. Dn мм</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>0</default>
+          <options>0|15|16|17|18|19|20|21|22|23|24|25|26|27|28|30|32|33|34|35|36|38|40|42|45|48|50|51|53|54|57|60|63|65|67|68|70|73|75|76|80|83|88|89|90|95|100|102|104|108|110|114|125|127|130|133|140|145|146|148|150|152|159|160|165|168|171|175|178|180|194|200|219|225|228|245|250|273|275|315|320|325|350|356|375|377|406|426|445|478|500|530|534|630|720|820|920|1020|1120|1220|1420|1620|1720</options>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>nominal_pressure_rating_inlet</id>
+          <label>Вход. раб. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>nominal_pressure_rating_outlet</id>
+          <label>Выход. раб. P, МПа</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="ENUM">
+          <id>manufacturer_cl</id>
+          <label>Изготовитель</label>
+          <required>0</required>
+          <editable>0</editable>
+          <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+          <options>UNKNOWN#Неизвестно                                                                                                                                                            </options>
+        </attribute>
+		<attribute type="STRING">
+          <id>model</id>
+          <label>Модель</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="STRING">
+          <id>serial_number</id>
+          <label>Серийный номер</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DATE">
+          <id>date_installed</id>
+          <label>Дата установки</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>     
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FF0070C0</colorFill>
+        <sizePoint>7</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#0070C0</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#0070C0</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>circle</WellKnownName>
+              </Mark>
+              <Size>7.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>

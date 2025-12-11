@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<template version="2">
+  <layers>
+    <layerDb enabled="true">
+      <id>PODS_FOREIGN_LINE_CROSSING</id>
+      <label>Переходы. Пересечения со стор. коммуникациями</label>
+      <encoding>UTF-8</encoding>
+      <crs>3857</crs>
+      <geometry>MULTIPOINT</geometry>
+      <attributes>
+         <attribute type="DOUBLE">
+          <id>id</id>
+          <label>Идентификатор</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>type_cl</id>
+          <label>Тип объекта</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |FL_CROSS_TYPE_01#Газопровод|FL_CROSS_TYPE_02#Нефтепровод|FL_CROSS_TYPE_03#Водоснабжение|FL_CROSS_TYPE_04#Силовой электрический кабель|FL_CROSS_TYPE_05#Тепловые сети|FL_CROSS_TYPE_06#Канализация|FL_CROSS_TYPE_07#Отопление, вентиляция и кондиционирование|FL_CROSS_TYPE_08#Продуктопровод|FL_CROSS_TYPE_09#Линия электропередач|FL_CROSS_TYPE_10#Кабель связи|FL_CROSS_TYPE_11#ЛЭП 10 КВ|FL_CROSS_TYPE_12#ВЛ АЗ|FL_CROSS_TYPE_13#Кабель произв. отдела связи</options>
+        </attribute>
+		  <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>foreign_diameter</id>
+          <label>Dm, пересек. труб-да мм</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>material_cl</id>
+          <label>Материал</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |CROS_MAT_01#Стальной трубопровод|CROS_MAT_02#Полимерный трубопровод|CROS_MAT_03#Кабель в стальной оплетке|CROS_MAT_04#Кабель в полимерной изоляции</options>
+        </attribute>
+		  <attribute type="ENUM">
+          <id>owner_cl</id>
+          <label>Собственник</label>
+          <required>0</required>
+          <editable>0</editable>
+		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
+		  <options>UNKNOWN#Неизвестно                                                                                                                                                            </options>
+        </attribute>
+		  <attribute type="DOUBLE">
+          <id>width</id>
+          <label>Ширина м</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>  
+        <attribute type="STRING">
+          <id>lg_attach</id>
+          <label>lg_attach</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+      </attributes>
+      <attrPrimary>test</attrPrimary>
+      <attrSecondary></attrSecondary>
+      <labelsOnMap />
+      <geometryStyle>
+        <colorFill>#FFFFFFFF</colorFill>
+        <colorBorder>#FF000000</colorBorder>
+        <sizePoint>3</sizePoint>
+        <Rule>
+          <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
+            <Graphic>
+              <Mark>
+                <Fill>
+                  <CssParameter name="fill">#FFFFFF</CssParameter>
+                  <CssParameter name="fill-opacity">1.0</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#000000</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
+                  <CssParameter name="stroke-opacity">1.0</CssParameter>
+                </Stroke>
+                <WellKnownName>triangle</WellKnownName>
+              </Mark>
+              <Size>3.00</Size>
+              <Opacity>1.00</Opacity>
+              <Rotation>0.00</Rotation>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+      </geometryStyle>
+    </layerDb>
+  </layers>
+</template>
