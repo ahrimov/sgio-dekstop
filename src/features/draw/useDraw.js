@@ -2,11 +2,8 @@ import React, { useRef } from 'react';
 import { Button, Flex, Typography } from 'antd';
 import { useState } from 'react';
 import styled from 'styled-components';
-
 import editGeometry from '../../assets/resources/images/assets/editGeometry.png';
-import { useDrawGeometry } from './useDrawGeometry';
-
-import checkBlank from "../../../public/assets/resources/images/assets/check_black.png";
+import { useDrawGeometry } from './useDrawGeometry.js';
 import { CloseOutlined, CheckOutlined, ReloadOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;

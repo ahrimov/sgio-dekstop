@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { Draw, Modify } from 'ol/interaction';
+import { Draw, Modify } from 'ol/interaction.js';
 import Collection from 'ol/Collection.js';
 
 export function useDrawGeometry({ map }) {

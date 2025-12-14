@@ -7,7 +7,7 @@ export async function openFile(filePath, post_processing){
         const fileName = filePath.split('/').pop() || filePath.split('\\').pop();
         post_processing(data, fileName);
     } catch (err) {
-        console.log("Error while open file:", filePath);
+        console.log("Error while open file:", filePath, " error:", err);
         Modal.info({
             title: 'Внимание',
             content: (

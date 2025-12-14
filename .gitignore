@@ -2,3 +2,4 @@ node_modules/
 dist/
 sgio-data/
 www/
+.DS_Store

@@ -1,4 +1,4 @@
-import { Vector } from "ol/source";
+import { Vector } from "ol/source.js";
 import WKT from 'ol/format/WKT.js';
 import Feature from 'ol/Feature.js';
 

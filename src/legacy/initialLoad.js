@@ -1,9 +1,9 @@
-import { configParser } from "./XMLParser";
-import { openFile, checkIfFileExists, saveFile } from "./FileManage";
+import { configParser } from "./XMLParser.js";
+import { openFile, checkIfFileExists, saveFile } from "./FileManage.js";
 import { app_device_directory, root_directory, pathToImageStorage, pathToKMLStorage } from './initial.js';
 import { versionFileName, appVersion } from "./consts.js";
 import  proj4 from 'proj4';
-import { register } from 'ol/proj/proj4';
+import { register } from 'ol/proj/proj4.js';
 
 export let updateAppMode = false;
 
@@ -107,7 +107,6 @@ async function continueInitial() {
         try {
             if (typeof electronAPI === 'undefined' || !electronAPI.getResourcePath) {
                 console.log('electronAPI not available, creating default config');
-                await createDefaultConfig();
                 return;
             }
 
@@ -122,15 +121,13 @@ async function continueInitial() {
                 await copyProjectResources(projectSourcePath, projectTargetPath);
                 console.log('Project setup completed');
                 
-                const configPath = `${projectTargetPath}/config.xml`;
+                const configPath = `${projectTargetPath}config.xml`;
                 openFile(configPath, configParser);
             } else {
                 console.log('Project not found, creating default config');
-                await createDefaultConfig();
             }
         } catch (error) {
             console.error('Error setting up project:', error);
-            await createDefaultConfig();
         }
     }
 

@@ -1,5 +1,5 @@
-import { requestToDB } from "../../legacy/DBManage";
-import { writeFeatureInKML } from "./writeFeatureInKml";
+import { requestToDB } from "../../legacy/DBManage.js";
+import { writeFeatureInKML } from "./writeFeatureInKml.js";
 
 export function addNewFeature(layer, feature) {
     if (!feature.get('id')) {

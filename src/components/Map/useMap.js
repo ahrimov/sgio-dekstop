@@ -1,13 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
 
-import Map from 'ol/Map';
-import View from 'ol/View';
-import { defaults as defaultInteractions } from 'ol/interaction';
-import { ScaleLine } from 'ol/control';
-import { Select } from 'ol/interaction';
-import { Style, Stroke, Fill, Circle } from 'ol/style';
-import { layers } from '../../legacy/globals';
-import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser';
+import Map from 'ol/Map.js';
+import View from 'ol/View.js';
+import { defaults as defaultInteractions } from 'ol/interaction.js';
+import { ScaleLine } from 'ol/control.js';
+import { Select } from 'ol/interaction.js';
+import { Style, Stroke, Fill, Circle } from 'ol/style.js';
+import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
+import { layers } from '../../legacy/globals.js';
 
 export const useMap = (containerRef) => {
     const mapInstance = useRef(null);

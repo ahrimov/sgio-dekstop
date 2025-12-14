@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useMap } from './useMap';
+import { useMap } from './useMap.js';
 import 'ol/ol.css';
 import './styles.css';
 import crosshairImage from '../../assets/resources/crosshair.png';
-import ZoomControls from '../Controls/ZoomControls';
-import LayerSelector from '../LayerSelector/LayerSelector';
-import { layers } from '../../legacy/globals';
-import { useDraw } from '../../features/draw/useDraw';
-import AttributeForm from '../AttributeForm/AttributeForm';
+import ZoomControls from '../Controls/ZoomControls.jsx';
+import LayerSelector from '../LayerSelector/LayerSelector.jsx';
+import { layers } from '../../legacy/globals.js';
+import { useDraw } from '../../features/draw/useDraw.js';
+import AttributeForm from '../AttributeForm/AttributeForm.jsx';
 
 const MapComponent = () => {
   const mapContainerRef = useRef(null);

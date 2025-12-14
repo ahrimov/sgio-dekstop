@@ -11,9 +11,9 @@ import {
   DatePicker,
 } from 'antd';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import FloatingWindow from '../FloatingWindow/FloatingWindow';
+import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import "./style.css";
-import { addNewFeature } from '../../features/saveFeature/addNewFeature';
+import { addNewFeature } from '../../features/saveFeature/addNewFeature.js';
 
 const { Title } = Typography;
 const { Option } = Select;
