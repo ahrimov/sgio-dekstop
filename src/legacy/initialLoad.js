@@ -1,5 +1,5 @@
 import { configParser } from "./XMLParser.js";
-import { openFile, checkIfFileExists, saveFile } from "./FileManage.js";
+import { openFile, checkIfFileExists, saveFile, writeFileText } from "./FileManage.js";
 import { app_device_directory, root_directory, pathToImageStorage, pathToKMLStorage } from './initial.js';
 import { versionFileName, appVersion } from "./consts.js";
 import  proj4 from 'proj4';
@@ -11,7 +11,7 @@ export function initial() {
     setTimeout(() => {
         const pathToVersionFile = `${app_device_directory}/${versionFileName}`;
         checkIfFileExists(pathToVersionFile, (fileEntry) => {
-            openFile(pathToVersionFile, function(data, fileName) {
+            openFile(pathToVersionFile, function(data) {
                 if (data === appVersion) {
                     updateAppMode = false;
                     continueInitial();
@@ -31,6 +31,7 @@ export function initial() {
 
 async function continueInitial() {
     const pathToConfig = `${root_directory}/config.xml`;
+    console.log(pathToConfig);
     await createMediaDirectory();
     checkIfFileExists(pathToConfig, fileExist, warning);
 
@@ -60,10 +61,10 @@ async function continueInitial() {
         }
     }
 
-    function fileExist(file){
+    function fileExist() {
         console.log('Config file exist!');
         if (updateAppMode){
-            updateConfigFile(file, () => {
+            updateConfigFile(() => {
                 openFile(pathToConfig, configParser);
             });
         } else {
@@ -71,49 +72,27 @@ async function continueInitial() {
         }
     }
 
-    async function updateConfigFile(file, callback){
-        const path_resources_config = './resources/Project/config.xml';
-        checkIfFileExists(path_resources_config, async function(resourceConfig) {
+    async function updateConfigFile(callback) {
+        const resourcePath = await electronAPI.getResourcePath();
+        const path_resources_config = `${resourcePath}/Project/config.xml`;
+        checkIfFileExists(path_resources_config, async function() {
             try {
                 await electronAPI.copyFile(path_resources_config, pathToConfig);
                 console.log('Config file updated successfully');
                 callback();
             } catch (err) {
                 console.error('Error copying config:', err);
-                if (typeof ons !== 'undefined' && ons.notification) {
-                    ons.notification.alert({
-                        title: "Внимание", 
-                        message: `Критическая ошибка. Не удалось обновить конфигурационный файл.`
-                    });
-                } else {
-                    alert('Критическая ошибка. Не удалось обновить конфигурационный файл.');
-                }
                 callback();
             }
         }, function(){
-            if (typeof ons !== 'undefined' && ons.notification) {
-                ons.notification.alert({
-                    title: "Внимание", 
-                    message: `Не удалось обновить конфигурационный файл.`
-                });
-            } else {
-                alert('Не удалось обновить конфигурационный файл.');
-            }
             callback();
         });
     }
     
     async function warning(){ 
         try {
-            if (typeof electronAPI === 'undefined' || !electronAPI.getResourcePath) {
-                console.log('electronAPI not available, creating default config');
-                return;
-            }
-
-            const sourcePath = await electronAPI.getSourcePath();
-            
-            let projectSourcePath = `${sourcePath}/resources/Project`;
-            
+            const resourcePath = await electronAPI.getResourcePath();
+            const projectSourcePath = `${resourcePath}/Project`;
             const projectTargetPath = root_directory;
             
             if (projectSourcePath) {
@@ -159,9 +138,9 @@ export function completeLoad() {
         
         setTimeout(() => {
             try {
-                loadLayersVisibility();
-                initLayerOrder();
-                loadMapPosition();
+                // loadLayersVisibility();
+                // initLayerOrder();
+                // loadMapPosition();
                 
                 if (window.legacyApp) {
                     window.legacyApp.onInitialized?.();

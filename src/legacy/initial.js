@@ -24,7 +24,7 @@ async function initializePaths() {
                 await electronAPI.mkdir(`${appDataPath}/Project`);
                 console.log('App directories created successfully');
             } catch (mkdirError) {
-                console.log('App directories already exist');
+                console.log('App directories already exist:', mkdirError);
             }
         } else {
             console.log('electronAPI not available, using fallback paths');
@@ -76,15 +76,8 @@ window.fn.load = function(page) {
   }
 };
 
-if (typeof transformUIToOrientation === 'function') {
-    window.addEventListener("orientationchange", transformUIToOrientation);
-}
-
 window.legacyApp = {
     initialize: onElectronReady,
     initializePaths: initializePaths,
-    getLayers: () => layers,
-    getFeatures: () => features,
-    getMap: () => map,
     completeLoad: completeLoad
 };
