@@ -4,8 +4,11 @@ import globals from 'globals';
 import { FlatCompat } from '@eslint/eslintrc';
 import prettierRecommended from 'eslint-config-prettier';
 import pluginImport from "eslint-plugin-import";
+import pluginReactHooks from 'eslint-plugin-react-hooks';
 
 const compat = new FlatCompat();
+
+const reactRecommendedCompat = compat.extends('plugin:react/recommended');
 
 const baseConfig = js.configs.recommended;
 
@@ -32,12 +35,12 @@ const reactConfig = {
     ecmaVersion: 2022,
     globals: {
       ...globals.browser,
+      electronAPI: 'readonly',
     },
   },
   plugins: {
     react: pluginReact,
   },
-  ...pluginReact.configs.recommended,
   rules: {
     'react/react-in-jsx-scope': 'off',
     indent: [ "error", "tab" ],
@@ -64,11 +67,22 @@ const importRules = {
   }
 };
 
+const reactHooksConfig = {
+  plugins: {
+    'react-hooks': pluginReactHooks,
+  },
+  rules: {
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
+  },
+};
+
 export default [
-  ...compat.extends('plugin:react-hooks/recommended'),
+  reactHooksConfig,
   baseConfig,
   nodeConfig,
   reactConfig,
+  ...reactRecommendedCompat,
   importRules,
   prettierConfig,
 ];

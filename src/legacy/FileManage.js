@@ -94,12 +94,12 @@ export function showAllFilesAtDir(pathToDir, success){
             console.log('Unable to read directory');
             return;
         }
-        const fileEntries = files.map(file => ({ name: file, path: path.join(pathToDir, file) }));
+        const fileEntries = files.map(file => ({ name: file, path: `${pathToDir}/file` }));
         success(fileEntries);
     });
 }
 
-export async function openFileFromProject(relativePath, callback, firstCheckApplicationDirectory = true){
+export async function openFileFromProject(relativePath, callback){
     try {
         const data = await electronAPI.readFile(relativePath);
         const fileName = relativePath.split('/').pop() || relativePath.split('\\').pop();
@@ -113,6 +113,7 @@ export async function openFileFromProject(relativePath, callback, firstCheckAppl
                 <p className="notification-alert">
                     Ошибка при открытии файла: {relativePath}
                 </p>
+                <p>Error {err}</p>
                 </div>
             ),
             okText: 'OK'
@@ -141,13 +142,12 @@ export function tileLoadFunctionDefault(imageTile, src){
     imageTile.getImage().src = src;
 }
 
-export function rosreetrUrlFunction(tileCoord, number, projection){
-    const maxY = 2**tileCoord[0];
-    const tile = [tileCoord[1], tileCoord[2], tileCoord[0]];
-    const bbox = tileToBBOX(tile);
-    const bboxM = ol.proj.transformExtent(bbox, 'EPSG:4326', projection);
-    return rosreestr_url + '&bbox=' + bboxM.join(','); 
-}
+// export function rosreetrUrlFunction(tileCoord, number, projection){
+//     const tile = [tileCoord[1], tileCoord[2], tileCoord[0]];
+//     const bbox = tileToBBOX(tile);
+//     const bboxM = ol.proj.transformExtent(bbox, 'EPSG:4326', projection);
+//     return rosreestr_url + '&bbox=' + bboxM.join(','); 
+// }
 
 export async function globalReadlFile(fileUri, callback) {
     try {

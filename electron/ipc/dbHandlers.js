@@ -1,11 +1,7 @@
 import { ipcMain } from 'electron';
-import { fileURLToPath } from 'url';
 import fs from 'fs';
 import path from 'path';
 import spatialite from 'spatialite';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const databases = new Map();
 
@@ -81,16 +77,16 @@ export function closeAllDatabases() {
 
 const getSpatialitePath = () => {
     const platform = process.platform;
-    const resourcePath = path.join(__dirname, '../../src/assets/spatialite');
+    const spatialiteModPath = path.join(process.resourcesPath, 'spatialite');
 
     let spatialiteFile = null;
 
     if (platform === 'darwin') {
-        spatialiteFile = path.join(resourcePath, 'darwin', 'mod_spatialite.dylib');
+        spatialiteFile = path.join(spatialiteModPath, 'darwin', 'mod_spatialite.dylib');
     } else if (platform === 'win32') {
-        spatialiteFile = path.join(resourcePath, 'win32', 'mod_spatialite.dll');
+        spatialiteFile = path.join(spatialiteModPath, 'win32', 'mod_spatialite.dll');
     } else if (platform === 'linux') {
-        spatialiteFile = path.join(resourcePath, 'linux', 'mod_spatialite.so');
+        spatialiteFile = path.join(spatialiteModPath, 'linux', 'mod_spatialite.so');
     }
 
     return spatialiteFile;

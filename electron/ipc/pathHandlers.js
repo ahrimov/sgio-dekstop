@@ -46,7 +46,7 @@ export function getAppDataPath() {
 
 export function getSourcePath() {
 	if (app.isPackaged) {
-		return getResourcesPath();
+		return process.resourcesPath;
 	} else {
 		return path.join(__dirname, '../../src/assets');
 	}
