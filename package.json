@@ -8,8 +8,8 @@
 		"start": "electron .",
 		"dev": "electron . --dev",
 		"build": "npm run build-react && electron-builder",
-		"build-react": "webpack --mode production",
-		"dev-react": "webpack serve --mode development",
+		"build-react": "node esbuild.config.js",
+		"dev-react": "node esbuild.config.js --dev",
 		"dev-full": "npm run dev-react & npm run electron-dev"
 	},
 	"dependencies": {
@@ -38,6 +38,9 @@
 		"electron": "^39.0.0",
 		"electron-builder": "^26.0.12",
 		"electron-reload": "^2.0.0-alpha.1",
+		"esbuild": "^0.27.1",
+		"esbuild-plugin-copy": "^2.1.1",
+		"esbuild-plugin-css-modules": "^0.3.0",
 		"eslint": "^9.39.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-import": "^2.32.0",
