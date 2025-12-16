@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import spatialite from 'spatialite';
+import { getSourcePath } from './pathHandlers.js';
 
 const databases = new Map();
 
@@ -77,7 +78,8 @@ export function closeAllDatabases() {
 
 const getSpatialitePath = () => {
     const platform = process.platform;
-    const spatialiteModPath = path.join(process.resourcesPath, 'spatialite');
+	const sourcePath = getSourcePath();
+    const spatialiteModPath = path.join(sourcePath, 'spatialite');
 
     let spatialiteFile = null;
 

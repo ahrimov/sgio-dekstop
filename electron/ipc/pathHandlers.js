@@ -15,7 +15,7 @@ export function registerPathIpc() {
 	});
 
 	ipcMain.handle('get-resource-path', () => {
-		return path.join(getAppDataPath(), 'resources');
+		return getResourcesPath();
 	});
 
 	ipcMain.handle('get-source-path', () => {
