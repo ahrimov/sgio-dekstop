@@ -1,6 +1,6 @@
 import Map from 'ol/Map.js';
 
-export const layers = [];
+export let layers = [];
 export const features = [];
 
 export let dbMetaData;

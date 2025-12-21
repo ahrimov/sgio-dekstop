@@ -77,6 +77,13 @@ const reactHooksConfig = {
   },
 };
 
+const overrideReactPropTypes = {
+	files: ['src/**/*.js', 'src/**/*.jsx', 'src/**/*.ts', 'src/**/*.tsx'],
+	rules: {
+		'react/prop-types': 'off',
+	},
+};
+
 export default [
   reactHooksConfig,
   baseConfig,
@@ -85,4 +92,5 @@ export default [
   ...reactRecommendedCompat,
   importRules,
   prettierConfig,
+  overrideReactPropTypes,
 ];

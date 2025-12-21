@@ -10,112 +10,122 @@ import { layers } from './legacy/globals.js';
 import { baseRasterLayers } from './legacy/XMLParser.js';
 import { Button } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
-import "./App.css";
+import './App.css';
+import { FeatureTable } from './components/FeatureTable/FeatureTable.jsx';
 
 const AppContent = () => {
-  const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
-  const [showLayersPanel, setShowLayersPanel] = useState(true);
+	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
+	const [showLayersPanel, setShowLayersPanel] = useState(true);
+	const [activeLayer, setActiveLayer] = useState(null);
 
-  useEffect(() => {
-    setProgressCallbacks({
-      onStart: startLoading,
-      onProgress: updateProgress,
-      onFinish: finishLoading
-    });
+	useEffect(() => {
+		setProgressCallbacks({
+			onStart: startLoading,
+			onProgress: updateProgress,
+			onFinish: finishLoading,
+		});
 
-    setDBProgressCallbacks(
-      updateProgress,
-      () => {}
-    );
+		setDBProgressCallbacks(updateProgress, () => {});
 
-    window.showAlert = (title, message) => {
-      Modal.error({
-        title: title,
-        content: message,
-        okText: 'OK',
-        width: 400
-      });
-    };
+		window.showAlert = (title, message) => {
+			Modal.error({
+				title: title,
+				content: message,
+				okText: 'OK',
+				width: 400,
+			});
+		};
 
-    return () => {
-      window.showAlert = null;
-    };
-  }, [startLoading, updateProgress, finishLoading]);
+		return () => {
+			window.showAlert = null;
+		};
+	}, [startLoading, updateProgress, finishLoading]);
 
-  useEffect(() => {
-    if (!layers.length) return;
-    async function loadLayers() {
-      try {
-        startLoading(layers.length, 'Загрузка данных из базы данных');
-        await loadAllLayers(layers);
-        finishLoading();
-      } catch (error) {
-        console.error('Ошибка загрузки слоев:', error);
-        finishLoading();
-      }
-    }
-    loadLayers();
-  }, [layers.length]);
+	useEffect(() => {
+		if (!layers.length) return;
+		async function loadLayers() {
+			try {
+				startLoading(layers.length, 'Загрузка данных из базы данных');
+				await loadAllLayers(layers);
+				finishLoading();
+			} catch (error) {
+				console.error('Ошибка загрузки слоев:', error);
+				finishLoading();
+			}
+		}
+		loadLayers();
+	}, [layers.length]);
 
-  const toggleLayersPanel = () => {
-    setShowLayersPanel(!showLayersPanel);
-  };
+	const toggleLayersPanel = () => {
+		setShowLayersPanel(!showLayersPanel);
+	};
 
-  const closeLayersPanel = () => {
-    setShowLayersPanel(false);
-  };
+	const closeLayersPanel = () => {
+		setShowLayersPanel(false);
+	};
 
-  return (
-    <div className="app">
-      <div className="app-controls">
-      {!showLayersPanel && (
-        <div className="app-controls">
-          <Button 
-            type="primary" 
-            icon={<MenuOutlined />}
-            onClick={toggleLayersPanel}
-            className="layers-toggle-btn"
-          >
-            Слои
-          </Button>
-        </div>
-      )}
-      </div>
-      {loadingState.total && !loadingState.visible && (
-        <div className="app-container">
-          {showLayersPanel && (
-            <div className="layers-panel-wrapper">
-              <LayersPanel 
-                baseRasterLayers={baseRasterLayers}
-                layers={layers}
-                onClose={closeLayersPanel}
-              />
-            </div>
-          )}
-          
-          <div className={`map-content ${showLayersPanel ? 'with-panel' : ''}`}>
-            <MapComponent />
-          </div>
-        </div>
-      )}
-      
-      <LoadingScreen
-        visible={loadingState.visible}
-        current={loadingState.current}
-        total={loadingState.total}
-        currentFile={loadingState.currentFile}
-        message={loadingState.message}
-      />
-    </div>
-  );
+	const handleFeaturesClick = layer => {
+		setActiveLayer(layer);
+	};
+
+	return (
+		<div className="app">
+			<div className="app-controls">
+				{!showLayersPanel && (
+					<div className="app-controls">
+						<Button
+							type="primary"
+							icon={<MenuOutlined />}
+							onClick={toggleLayersPanel}
+							className="layers-toggle-btn"
+						>
+							Слои
+						</Button>
+					</div>
+				)}
+			</div>
+			{loadingState.total && !loadingState.visible && (
+				<div className="app-container">
+					<div className="top-row">
+						{showLayersPanel && (
+							<div className="layers-panel-wrapper">
+								<LayersPanel
+									baseRasterLayers={baseRasterLayers}
+									layers={layers}
+									onClose={closeLayersPanel}
+									handleFeaturesClick={handleFeaturesClick}
+								/>
+							</div>
+						)}
+						<div className={`map-content ${showLayersPanel ? 'with-panel' : ''}`}>
+							<MapComponent />
+						</div>
+					</div>
+					{activeLayer && (
+						<div className="table-wrapper">
+							<FeatureTable layer={activeLayer} />
+						</div>
+					)}
+				</div>
+			)}
+
+			<LoadingScreen
+				visible={loadingState.visible}
+				current={loadingState.current}
+				total={loadingState.total}
+				currentFile={loadingState.currentFile}
+				message={loadingState.message}
+			/>
+		</div>
+	);
 };
 
 export const App = () => {
-  return (
-    <LoadingProvider>
-      <AppContent />
-    </LoadingProvider>
-  );
+	return (
+		<LoadingProvider>
+			<AppContent />
+		</LoadingProvider>
+	);
 };
 
 export default App;

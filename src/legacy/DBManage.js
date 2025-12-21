@@ -58,8 +58,8 @@ export async function initialDB(sourceDirName, dbName, name) {
                 await electronAPI.copyFile(sourceDBPath, targetDBPath);
                 console.log('Database copied from resources');
             }
-        } catch (copyError) {
-            console.log('No source database found, will create new one');
+        } catch (err) {
+            console.log('No source database found, will create new one: ' + err);
         }
         
         db = await openDB(dbName, name,  `${appDataPath}/database/`);
@@ -94,8 +94,8 @@ export function requestToDB(query, callback, notification = 'Неизвестн�
             callback(compatibleResult);
         })
         .catch(error => {
-            console.error('Database transaction error:', error);
             console.log('Query:', query);
+            throw Error('Database transaction error:', error);
         });
 }
 
@@ -145,6 +145,7 @@ export function getDataLayerFromBD(layer) {
                         feature = format.readFeature(wkt.replace(/nan/g, "0"));
                     }
                     feature.id = res.rows.item(i).id;
+                    feature.set('id', res.rows.item(i).id);
                     feature.layerID = layer.id;
                     feature.type = res.rows.item(i).type;
                     feature.label = res.rows.item(i).description;

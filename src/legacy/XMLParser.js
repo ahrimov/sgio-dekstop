@@ -66,12 +66,12 @@ export function configParser(data) {
 		}
 	};
 
-	for (let layerName of layersName) {
-		openFile(root_directory + pathToLayers + layerName, data => {
-			layerParser(data, layerName);
-			updateLayerProgress(layerName);
-		});
-	}
+	// for (let layerName of layersName) {
+	// 	openFile(root_directory + pathToLayers + layerName, data => {
+	// 		layerParser(data, layerName);
+	// 		updateLayerProgress(layerName);
+	// 	});
+	// }
 
 	const nameDB = dom.getElementsByTagName('NameDB').item(0).textContent;
 	const filenameDB = dom.getElementsByTagName('FilenameDB').item(0).textContent;
@@ -120,6 +120,18 @@ export function configParser(data) {
 		window.numberNodesOnMap = dom.getElementsByTagName('NumberNodesOnMap').item(0).textContent;
 	}
 
+	async function processLayersSerially() {
+		for (const layerName of layersName) {
+			await new Promise(resolve => {
+				openFile(root_directory + pathToLayers + layerName, data => {
+					layerParser(data, layerName).then(resolve);
+					updateLayerProgress(layerName);
+				});
+			});
+		}
+	}
+	processLayersSerially();
+
 	async function layerParser(data, title) {
 		if (typeof layerParser.counter == 'undefined') {
 			layerParser.counter = 0;
@@ -130,10 +142,7 @@ export function configParser(data) {
 		if (dom.getElementsByTagName('parsererror').item(0)) {
 			const errorMessage = dom.querySelector('parsererror div').textContent;
 			console.log(errorMessage);
-			ons.notification.alert({
-				title: 'Внимание',
-				messageHTML: `<p class="notification-alert">Некорректный xml-файл: ${title}. Ошибка: ${errorMessage} </p>`,
-			});
+			alert('Некорректный xml-файл: ' + title + '. Ошибка: ' + errorMessage);
 			layerParser.counter++;
 			return;
 		}

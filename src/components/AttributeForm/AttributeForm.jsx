@@ -56,7 +56,7 @@ const AttributeForm = ({ feature, layer, onSave, onCancel }) => {
       addNewFeature(layer, feature);
       onSave(feature);
     } catch (error) {
-      console.error('Validation failed:', error);
+      alert(error);
     } finally {
       setLoading(false);
     }

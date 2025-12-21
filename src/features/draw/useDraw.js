@@ -96,7 +96,10 @@ export function useDraw({ map, setCurrentFeature, buttonPosition = { y: 0, inver
     };
 }
 
-const DrawButton = styled(Button)`
+const DrawButton = styled(Button).withConfig({
+  shouldForwardProp: (prop) =>
+    prop !== 'active' && prop !== 'top' && prop !== 'right',
+})`
   background-color: ${props => props.active ? '#e68a00' : '#4d94c2'} !important;
   border: 1px solid #005d98 !important;
   box-shadow: 0 0 0 #4d94c2 !important;
