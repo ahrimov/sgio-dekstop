@@ -20,23 +20,39 @@ export function registerDbIpc() {
 					reject(err);
 				} else {
 					console.log('Connected to Spatialite database:', dbPath);
-
-					const spatialitePath = getSpatialitePath();
-					db.loadExtension(spatialitePath, err => {
-						console.log('Loading spatialite extension:', spatialitePath);
-						if (err) {
-							console.error(' Error loading spatialite extension:', err);
-							reject(err);
-						} else {
-							console.log('Spatialite extension loaded successfully');
-							databases.set(dbPath, db);
-							resolve({
-								filename: path.basename(dbPath),
-								path: dbPath,
-								connected: true,
-							});
-						}
-					});
+					try {
+						db.spatialite(err => {
+							if (err) {
+								console.error(' Error loading spatialite extension:', err);
+								reject(err);
+							} else {
+								console.log('Spatialite extension loaded successfully');
+								databases.set(dbPath, db);
+								resolve({
+									filename: path.basename(dbPath),
+									path: dbPath,
+									connected: true,
+								});
+							}
+						});
+					} catch (e) {
+						const spatialitePath = getSpatialitePath();
+						db.loadExtension(spatialitePath, err => {
+							console.log('Loading spatialite extension:', spatialitePath);
+							if (err) {
+								console.error(' Error loading spatialite extension:', err);
+								reject(err);
+							} else {
+								console.log('Spatialite extension loaded successfully');
+								databases.set(dbPath, db);
+								resolve({
+									filename: path.basename(dbPath),
+									path: dbPath,
+									connected: true,
+								});
+							}
+						});
+					}
 				}
 			});
 		});
@@ -71,25 +87,25 @@ export function registerDbIpc() {
 }
 
 export function closeAllDatabases() {
-	databases.forEach((db) => {
+	databases.forEach(db => {
 		db.close();
 	});
 }
 
 const getSpatialitePath = () => {
-    const platform = process.platform;
+	const platform = process.platform;
 	const sourcePath = getSourcePath();
-    const spatialiteModPath = path.join(sourcePath, 'spatialite');
+	const spatialiteModPath = path.join(sourcePath, 'spatialite');
 
-    let spatialiteFile = null;
+	let spatialiteFile = null;
 
-    if (platform === 'darwin') {
-        spatialiteFile = path.join(spatialiteModPath, 'darwin', 'mod_spatialite.dylib');
-    } else if (platform === 'win32') {
-        spatialiteFile = path.join(spatialiteModPath, 'win32', 'mod_spatialite.dll');
-    } else if (platform === 'linux') {
-        spatialiteFile = path.join(spatialiteModPath, 'linux', 'mod_spatialite.so');
-    }
+	if (platform === 'darwin') {
+		spatialiteFile = path.join(spatialiteModPath, 'darwin', 'mod_spatialite.dylib');
+	} else if (platform === 'win32') {
+		spatialiteFile = path.join(spatialiteModPath, 'win32', 'mod_spatialite.dll');
+	} else if (platform === 'linux') {
+		spatialiteFile = path.join(spatialiteModPath, 'linux', 'mod_spatialite.so');
+	}
 
-    return spatialiteFile;
+	return spatialiteFile;
 };
