@@ -1,10 +1,9 @@
 import { requestToDB } from "../../legacy/DBManage";
+import { buildFilterClauses } from "./utils";
 
 export function getFeaturesTotal(layer, filters, callback) {
     const tableName = layer.id;
-    const filterClauses = Object.entries(filters).map(([key, value]) =>
-        value ? `${key} LIKE '%${value.replace(/'/g, "''")}%'` : null
-    ).filter(Boolean);
+    const filterClauses = buildFilterClauses(layer.atribs, filters);
     const where = filterClauses.length ? `WHERE ${filterClauses.join(' AND ')}` : '';
     const sql = `SELECT count(*) as cnt FROM ${tableName} ${where}`;
     requestToDB(sql, (result) => {

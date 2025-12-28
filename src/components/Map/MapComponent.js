@@ -2,84 +2,107 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useMap } from './useMap.js';
 import 'ol/ol.css';
 import './styles.css';
+import { useUnit } from 'effector-react';
 import crosshairImage from '../../assets/resources/crosshair.png';
 import ZoomControls from '../Controls/ZoomControls.jsx';
 import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import AttributeForm from '../AttributeForm/AttributeForm.jsx';
+import { $showOnMapFeature } from '../../shared/map-events.js';
 
 const MapComponent = () => {
-  const mapContainerRef = useRef(null);
-  const { isMapReady, updateMapSize, map } = useMap(mapContainerRef);
-  const [currentFeature, setCurrentFeature] = useState(null);
+	const mapContainerRef = useRef(null);
+	const { isMapReady, updateMapSize, map } = useMap(mapContainerRef);
+	const [currentFeature, setCurrentFeature] = useState(null);
 
-  useEffect(() => {
-    if (isMapReady) {
-      const timer = setTimeout(() => {
-        updateMapSize();
-      }, 200);
+	useEffect(() => {
+		if (isMapReady) {
+			const timer = setTimeout(() => {
+				updateMapSize();
+			}, 200);
 
-      return () => clearTimeout(timer);
-    }
-  }, [isMapReady, updateMapSize]);
+			return () => clearTimeout(timer);
+		}
+	}, [isMapReady, updateMapSize]);
 
-  const {
-    drawButton,
-    controlButtons,
-    activeButton: activeEditingButton,
-    cancel: cancelEditing,
-    handleLayerSelector,
-    layer,
-    rejectCurrentFeature,
-  } = useDraw({ map, setCurrentFeature, buttonPosition: {y: 20, inverseX: 100 } });
+	const showOnMapFeature = useUnit($showOnMapFeature);
 
-  const handleCloseLayerSelector = () => {
-    cancelEditing();
-  };
+	useEffect(() => {
+		if (showOnMapFeature && map) {
+			const { layer, featureId } = showOnMapFeature;
+			const source = layer.getSource();
+			const foundFeature = source.getFeatures().find(feature => feature.get('id') === featureId);
+			if (!foundFeature) return;
 
-  const handleSaveFeature = () => {
-    setCurrentFeature(null);
-  };
-  
-  const handleCancelCurrentFeature = () => {
-    rejectCurrentFeature();
-    setCurrentFeature(null);
-    cancelEditing();
-  };
+			const extent = foundFeature.getGeometry().getExtent();
+			map.getView().fit(extent, { duration: 200, maxZoom: 18, padding: [40, 40, 40, 40] });
 
-  return (
-    <div className="map-container-wrapper">
-      <div className="map-wrapper">
-        <div ref={mapContainerRef} className="map-container" />
+			if (
+				mapContainerRef?.current &&
+				typeof mapContainerRef.current.scrollIntoView === 'function'
+			) {
+				mapContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+		}
+	}, [showOnMapFeature, map]);
 
-        <img className="crosshair" src={crosshairImage} alt="crosshair" />
+	const {
+		drawButton,
+		controlButtons,
+		activeButton: activeEditingButton,
+		cancel: cancelEditing,
+		handleLayerSelector,
+		layer,
+		rejectCurrentFeature,
+	} = useDraw({ map, setCurrentFeature, buttonPosition: { y: 20, inverseX: 100 } });
 
-        <ZoomControls map={map} />
+	const handleCloseLayerSelector = () => {
+		cancelEditing();
+	};
 
-        {drawButton}
+	const handleSaveFeature = () => {
+		setCurrentFeature(null);
+	};
 
-        {controlButtons}
+	const handleCancelCurrentFeature = () => {
+		rejectCurrentFeature();
+		setCurrentFeature(null);
+		cancelEditing();
+	};
 
-        {activeEditingButton && (
-          <LayerSelector
-            handleLayerSelector={handleLayerSelector}
-            onClose={handleCloseLayerSelector}
-            vectorLayers={layers}
-          />
-        )}
-        {currentFeature && (
-            <AttributeForm
-              feature={currentFeature}
-              layer={layer}
-              onSave={handleSaveFeature}
-              onCancel={handleCancelCurrentFeature}
-            />
-        )}
-        {!isMapReady ? <div className="map-loading">Загрузка карты...</div> : null}
-      </div>
-    </div>
-  );
+	return (
+		<div className="map-container-wrapper">
+			<div className="map-wrapper">
+				<div ref={mapContainerRef} className="map-container" />
+
+				<img className="crosshair" src={crosshairImage} alt="crosshair" />
+
+				<ZoomControls map={map} />
+
+				{drawButton}
+
+				{controlButtons}
+
+				{activeEditingButton && (
+					<LayerSelector
+						handleLayerSelector={handleLayerSelector}
+						onClose={handleCloseLayerSelector}
+						vectorLayers={layers}
+					/>
+				)}
+				{currentFeature && (
+					<AttributeForm
+						feature={currentFeature}
+						layer={layer}
+						onSave={handleSaveFeature}
+						onCancel={handleCancelCurrentFeature}
+					/>
+				)}
+				{!isMapReady ? <div className="map-loading">Загрузка карты...</div> : null}
+			</div>
+		</div>
+	);
 };
 
 export default MapComponent;

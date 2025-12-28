@@ -33,14 +33,14 @@ body {
 	flex-direction: column;
 	gap: 5px;
 	align-items: stretch;
-  overflow-y: auto;
+	overflow-y: auto;
 }
 
 .top-row {
 	display: flex;
 	gap: 5px;
 	flex: 1;
-  min-height: 80vh;
+	min-height: 80vh;
 }
 
 .map-wrapper {
@@ -56,15 +56,14 @@ body {
 }
 
 .layers-panel-wrapper {
-  width: 450px;
-  overflow-y: auto;
+	width: 450px;
+	overflow-y: hidden;
 }
 
 .table-wrapper {
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 32px 0 rgba(0,0,0,.12);
-  width: 100%;
+	background: #fff;
+	border-radius: 14px;
+	box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.12);
 }
 
 .map-wrapper.with-panel {

@@ -8,6 +8,7 @@ import { icons } from '../../icons';
 
 import arrowDownIcon from '../../assets/resources/images/assets/icon-down-sort.png';
 import arrowRightIcon from '../../assets/resources/images/assets/arrowRight.png';
+import { LayerMoreActionsPopup } from './LayerMoreActionsPopup';
 
 const ItemTypes = {
 	RASTER_LAYER: 'rasterLayer',
@@ -39,7 +40,7 @@ const VectorLayersList = ({
 	handleFeaturesClick,
 }) => {
 	return (
-		<LayersList>
+		<LayersList style={{ overflow: 'auto', height: '100%' }}>
 			{layers.map((layer, index) => (
 				<DraggableVectorLayer
 					key={layer.id}
@@ -144,20 +145,12 @@ const DraggableVectorLayer = ({
 					{layer.label}
 				</label>
 				<div className="layer-actions">
-					<MoreButton onClick={() => onClickMore(id)}>
-						<MoreOutlined />
-					</MoreButton>
-					{currentElementWithActions === id && (
-						<MoreActions>
-							<ActionButton onClick={() => handleFeaturesClick(layer)} title="Свойства">
-								<SettingOutlined />
-							</ActionButton>
-							<ActionButton title="Экспорт">📤</ActionButton>
-							<ActionButton title="Удалить" danger>
-								🗑️
-							</ActionButton>
-						</MoreActions>
-					)}
+					<LayerMoreActionsPopup
+						layer={layer}
+						onProps={handleFeaturesClick}
+						onExport={() => {}}
+						onDelete={() => {}}
+					/>
 				</div>
 			</VectorLayerElementContainer>
 		</div>
@@ -310,7 +303,7 @@ const VectorLayerElementContainer = styled.div.withConfig({
 	shouldForwardProp: prop => prop !== 'isActive' && prop !== 'showTitle' && prop !== 'isDragging',
 })`
 	display: grid;
-	grid-template-columns: 30px 1fr 60px;
+	grid-template-columns: 30px 1fr 10px;
 	align-content: center;
 	line-height: 24px;
 	font-size: 12px;
@@ -318,6 +311,7 @@ const VectorLayerElementContainer = styled.div.withConfig({
 	border-top: 1px solid #ccc;
 	align-items: center;
 	padding: 2px;
+	padding-right: 25px;
 
 	${props => {
 		if (!props.isActive) {
@@ -349,7 +343,10 @@ const LayersPanelContainer = styled.div`
 	border: 1px solid #4c93c2;
 	border-radius: 8px;
 	overflow: hidden;
+	height: 100%;
 	color: rgb(0, 94, 154);
+	display: flex;
+	flex-direction: column;
 `;
 
 const CloseButton = styled.button`
@@ -381,12 +378,15 @@ const Header = styled.div`
 	border-top-right-radius: 7px;
 	color: white;
 	position: relative;
+	flex: 0 0 32px;
 `;
 
 const PanelContent = styled.div`
 	overflow: auto;
-	height: calc(100% - 32px);
 	padding: 0;
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
 `;
 
 const LayersHeader = styled.div`
@@ -399,6 +399,7 @@ const LayersHeader = styled.div`
 	align-items: center;
 	align-content: center;
 	cursor: pointer;
+	flex: 0 0 32px;
 `;
 
 const MapLayersToggle = styled.div.withConfig({
@@ -487,7 +488,9 @@ const MoreActions = styled.div`
 	}
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.div.withConfig({
+	shouldForwardProp: prop => prop !== 'danger',
+})`
 	width: 16px;
 	height: 16px;
 	display: inline-block;

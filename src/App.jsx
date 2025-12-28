@@ -3,7 +3,7 @@ import { LoadingProvider, useLoading } from './components/LoadingScreen/LoadingC
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen.jsx';
 import { setProgressCallbacks } from './legacy/XMLParser.js';
 import { setDBProgressCallbacks, loadAllLayers } from './legacy/DBManage.js';
-import { Modal } from 'antd';
+import { ConfigProvider, Modal } from 'antd';
 import MapComponent from './components/Map/MapComponent.js';
 import LayersPanel from './components/LayersPanel/LayersPanel.jsx';
 import { layers } from './legacy/globals.js';
@@ -12,11 +12,16 @@ import { Button } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import './App.css';
 import { FeatureTable } from './components/FeatureTable/FeatureTable.jsx';
+import ruRU from 'antd/es/locale/ru_RU';
+import { $infoFeature, showInfo } from './shared/featured-info-event.js';
+import { useUnit } from 'effector-react';
+import InfoAttributeView from './components/InfoAttributeView/InfoAttributeView.js';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
 	const [showLayersPanel, setShowLayersPanel] = useState(true);
 	const [activeLayer, setActiveLayer] = useState(null);
+	const infoFeature = useUnit($infoFeature);
 
 	useEffect(() => {
 		setProgressCallbacks({
@@ -69,54 +74,63 @@ const AppContent = () => {
 	};
 
 	return (
-		<div className="app">
-			<div className="app-controls">
-				{!showLayersPanel && (
-					<div className="app-controls">
-						<Button
-							type="primary"
-							icon={<MenuOutlined />}
-							onClick={toggleLayersPanel}
-							className="layers-toggle-btn"
-						>
-							Слои
-						</Button>
-					</div>
-				)}
-			</div>
-			{loadingState.total && !loadingState.visible && (
-				<div className="app-container">
-					<div className="top-row">
-						{showLayersPanel && (
-							<div className="layers-panel-wrapper">
-								<LayersPanel
-									baseRasterLayers={baseRasterLayers}
-									layers={layers}
-									onClose={closeLayersPanel}
-									handleFeaturesClick={handleFeaturesClick}
-								/>
-							</div>
-						)}
-						<div className={`map-content ${showLayersPanel ? 'with-panel' : ''}`}>
-							<MapComponent />
-						</div>
-					</div>
-					{activeLayer && (
-						<div className="table-wrapper">
-							<FeatureTable layer={activeLayer} />
+		<ConfigProvider locale={ruRU}>
+			<div className="app">
+				<div className="app-controls">
+					{!showLayersPanel && (
+						<div className="app-controls">
+							<Button
+								type="primary"
+								icon={<MenuOutlined />}
+								onClick={toggleLayersPanel}
+								className="layers-toggle-btn"
+							>
+								Слои
+							</Button>
 						</div>
 					)}
 				</div>
-			)}
+				{loadingState.total && !loadingState.visible && (
+					<div className="app-container">
+						<div className="top-row">
+							{showLayersPanel && (
+								<div className="layers-panel-wrapper">
+									<LayersPanel
+										baseRasterLayers={baseRasterLayers}
+										layers={layers}
+										onClose={closeLayersPanel}
+										handleFeaturesClick={handleFeaturesClick}
+									/>
+								</div>
+							)}
+							<div className={`map-content ${showLayersPanel ? 'with-panel' : ''}`}>
+								<MapComponent />
+							</div>
+						</div>
+						{activeLayer && (
+							<div className="table-wrapper">
+								<FeatureTable layer={activeLayer} />
+							</div>
+						)}
+					</div>
+				)}
+				{infoFeature && (
+					<InfoAttributeView
+						feature={infoFeature.feature}
+						layer={infoFeature.layer}
+						onClose={() => showInfo(null)}
+					/>
+				)}
 
-			<LoadingScreen
-				visible={loadingState.visible}
-				current={loadingState.current}
-				total={loadingState.total}
-				currentFile={loadingState.currentFile}
-				message={loadingState.message}
-			/>
-		</div>
+				<LoadingScreen
+					visible={loadingState.visible}
+					current={loadingState.current}
+					total={loadingState.total}
+					currentFile={loadingState.currentFile}
+					message={loadingState.message}
+				/>
+			</div>
+		</ConfigProvider>
 	);
 };
 
