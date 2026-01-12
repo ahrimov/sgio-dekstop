@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Card, Typography, Descriptions, Button } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { Card, Typography, Descriptions, Button, Flex } from 'antd';
+import { CloseOutlined, DeleteOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 
 const { Text } = Typography;
@@ -83,21 +83,29 @@ const InfoAttributeView = ({ feature, layer, onClose }) => {
 				}}
 				style={{ width: 350, maxHeight: '80vh', overflow: 'auto', cursor: 'default' }}
 			>
-				<Descriptions
-					column={1}
-					size="small"
-					bordered
-					labelStyle={{ width: '140px', background: '#fafcff', fontWeight: 500, color: '#1166a2' }}
-					contentStyle={{ background: '#fff' }}
-				>
-					{visibleAtribs.map(atrib => (
-						<Descriptions.Item key={atrib.name} label={atrib.label || atrib.name}>
-							<Text>
-								{formatValue(atrib, feature.get ? feature.get(atrib.name) : feature[atrib.name])}
-							</Text>
-						</Descriptions.Item>
-					))}
-				</Descriptions>
+				<Flex vertical>
+					<Flex></Flex>
+					<Descriptions
+						column={1}
+						size="small"
+						bordered
+						labelStyle={{
+							width: '140px',
+							background: '#fafcff',
+							fontWeight: 500,
+							color: '#1166a2',
+						}}
+						contentStyle={{ background: '#fff' }}
+					>
+						{visibleAtribs.map(atrib => (
+							<Descriptions.Item key={atrib.name} label={atrib.label || atrib.name}>
+								<Text>
+									{formatValue(atrib, feature.get ? feature.get(atrib.name) : feature[atrib.name])}
+								</Text>
+							</Descriptions.Item>
+						))}
+					</Descriptions>
+				</Flex>
 			</Card>
 		</FloatingWindow>
 	);

@@ -16,12 +16,15 @@ import ruRU from 'antd/es/locale/ru_RU';
 import { $infoFeature, showInfo } from './shared/featured-info-event.js';
 import { useUnit } from 'effector-react';
 import InfoAttributeView from './components/InfoAttributeView/InfoAttributeView.js';
+import { $featureSelectorData, openFeatureSelector } from './shared/openFeatureSelectronEvent.js';
+import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.jsx';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
 	const [showLayersPanel, setShowLayersPanel] = useState(true);
 	const [activeLayer, setActiveLayer] = useState(null);
 	const infoFeature = useUnit($infoFeature);
+	const featureSelectorData = useUnit($featureSelectorData);
 
 	useEffect(() => {
 		setProgressCallbacks({
@@ -119,6 +122,13 @@ const AppContent = () => {
 						feature={infoFeature.feature}
 						layer={infoFeature.layer}
 						onClose={() => showInfo(null)}
+					/>
+				)}
+
+				{featureSelectorData?.length && (
+					<FeaturesSelector
+						featuresByLayer={featureSelectorData}
+						onClose={() => openFeatureSelector(null)}
 					/>
 				)}
 

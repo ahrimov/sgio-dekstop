@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import styled from 'styled-components';
 
