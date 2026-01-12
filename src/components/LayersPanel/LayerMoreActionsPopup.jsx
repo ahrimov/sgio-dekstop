@@ -7,7 +7,7 @@ export function LayerMoreActionsPopup({ layer, onProps, onExport, onDelete }) {
 	const content = (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
 			<Button type="text" size="small" onClick={() => onProps?.(layer)}>
-				Свойства
+				Объекты
 			</Button>
 			<Button type="text" size="small" onClick={() => onExport?.(layer)}>
 				Экспорт

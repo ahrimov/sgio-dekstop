@@ -1,23 +1,31 @@
-import React, { useState, useRef } from 'react';
-import { MoreOutlined, MenuOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { MenuOutlined, CloseOutlined } from '@ant-design/icons';
 import './LayersPanel.css';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import styled from 'styled-components';
 import { icons } from '../../icons';
+import { LayerMoreActionsPopup } from './LayerMoreActionsPopup.jsx';
+import { Collapse, Typography } from 'antd';
+import { ReactSortable } from 'react-sortablejs';
 
-import arrowDownIcon from '../../assets/resources/images/assets/icon-down-sort.png';
-import arrowRightIcon from '../../assets/resources/images/assets/arrowRight.png';
-import { LayerMoreActionsPopup } from './LayerMoreActionsPopup';
-
-const ItemTypes = {
-	RASTER_LAYER: 'rasterLayer',
-	VECTOR_LAYER: 'vectorLayer',
-};
+const { Text } = Typography;
 
 const RasterLayersList = ({ layers, moveLayer, toggleVisibility }) => {
+	const [visibleVectorLayers, setVisibleVectorLayers] = useState(layers);
+
 	return (
-		<LayersList>
+		<ReactSortable
+			list={visibleVectorLayers}
+			setList={setVisibleVectorLayers}
+			style={{ overflow: 'auto', padding: 0 }}
+			tag="div"
+			animation={200}
+			handle=".layer-drag-handle"
+			onEnd={evt => {
+				if (evt.oldIndex !== evt.newIndex) {
+					moveLayer(evt.oldIndex, evt.newIndex);
+				}
+			}}
+		>
 			{layers.map((layer, index) => (
 				<DraggableRasterLayer
 					key={layer.get('id')}
@@ -27,7 +35,7 @@ const RasterLayersList = ({ layers, moveLayer, toggleVisibility }) => {
 					toggleVisibility={toggleVisibility}
 				/>
 			))}
-		</LayersList>
+		</ReactSortable>
 	);
 };
 
@@ -39,129 +47,102 @@ const VectorLayersList = ({
 	currentElementWithActions,
 	handleFeaturesClick,
 }) => {
+	const [visibleVectorLayers, setVisibleVectorLayers] = useState(layers);
+
 	return (
-		<LayersList style={{ overflow: 'auto', height: '100%' }}>
-			{layers.map((layer, index) => (
-				<DraggableVectorLayer
-					key={layer.id}
-					layer={layer}
-					index={index}
-					id={layer.id}
-					moveLayer={moveLayer}
-					toggleVisibility={toggleVisibility}
-					onClickMore={onClickMore}
-					currentElementWithActions={currentElementWithActions}
-					handleFeaturesClick={handleFeaturesClick}
-				/>
-			))}
-		</LayersList>
+		<ReactSortable
+			list={visibleVectorLayers}
+			setList={setVisibleVectorLayers}
+			style={{ overflow: 'auto', height: '100%', padding: 0 }}
+			tag="div"
+			animation={200}
+			handle=".layer-drag-handle"
+			onEnd={evt => {
+				if (evt.oldIndex !== evt.newIndex) {
+					moveLayer(evt.oldIndex, evt.newIndex);
+				}
+			}}
+		>
+			{layers.map((layer, idx) => {
+				return (
+					<DraggableVectorLayer
+						key={layer.id}
+						layer={layer}
+						index={idx}
+						id={layer.id}
+						moveLayer={moveLayer}
+						toggleVisibility={toggleVisibility}
+						onClickMore={onClickMore}
+						currentElementWithActions={currentElementWithActions}
+						handleFeaturesClick={handleFeaturesClick}
+					/>
+				);
+			})}
+		</ReactSortable>
 	);
 };
 
-const DraggableRasterLayer = ({ layer, index, moveLayer, toggleVisibility }) => {
-	const [{ isDragging }, drag] = useDrag({
-		type: ItemTypes.RASTER_LAYER,
-		item: { index, id: layer.get('id') },
-		collect: monitor => ({
-			isDragging: monitor.isDragging(),
-		}),
-	});
-
-	const [, drop] = useDrop({
-		accept: ItemTypes.RASTER_LAYER,
-		hover: draggedItem => {
-			if (draggedItem.index !== index) {
-				moveLayer(draggedItem.index, index);
-				draggedItem.index = index;
-			}
-		},
-	});
-
-	const ref = useRef(null);
-	drag(drop(ref));
-
+const DraggableRasterLayer = ({ layer, toggleVisibility }) => {
 	return (
-		<div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
-			<RasterLayerElementContainer
-				active={layer.getVisible()}
-				showTitle={true}
-				isDragging={isDragging}
+		<RasterLayerElementContainer active={layer.getVisible()} showTitle={true}>
+			<DragHandle className="layer-drag-handle">
+				<MenuOutlined />
+			</DragHandle>
+			<IconWrapper onClick={() => toggleVisibility(layer.get('id'), true)}>
+				<img src={icons[layer.get('icon')]} width={24} height={24} alt={layer.get('descr')} />
+			</IconWrapper>
+			<Text
+				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px' }}
+				onClick={() => toggleVisibility(layer.get('id'), true)}
+				title={layer.get('descr')}
+				ellipsis
 			>
-				<DragHandle>
-					<MenuOutlined />
-				</DragHandle>
-				<IconWrapper onClick={() => toggleVisibility(layer.get('id'), true)}>
-					<img src={icons[layer.get('icon')]} width={24} height={24} alt={layer.get('descr')} />
-				</IconWrapper>
-				<label onClick={() => toggleVisibility(layer.get('id'), true)} title={layer.get('descr')}>
-					{layer.get('descr')}
-				</label>
-			</RasterLayerElementContainer>
-		</div>
+				{layer.get('descr')}
+			</Text>
+		</RasterLayerElementContainer>
 	);
 };
 
 const DraggableVectorLayer = ({
 	layer,
-	index,
-	moveLayer,
 	toggleVisibility,
-	onClickMore,
 	currentElementWithActions,
 	id,
 	handleFeaturesClick,
 }) => {
-	const [{ isDragging }, drag] = useDrag({
-		type: ItemTypes.VECTOR_LAYER,
-		item: { index, id: layer.id },
-		collect: monitor => ({
-			isDragging: monitor.isDragging(),
-		}),
-	});
-
-	const [, drop] = useDrop({
-		accept: ItemTypes.VECTOR_LAYER,
-		hover: draggedItem => {
-			if (draggedItem.index !== index) {
-				moveLayer(draggedItem.index, index);
-				draggedItem.index = index;
-			}
-		},
-	});
-
 	return (
-		<div ref={node => drag(drop(node))} style={{ opacity: isDragging ? 0.5 : 1 }}>
-			<VectorLayerElementContainer
-				isActive={true}
-				selected={layer.getVisible()}
-				showTitle={true}
-				isDragging={isDragging}
-				className={currentElementWithActions === id ? 'show-actions' : ''}
+		<VectorLayerElementContainer
+			isActive={true}
+			selected={layer.getVisible()}
+			showTitle={true}
+			className={currentElementWithActions === id ? 'show-actions' : ''}
+		>
+			<DragHandle className="layer-drag-handle">
+				<MenuOutlined />
+			</DragHandle>
+			<Text
+				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px' }}
+				onClick={() => toggleVisibility(layer.id, false)}
+				title={layer.label}
+				ellipsis
 			>
-				<DragHandle>
-					<MenuOutlined />
-				</DragHandle>
-				<label onClick={() => toggleVisibility(layer.id, false)} title={layer.label}>
-					{layer.label}
-				</label>
-				<div className="layer-actions">
-					<LayerMoreActionsPopup
-						layer={layer}
-						onProps={handleFeaturesClick}
-						onExport={() => {}}
-						onDelete={() => {}}
-					/>
-				</div>
-			</VectorLayerElementContainer>
-		</div>
+				{layer.label}
+			</Text>
+			<div className="layer-actions">
+				<LayerMoreActionsPopup
+					layer={layer}
+					onProps={handleFeaturesClick}
+					onExport={() => {}}
+					onDelete={() => {}}
+				/>
+			</div>
+		</VectorLayerElementContainer>
 	);
 };
 
 const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, onClose }) => {
 	const [rasterLayers, setRasterLayers] = useState(baseRasterLayers);
 	const [vectorLayers, setVectorLayers] = useState(layers);
-	const [isRasterExpand, setRasterExpand] = useState(true);
-	const [isVectorExpand, setVectorExpand] = useState(false);
 	const [currentElementWithActions, setCurrentElementWithActions] = useState(-1);
 
 	const toggleLayerVisibility = (layerId, isRaster = false) => {
@@ -222,49 +203,75 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, 
 		});
 	};
 
+	const rasterCollapseItems = [
+		{
+			key: '1',
+			label: 'Растровые слои',
+			children: (
+				<RasterLayersList
+					layers={rasterLayers}
+					moveLayer={moveRasterLayer}
+					toggleVisibility={toggleLayerVisibility}
+				/>
+			),
+			styles: { body: rasterSectionBodyStyle, title: rasterSectionHeaderStyle },
+		},
+		{
+			key: '2',
+			label: 'Векторные слои',
+			children: (
+				<VectorLayersList
+					layers={vectorLayers}
+					moveLayer={moveVectorLayer}
+					toggleVisibility={toggleLayerVisibility}
+					onClickMore={handleClickOnMore}
+					currentElementWithActions={currentElementWithActions}
+					handleFeaturesClick={handleFeaturesClick}
+				/>
+			),
+			styles: { body: vectorSectionBodyStyle, title: vectorSectionHeaderStyle },
+		},
+	];
+
 	return (
-		<DndProvider backend={HTML5Backend}>
-			<LayersPanelContainer>
-				<Header>
-					<span>Слои</span>
-					<CloseButton onClick={onClose}>
-						<CloseOutlined />
-					</CloseButton>
-				</Header>
+		<LayersPanelContainer>
+			<Header>
+				<span>Слои</span>
+				<CloseButton onClick={onClose}>
+					<CloseOutlined />
+				</CloseButton>
+			</Header>
 
-				<PanelContent>
-					<LayersHeader onClick={() => setRasterExpand(!isRasterExpand)}>
-						<MapLayersToggle closed={!isRasterExpand} />
-						<label className="map-layers-toggle-label">Растровые слои</label>
-					</LayersHeader>
-
-					{isRasterExpand && (
-						<RasterLayersList
-							layers={rasterLayers}
-							moveLayer={moveRasterLayer}
-							toggleVisibility={toggleLayerVisibility}
-						/>
-					)}
-
-					<LayersHeader onClick={() => setVectorExpand(!isVectorExpand)}>
-						<MapLayersToggle closed={!isVectorExpand} />
-						<label className="map-layers-toggle-label">Векторные слои</label>
-					</LayersHeader>
-
-					{isVectorExpand && (
-						<VectorLayersList
-							layers={vectorLayers}
-							moveLayer={moveVectorLayer}
-							toggleVisibility={toggleLayerVisibility}
-							onClickMore={handleClickOnMore}
-							currentElementWithActions={currentElementWithActions}
-							handleFeaturesClick={handleFeaturesClick}
-						/>
-					)}
-				</PanelContent>
-			</LayersPanelContainer>
-		</DndProvider>
+			<PanelContent>
+				<Collapse
+					style={{
+						background: 'white',
+						borderBottom: '1px solid #f7f7fa',
+						borderRadius: 0,
+					}}
+					styles={{ body: { padding: 0 }, title: { color: 'rgb(0, 94, 154);' } }}
+					items={rasterCollapseItems}
+				/>
+			</PanelContent>
+		</LayersPanelContainer>
 	);
+};
+
+const rasterSectionBodyStyle = {
+	padding: 0,
+};
+
+const rasterSectionHeaderStyle = {
+	background: '#ffffff',
+	color: 'rgb(0, 94, 154);',
+};
+
+const vectorSectionBodyStyle = {
+	padding: 0,
+};
+
+const vectorSectionHeaderStyle = {
+	color: 'rgb(0, 94, 154);',
 };
 
 export default LayersPanel;
@@ -389,120 +396,10 @@ const PanelContent = styled.div`
 	flex-direction: column;
 `;
 
-const LayersHeader = styled.div`
-	padding: 2px;
-	display: flex;
-	flex-direction: row;
-	gap: 10px;
-	border-top: 1px solid #4c93c2;
-	height: 32px;
-	align-items: center;
-	align-content: center;
-	cursor: pointer;
-	flex: 0 0 32px;
-`;
-
-const MapLayersToggle = styled.div.withConfig({
-	shouldForwardProp: prop => prop !== 'closed',
-})`
-	display: inline-block;
-	position: relative;
-	left: 5px;
-	outline: 0;
-	top: 1px;
-	cursor: pointer;
-	background: ${props =>
-		props.closed
-			? `url(${arrowRightIcon}) no-repeat center`
-			: `url(${arrowDownIcon}) no-repeat center`};
-	background-size: contain;
-	width: 15px;
-	height: 15px;
-	bottom: 5px;
-`;
-
-const LayersList = styled.div`
-	padding: 0;
-`;
-
 const IconWrapper = styled.div`
 	cursor: pointer;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: 32px;
-`;
-
-const MoreButton = styled.button`
-	width: 18px;
-	height: 18px;
-	opacity: 0.6;
-	cursor: pointer;
-	border: none;
-	background: none;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	&:hover {
-		opacity: 1;
-	}
-`;
-
-const MoreActions = styled.div`
-	width: 44px;
-	height: 43px;
-	overflow: hidden;
-	background-color: rgb(255, 255, 255);
-	border: 1px solid rgba(0, 0, 0, 0.15);
-	border-radius: 5px;
-	position: absolute;
-	right: 20px;
-	transform: translate(15px, -3px);
-	box-shadow: rgba(0, 0, 0, 0.176) 0 6px 12px;
-	z-index: 1;
-	display: grid;
-	grid-template-columns: 50% 50%;
-	grid-template-rows: 50% 50%;
-
-	&:after {
-		content: '';
-		border-bottom: 6px solid #ccc;
-		border-right: 6px solid transparent;
-		border-left: 6px solid transparent;
-		position: absolute;
-		top: -6px;
-		right: 4px;
-		z-index: 9;
-	}
-
-	&:before {
-		content: '';
-		border-bottom: 5px solid #fff;
-		border-right: 5px solid transparent;
-		border-left: 5px solid transparent;
-		position: absolute;
-		top: -5px;
-		right: 5px;
-		z-index: 10;
-	}
-`;
-
-const ActionButton = styled.div.withConfig({
-	shouldForwardProp: prop => prop !== 'danger',
-})`
-	width: 16px;
-	height: 16px;
-	display: inline-block;
-	border: 1px solid rgb(204, 204, 204);
-	border-radius: 16px;
-	margin: 2px;
-	cursor: pointer;
-	background: none;
-
-	&:hover {
-		border-color: #ffab25;
-	}
-
-	${props => !props.active && 'opacity: 0.5'}
 `;

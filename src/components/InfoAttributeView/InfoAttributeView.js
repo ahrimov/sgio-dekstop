@@ -3,7 +3,7 @@ import { Card, Typography, Descriptions, Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 function formatValue(atrib, value) {
 	if (atrib.type === 'ENUM' && atrib.options) {

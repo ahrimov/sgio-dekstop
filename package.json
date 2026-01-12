@@ -25,6 +25,7 @@
 		"react-dnd-html5-backend": "^16.0.1",
 		"react-dom": "^19.2.0",
 		"react-sortablejs": "^6.1.4",
+		"sortablejs": "^1.15.6",
 		"spatialite": "^0.1.0",
 		"sqlite3": "^5.1.7",
 		"styled-components": "^6.1.19"
