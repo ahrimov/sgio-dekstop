@@ -32,7 +32,8 @@ const MapComponent = () => {
 		if (showOnMapFeature && map) {
 			const { layer, featureId } = showOnMapFeature;
 			const source = layer.getSource();
-			const foundFeature = source.getFeatures().find(feature => feature.get('id') === featureId);
+			const features = source.getFeatures();
+			const foundFeature = features.find(feature => feature.get('id') === featureId);
 			if (!foundFeature) return;
 
 			const extent = foundFeature.getGeometry().getExtent();

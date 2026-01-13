@@ -7,61 +7,84 @@ import { getSourcePath } from './pathHandlers.js';
 const databases = new Map();
 
 export function registerDbIpc() {
-	ipcMain.handle('db-open', async (event, dbPath) => {
-		return new Promise((resolve, reject) => {
-			const dir = path.dirname(dbPath);
-			if (!fs.existsSync(dir)) {
-				fs.mkdirSync(dir, { recursive: true });
-			}
+ipcMain.handle('db-open', async (event, dbPath) => {
+        return new Promise((resolve, reject) => {
+            const dir = path.dirname(dbPath);
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
 
-			const db = new spatialite.Database(dbPath, err => {
-				if (err) {
-					console.error('Error opening database:', err);
-					reject(err);
-				} else {
-					console.log('Connected to Spatialite database:', dbPath);
-					try {
-						db.spatialite(err => {
-							if (err) {
-								console.error(' Error loading spatialite extension:', err);
-								reject(err);
-							} else {
-								console.log('Spatialite extension loaded successfully');
-								databases.set(dbPath, db);
-								resolve({
-									filename: path.basename(dbPath),
-									path: dbPath,
-									connected: true,
-								});
-							}
-						});
-					} catch (e) {
-						const spatialitePath = getSpatialitePath();
-						db.loadExtension(spatialitePath, err => {
-							console.log('Loading spatialite extension:', spatialitePath);
-							if (err) {
-								console.error(' Error loading spatialite extension:', err);
-								reject(err);
-							} else {
-								console.log('Spatialite extension loaded successfully');
-								databases.set(dbPath, db);
-								resolve({
-									filename: path.basename(dbPath),
-									path: dbPath,
-									connected: true,
-								});
-							}
-						});
-					}
-				}
-			});
-		});
-	});
+            const db = new spatialite.Database(dbPath, err => {
+                if (err) {
+                    console.error('Error opening database:', err);
+                    reject(err);
+                    return;
+                }
+
+                console.log('Connected to Spatialite database:', dbPath);
+                
+                const tryLoadWithPath = () => {
+                    const spatialitePath = getSpatialitePath();
+                    console.log('Attempting to load spatialite from:', spatialitePath);
+                    
+                    if (!fs.existsSync(spatialitePath)) {
+                        const error = `Spatialite file not found at: ${spatialitePath}`;
+                        console.error(error);
+                        reject(new Error(error));
+                        return;
+                    }
+                    
+                    db.loadExtension(spatialitePath, err => {
+                        if (err) {
+                            console.error('Error loading spatialite extension with path:', err);
+                            
+                            console.log('Trying to load with simple name: mod_spatialite');
+                            db.loadExtension('mod_spatialite', err2 => {
+                                if (err2) {
+                                    console.error('Error loading spatialite with simple name:', err2);
+                                    reject(err2);
+                                } else {
+                                    console.log('Spatialite loaded successfully with simple name');
+                                    onSuccess();
+                                }
+                            });
+                        } else {
+                            console.log('Spatialite extension loaded successfully with path');
+                            onSuccess();
+                        }
+                    });
+                };
+
+                const onSuccess = () => {
+                    databases.set(dbPath, db);
+                    resolve({
+                        filename: path.basename(dbPath),
+                        path: dbPath,
+                        connected: true,
+                    });
+                };
+
+                try {
+                    console.log('Trying to load spatialite using .spatialite() method...');
+                    db.spatialite(err => {
+                        if (err) {
+                            console.error('Error with .spatialite() method:', err);
+                            tryLoadWithPath();
+                        } else {
+                            console.log('Spatialite loaded successfully using .spatialite() method');
+                            onSuccess();
+                        }
+                    });
+                } catch (e) {
+                    console.error('Exception in .spatialite() method:', e);
+                    tryLoadWithPath();
+                }
+            });
+        });
+    });
 
 	ipcMain.handle('db-execute', async (event, dbPath, query) => {
 		return new Promise((resolve, reject) => {
-			console.log('Looking for database in cache:', dbPath);
-			console.log('Available databases:', Array.from(databases.keys()));
 
 			const db = databases.get(dbPath);
 
@@ -71,14 +94,11 @@ export function registerDbIpc() {
 				return;
 			}
 
-			console.log('Database found, executing SQL:', query);
-
 			db.all(query, [], (err, rows) => {
 				if (err) {
 					console.error(' SQL Error:', err);
 					reject(err);
 				} else {
-					console.log('Query successful, rows:', rows.length);
 					resolve({ rows });
 				}
 			});
