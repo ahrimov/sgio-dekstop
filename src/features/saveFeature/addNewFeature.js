@@ -1,4 +1,5 @@
 import { requestToDB } from '../../legacy/DBManage.js';
+import { refreshFeatureTable } from '../../shared/refreshTable.js';
 import { writeFeatureInKML } from './writeFeatureInKml.js';
 
 export function addNewFeature(layer, feature) {
@@ -37,6 +38,7 @@ export function addNewFeature(layer, feature) {
 			}
 
 			feature.changed();
+			setTimeout(() => refreshFeatureTable(), 50);
 		});
 	} catch (error) {
 		alert(error);

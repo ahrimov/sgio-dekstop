@@ -133,7 +133,6 @@ const DraggableVectorLayer = ({
 					layer={layer}
 					onProps={handleFeaturesClick}
 					onExport={() => {}}
-					onDelete={() => {}}
 				/>
 			</div>
 		</VectorLayerElementContainer>

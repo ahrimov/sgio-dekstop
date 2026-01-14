@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
 import { Card, Typography, Descriptions, Button, Flex } from 'antd';
-import { CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
+import { showOnMap } from '../../shared/map-events.js';
+import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 
 const { Text } = Typography;
 
@@ -50,6 +52,14 @@ const InfoAttributeView = ({ feature, layer, onClose }) => {
 		);
 	}
 
+	const handleShowOnMap = () => {
+		showOnMap({ featureId: feature.id, layer });
+	};
+
+	const handleDeleteFeature = () => {
+		deleteFeature(feature.id, layer, onClose);
+	};
+
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
 
 	return (
@@ -79,12 +89,15 @@ const InfoAttributeView = ({ feature, layer, onClose }) => {
 				}
 				styles={{
 					header: { background: 'rgb(17, 102, 162)', color: 'white' },
-					body: { maxHeight: '65vh', overflow: 'auto' },
+					body: { maxHeight: '65vh', overflow: 'auto', paddingTop: '10px' },
 				}}
 				style={{ width: 350, maxHeight: '80vh', overflow: 'auto', cursor: 'default' }}
 			>
-				<Flex vertical>
-					<Flex></Flex>
+				<Flex vertical gap={5}>
+					<Flex gap={2} justify="flex-end">
+						<Button title='Показать на карте' shape='square' icon={<SearchOutlined />} onClick={handleShowOnMap} />
+						<Button variant='outlined' color="red" title='Удалить объект' shape='square' icon={<DeleteOutlined />} onClick={handleDeleteFeature} />
+					</Flex>
 					<Descriptions
 						column={1}
 						size="small"

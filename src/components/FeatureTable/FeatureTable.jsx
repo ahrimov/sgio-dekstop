@@ -8,6 +8,8 @@ import infoIcon from '../../assets/resources/images/assets/info.png';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
 import { showOnMap } from '../../shared/map-events.js';
 import { showInfo } from '../../shared/featured-info-event.js';
+import { useUnit } from 'effector-react';
+import { $tableRefreshTrigger } from '../../shared/refreshTable.js';
 
 export function FeatureTable({ layer }) {
 	const [features, setFeatures] = useState([]);
@@ -15,6 +17,8 @@ export function FeatureTable({ layer }) {
 	const [sorter, setSorter] = useState({});
 	const [antdFilters, setAntdFilters] = useState({});
 	const [pagination, setPagination] = useState({ current: 1, pageSize: 100, total: 0 });
+
+	const refreshTrigger = useUnit($tableRefreshTrigger);
 
 	useEffect(() => {
 		setLoading(true);
@@ -30,7 +34,7 @@ export function FeatureTable({ layer }) {
 				}
 			);
 		});
-	}, [layer, pagination.pageSize, antdFilters, pagination.current, sorter]);
+	}, [layer, pagination.pageSize, antdFilters, pagination.current, sorter, refreshTrigger]);
 
 	const basicColumns = useMemo(() => {
 		return layer.atribs.map((atrib, i) => {

@@ -9,12 +9,6 @@ export function LayerMoreActionsPopup({ layer, onProps, onExport, onDelete }) {
 			<Button type="text" size="small" onClick={() => onProps?.(layer)}>
 				Объекты
 			</Button>
-			<Button type="text" size="small" onClick={() => onExport?.(layer)}>
-				Экспорт
-			</Button>
-			<Button type="text" size="small" danger onClick={() => onDelete?.(layer)}>
-				Удалить
-			</Button>
 		</div>
 	);
 

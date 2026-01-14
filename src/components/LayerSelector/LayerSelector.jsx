@@ -30,7 +30,7 @@ const LayerSelector = ({
   return (
     <FloatingWindow initialPosition={initialPosition}>
       <FloatingWindowContainer>
-        <FloatingHeader>
+        <FloatingHeader className="drag-handle">
           <h3 style={{ margin: 0, fontSize: '14px' }}>Выберите слой</h3>
           <CloseButton onClick={onClose}>×</CloseButton>
         </FloatingHeader>

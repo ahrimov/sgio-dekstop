@@ -58,8 +58,6 @@
 
 .drag-handle {
   cursor: grab;
-  color: #8c8c8c;
-  padding: 4px;
 }
 
 .drag-handle:active {

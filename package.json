@@ -1,7 +1,7 @@
 {
 	"name": "sgio-desktop",
 	"version": "1.0.0",
-	"description": "Your Electron app",
+	"description": "Electron app",
 	"main": "electron/main.js",
 	"type": "module",
 	"author": "SGIO Team <ahrimovanton@gmail.com>",
@@ -13,8 +13,8 @@
 		"dev-react": "node esbuild.config.js --dev",
 		"dev-full": "npm run dev-react & npm run electron-dev",
 
-		"build:appimage": "npm run build-react && electron-builder --linux AppImage",
-    	"build:deb": "npm run build-react && electron-builder --linux deb",
+		"build:rpm": "npm run build-react && electron-builder --linux rpm",
+		"build:tar": "electron-builder --linux tar.gz",
     	"clean": "rm -rf dist build"
 	},
 	"dependencies": {
@@ -74,14 +74,8 @@
     		"output": "dist"
     	},
 
-		"files": [
-			"electron/**/*",
-			"build/**/*",
-			"package.json"
-    	],
-
 		"linux": {
-			"target": ["AppImage"],
+			"target": ["tar.gz"],
 			"icon": "build/icons/",
 			"category": "Utility",
 			"maintainer": "SGIO Team <ahrimovanton@gmail.com>"

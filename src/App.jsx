@@ -15,7 +15,7 @@ import { FeatureTable } from './components/FeatureTable/FeatureTable.jsx';
 import ruRU from 'antd/es/locale/ru_RU';
 import { $infoFeature, showInfo } from './shared/featured-info-event.js';
 import { useUnit } from 'effector-react';
-import InfoAttributeView from './components/InfoAttributeView/InfoAttributeView.js';
+import InfoAttributeView from './components/InfoAttributeView/InfoAttributeView.jsx';
 import { $featureSelectorData, openFeatureSelector } from './shared/openFeatureSelectronEvent.js';
 import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.jsx';
 
@@ -93,7 +93,7 @@ const AppContent = () => {
 						</div>
 					)}
 				</div>
-				{loadingState.total && !loadingState.visible && (
+				{loadingState.total && !loadingState.visible ? (
 					<div className="app-container">
 						<div className="top-row">
 							{showLayersPanel && (
@@ -116,7 +116,7 @@ const AppContent = () => {
 							</div>
 						)}
 					</div>
-				)}
+				) : null}
 				{infoFeature && (
 					<InfoAttributeView
 						feature={infoFeature.feature}

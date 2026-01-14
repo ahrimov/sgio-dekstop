@@ -22,7 +22,7 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 	return (
 		<FloatingWindow initialPosition={initialPosition}>
 			<FloatingWindowContainer>
-				<FloatingHeader>
+				<FloatingHeader className="drag-handle">
 					<h3 style={{ margin: 0, fontSize: '14px' }}>Объекты на карте</h3>
 					<CloseButton onClick={onClose}>×</CloseButton>
 				</FloatingHeader>
@@ -34,7 +34,6 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 							<React.Fragment key={layer.id || layer.get('id') || layer.get('name')}>
 								<LayerHeader>
 									{layer.label || layer.get?.('name') || 'Без названия слоя'}
-									<Count>({features.length})</Count>
 								</LayerHeader>
 								<FeatureList>
 									{features.map((feature, i) => (
@@ -47,9 +46,9 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 										>
 											<FeatureTitle>
 												{feature.get?.('name') ||
+													feature.label ||
 													feature.get?.('title') ||
 													feature.id ||
-													feature.getId() ||
 													'Без имени'}
 											</FeatureTitle>
 										</FeatureItem>
@@ -64,7 +63,6 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 	);
 }
 
-// Стили
 const FloatingWindowContainer = styled.div`
 	border-radius: 8px;
 	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
@@ -104,19 +102,12 @@ const FloatingContent = styled.div`
 `;
 
 const LayerHeader = styled.div`
-	font-weight: bold;
-	font-size: 14px;
-	margin-top: 12px;
+	margin-top: 2px;
 	margin-bottom: 4px;
 	color: #1968a8;
 	display: flex;
 	align-items: baseline;
-`;
-
-const Count = styled.span`
 	font-size: 12px;
-	color: #888;
-	margin-left: 6px;
 `;
 
 const FeatureList = styled.div`
@@ -126,15 +117,14 @@ const FeatureList = styled.div`
 `;
 
 const FeatureItem = styled.div`
-	padding: 7px 6px;
-	border-radius: 6px;
-	cursor: pointer;
-	background: #f4faff;
-	transition: background 0.19s;
-	font-size: 13px;
+	padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #4c93c2;
 
 	&:hover {
-		background: #dbeefd;
+		background: #e8f8fd;
 	}
 `;
 
