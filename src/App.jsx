@@ -18,6 +18,7 @@ import { useUnit } from 'effector-react';
 import InfoAttributeView from './components/InfoAttributeView/InfoAttributeView.jsx';
 import { $featureSelectorData, openFeatureSelector } from './shared/openFeatureSelectronEvent.js';
 import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.jsx';
+import { $numberOfLayers } from './shared/numberOfLayers.js';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -25,6 +26,7 @@ const AppContent = () => {
 	const [activeLayer, setActiveLayer] = useState(null);
 	const infoFeature = useUnit($infoFeature);
 	const featureSelectorData = useUnit($featureSelectorData);
+	const numberOfLayers = useUnit($numberOfLayers);
 
 	useEffect(() => {
 		setProgressCallbacks({
@@ -50,7 +52,6 @@ const AppContent = () => {
 	}, [startLoading, updateProgress, finishLoading]);
 
 	useEffect(() => {
-		if (!layers.length) return;
 		async function loadLayers() {
 			try {
 				startLoading(layers.length, 'Загрузка данных из базы данных');
@@ -61,8 +62,11 @@ const AppContent = () => {
 				finishLoading();
 			}
 		}
-		loadLayers();
-	}, [layers.length]);
+
+		if (numberOfLayers && numberOfLayers === layers.length) {
+			loadLayers();
+		}
+	}, [numberOfLayers, layers.length]);
 
 	const toggleLayersPanel = () => {
 		setShowLayersPanel(!showLayersPanel);

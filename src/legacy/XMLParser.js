@@ -4,7 +4,6 @@ import {
 	setDBProgressCallbacks,
 	setTotalLayersCount,
 	initialDB,
-	getDataLayerFromBD,
 } from './DBManage.js';
 import { getZoomFromMeters } from './converter.js';
 import { map, layers } from './globals.js';
@@ -24,6 +23,7 @@ import Icon from 'ol/style/Icon.js';
 import XYZ from 'ol/source/XYZ.js';
 import TileLayer from 'ol/layer/Tile.js';
 import { createXYZ } from 'ol/tilegrid.js';
+import { setNumberOfLayers } from '../shared/numberOfLayers.js';
 
 let progressCallbacks = {};
 
@@ -48,6 +48,7 @@ export function configParser(data) {
 		setDBProgressCallbacks(progressCallbacks.onProgress);
 	}
 	setTotalLayersCount(layersName.length);
+	setNumberOfLayers(layersName.length);
 
 	if (progressCallbacks.onStart) {
 		progressCallbacks.onStart(layersName.length, 'Загрузка векторных слоев');
@@ -65,13 +66,6 @@ export function configParser(data) {
 			setTimeout(progressCallbacks.onFinish, 500);
 		}
 	};
-
-	// for (let layerName of layersName) {
-	// 	openFile(root_directory + pathToLayers + layerName, data => {
-	// 		layerParser(data, layerName);
-	// 		updateLayerProgress(layerName);
-	// 	});
-	// }
 
 	const nameDB = dom.getElementsByTagName('NameDB').item(0).textContent;
 	const filenameDB = dom.getElementsByTagName('FilenameDB').item(0).textContent;
@@ -133,17 +127,12 @@ export function configParser(data) {
 	processLayersSerially();
 
 	async function layerParser(data, title) {
-		if (typeof layerParser.counter == 'undefined') {
-			layerParser.counter = 0;
-		}
-
 		const parser = new DOMParser();
 		const dom = parser.parseFromString(data, 'application/xml');
 		if (dom.getElementsByTagName('parsererror').item(0)) {
 			const errorMessage = dom.querySelector('parsererror div').textContent;
 			console.log(errorMessage);
 			alert('Некорректный xml-файл: ' + title + '. Ошибка: ' + errorMessage);
-			layerParser.counter++;
 			return;
 		}
 
@@ -308,8 +297,6 @@ export function configParser(data) {
 		}
 		layer.enabled = enabled;
 
-		layerParser.counter++;
-
 		for (let i in layersName) {
 			if (layersName[i] === title) {
 				layer.setZIndex(minZIndexForVectorLayers + layersName.length - i);
@@ -317,7 +304,6 @@ export function configParser(data) {
 		}
 
 		layers.push(layer);
-		getDataLayerFromBD(layer);
 		layer.visible = true;
 	}
 }

@@ -15,7 +15,7 @@
 
 		"build:rpm": "npm run build-react && electron-builder --linux rpm",
 		"build:tar": "electron-builder --linux tar.gz",
-    	"clean": "rm -rf dist build"
+    	"clean": "rm -rf dist"
 	},
 	"dependencies": {
 		"@ant-design/icons": "^6.1.0",
