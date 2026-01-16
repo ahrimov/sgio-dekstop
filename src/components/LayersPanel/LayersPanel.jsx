@@ -53,7 +53,7 @@ const VectorLayersList = ({
 		<ReactSortable
 			list={visibleVectorLayers}
 			setList={setVisibleVectorLayers}
-			style={{ overflow: 'auto', height: '100%', padding: 0 }}
+			style={{ height: '100%', padding: 0 }}
 			tag="div"
 			animation={200}
 			handle=".layer-drag-handle"
@@ -129,11 +129,7 @@ const DraggableVectorLayer = ({
 				{layer.label}
 			</Text>
 			<div className="layer-actions">
-				<LayerMoreActionsPopup
-					layer={layer}
-					onProps={handleFeaturesClick}
-					onExport={() => {}}
-				/>
+				<LayerMoreActionsPopup layer={layer} onProps={handleFeaturesClick} onExport={() => {}} />
 			</div>
 		</VectorLayerElementContainer>
 	);

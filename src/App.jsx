@@ -116,7 +116,7 @@ const AppContent = () => {
 						</div>
 						{activeLayer && (
 							<div className="table-wrapper">
-								<FeatureTable layer={activeLayer} />
+								<FeatureTable key={activeLayer.id} layer={activeLayer} />
 							</div>
 						)}
 					</div>

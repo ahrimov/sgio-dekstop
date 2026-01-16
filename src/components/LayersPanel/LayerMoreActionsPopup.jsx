@@ -18,11 +18,12 @@ export function LayerMoreActionsPopup({ layer, onProps, onExport, onDelete }) {
 			trigger="click"
 			placement="left"
 			getPopupContainer={triggerNode => triggerNode.parentNode}
-      styles={{
-        container: {
-          padding: 4,
-        }
-      }}
+			autoAdjustOverflow={false}
+			styles={{
+				container: {
+					padding: 4,
+				},
+			}}
 		>
 			<MoreButton>
 				<MoreOutlined />
