@@ -248,7 +248,7 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, 
 						borderBottom: '1px solid #f7f7fa',
 						borderRadius: 0,
 					}}
-					styles={{ body: { padding: 0 }, title: { color: 'rgb(0, 94, 154);' } }}
+					styles={{ body: { padding: 0 }, title: { color: 'rgb(0, 94, 154)' } }}
 					items={rasterCollapseItems}
 				/>
 			</PanelContent>

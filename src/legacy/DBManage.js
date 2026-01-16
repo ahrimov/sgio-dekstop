@@ -141,7 +141,7 @@ export function getDataLayerFromBD(layer) {
                 for (let i = 0; i < res.rows.length; i++) {
                     let wkt = res.rows.item(i).geom;
                     let feature = new Feature();
-                    if (typeof wkt !== 'undefined' && wkt !== '') {
+                    if (wkt) {
                         feature = format.readFeature(wkt.replace(/nan/g, "0"));
                     }
                     feature.id = res.rows.item(i).id;

@@ -115,8 +115,12 @@ export const useMap = containerRef => {
 					},
 					{ hitTolerance: 5 }
 				);
+				const numberOfFeatures = layersMap.size;
+				if (numberOfFeatures === 0) {
+					return;
+				}
 				const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({ layer, features }));
-				if (featuresByLayer.length > 1) {
+				if (numberOfFeatures > 1) {
 					openFeatureSelector(featuresByLayer);
 				} else {
 					showInfo({ feature: featuresByLayer[0].features[0], layer: featuresByLayer[0].layer });
