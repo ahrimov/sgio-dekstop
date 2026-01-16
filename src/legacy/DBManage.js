@@ -99,6 +99,36 @@ export function requestToDB(query, callback, notification = 'Неизвестн�
         });
 }
 
+export function requestToDBPromise(query, notification = 'Неизвестная ошибка') {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            console.log('Database not initialized, retrying...');
+            setTimeout(() => {
+                requestToDB(query, notification)
+                    .then(resolve)
+                    .catch(reject);
+            }, 50);
+            return;
+        }
+        
+        electronAPI.executeSQL(db.path, query)
+            .then(result => {
+                const compatibleResult = {
+                    rows: {
+                        length: result.rows.length,
+                        item: (index) => result.rows[index]
+                    }
+                };
+                resolve(compatibleResult);
+            })
+            .catch(error => {
+                console.error('Query:', query);
+                console.error('Database transaction error:', error);
+                reject(new Error(notification || 'Database transaction error'));
+            });
+    });
+}
+
 export function getDataLayerFromBD(layer) {
     return new Promise((resolve, reject) => {
         if (!db) {

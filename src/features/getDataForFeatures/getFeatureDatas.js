@@ -31,7 +31,7 @@ export function getFeatureDatas(
 						const found = atrib.options.find(opt => opt.value == value);
 						if (found) item[atrib.name] = found.label;
 					} else if (typeof atrib.options === 'object') {
-						if (atrib.options.hasOwnProperty(value)) {
+						if (Object.prototype.hasOwnProperty.call(atrib.options, value)) {
 							item[atrib.name] = atrib.options[value];
 						}
 					}

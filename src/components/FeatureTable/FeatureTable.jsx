@@ -87,7 +87,7 @@ export function FeatureTable({ layer }) {
 					title="Свойства"
 					onClick={e => {
 						e.stopPropagation();
-						showInfo({ feature: record, layer });
+						showInfo({ featureId: record.id, layer });
 					}}
 					variant="text"
 					type="text"
@@ -100,7 +100,7 @@ export function FeatureTable({ layer }) {
 					title="Показать на карте"
 					onClick={e => {
 						e.stopPropagation();
-						showOnMap({layer, featureId: record.id});
+						showOnMap({ layer, featureId: record.id });
 					}}
 					variant="text"
 					type="text"

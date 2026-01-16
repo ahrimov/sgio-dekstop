@@ -38,9 +38,9 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 								<FeatureList>
 									{features.map((feature, i) => (
 										<FeatureItem
-											key={feature.id || feature.getId() || i}
+											key={feature.id || i}
 											onClick={() => {
-												showInfo({ feature, layer });
+												showInfo({ featureId: feature.id, layer });
 												onClose();
 											}}
 										>
@@ -118,10 +118,10 @@ const FeatureList = styled.div`
 
 const FeatureItem = styled.div`
 	padding: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #4c93c2;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.2s;
+	color: #4c93c2;
 
 	&:hover {
 		background: #e8f8fd;

@@ -1,31 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Typography, Descriptions, Button, Flex } from 'antd';
 import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import { showOnMap } from '../../shared/map-events.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
+import { formatValue } from './utils.jsx';
+import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
 
 const { Text } = Typography;
 
-function formatValue(atrib, value) {
-	if (atrib.type === 'ENUM' && atrib.options) {
-		return atrib.options?.[value] ?? value;
-	}
-	if (atrib.type === 'DATE' && value) {
-		try {
-			return new Date(value).toLocaleDateString();
-		} catch {
-			return value;
-		}
-	}
-	return value === undefined || value === null || value === '' ? (
-		<span style={{ color: '#bbb' }}>—</span>
-	) : (
-		value
-	);
-}
+export function InfoAttributeView({ featureId, layer, onClose }) {
+	const [featureData, setFeatureData] = useState(null);
 
-const InfoAttributeView = ({ feature, layer, onClose }) => {
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
 		const windowWidth = window.innerWidth;
@@ -36,33 +22,32 @@ const InfoAttributeView = ({ feature, layer, onClose }) => {
 		};
 	}, []);
 
-	if (!layer?.atribs?.length) {
-		return (
-			<Card
-				size="small"
-				style={{ width: 300 }}
-				actions={[
-					<Button key={layer.id} onClick={onClose}>
-						Закрыть
-					</Button>,
-				]}
-			>
-				<Typography.Text type="secondary">Нет атрибутов</Typography.Text>
-			</Card>
-		);
-	}
+	useEffect(() => {
+		const fetchFeatureAttributes = async () => {
+			try {
+				const data = await getFeatureAttributes(layer, featureId);
+				if (data) {
+					setFeatureData(data);
+				}
+			} catch (err) {
+				console.error('Error fetching feature attributes:', err);
+			}
+		};
+
+		fetchFeatureAttributes();
+	}, [layer, featureId]);
 
 	const handleShowOnMap = () => {
-		showOnMap({ featureId: feature.id, layer });
+		showOnMap({ featureId: featureId, layer });
 	};
 
 	const handleDeleteFeature = () => {
-		deleteFeature(feature.id, layer, onClose);
+		deleteFeature(featureId, layer, onClose);
 	};
 
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
 
-	return (
+	return featureData ? (
 		<FloatingWindow initialPosition={initialPosition}>
 			<Card
 				title={
@@ -95,8 +80,20 @@ const InfoAttributeView = ({ feature, layer, onClose }) => {
 			>
 				<Flex vertical gap={5}>
 					<Flex gap={2} justify="flex-end">
-						<Button title='Показать на карте' shape='square' icon={<SearchOutlined />} onClick={handleShowOnMap} />
-						<Button variant='outlined' color="red" title='Удалить объект' shape='square' icon={<DeleteOutlined />} onClick={handleDeleteFeature} />
+						<Button
+							title="Показать на карте"
+							shape="square"
+							icon={<SearchOutlined />}
+							onClick={handleShowOnMap}
+						/>
+						<Button
+							variant="outlined"
+							color="red"
+							title="Удалить объект"
+							shape="square"
+							icon={<DeleteOutlined />}
+							onClick={handleDeleteFeature}
+						/>
 					</Flex>
 					<Descriptions
 						column={1}
@@ -110,18 +107,16 @@ const InfoAttributeView = ({ feature, layer, onClose }) => {
 						}}
 						contentStyle={{ background: '#fff' }}
 					>
-						{visibleAtribs.map(atrib => (
-							<Descriptions.Item key={atrib.name} label={atrib.label || atrib.name}>
-								<Text>
-									{formatValue(atrib, feature.get ? feature.get(atrib.name) : feature[atrib.name])}
-								</Text>
-							</Descriptions.Item>
-						))}
+						{featureData
+							? visibleAtribs.map(atrib => (
+									<Descriptions.Item key={atrib.name} label={atrib.label || atrib.name}>
+										<Text>{formatValue(atrib, featureData[atrib.name])}</Text>
+									</Descriptions.Item>
+								))
+							: null}
 					</Descriptions>
 				</Flex>
 			</Card>
 		</FloatingWindow>
-	);
-};
-
-export default InfoAttributeView;
+	) : null;
+}

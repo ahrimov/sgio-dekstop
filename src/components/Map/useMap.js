@@ -123,7 +123,10 @@ export const useMap = containerRef => {
 				if (numberOfFeatures > 1) {
 					openFeatureSelector(featuresByLayer);
 				} else {
-					showInfo({ feature: featuresByLayer[0].features[0], layer: featuresByLayer[0].layer });
+					showInfo({
+						featureId: featuresByLayer[0].features[0].id,
+						layer: featuresByLayer[0].layer,
+					});
 				}
 			}
 		});
