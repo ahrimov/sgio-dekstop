@@ -11,6 +11,16 @@ export function createMainWindow() {
 	const mainWindow = new BrowserWindow({
 		width: 1400,
 		height: 900,
+		titleBarStyle: 'hidden',
+		...(process.platform !== 'darwin'
+			? {
+					titleBarOverlay: {
+						color: '#003366',
+						symbolColor: '#ffffff',
+						height: 30,
+					},
+				}
+			: {}),
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: true,

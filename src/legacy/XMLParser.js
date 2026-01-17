@@ -35,7 +35,7 @@ export function configParser(data) {
 	const dom = parser.parseFromString(data, 'application/xml');
 
 	const appName = dom.getElementsByTagName('AppName').item(0).textContent;
-	document.title = appName;
+	document.getElementById('app-name').textContent = appName;
 
 	const pathToLayers = dom.getElementsByTagName('PathToLayers').item(0).textContent;
 	const layersName = dom

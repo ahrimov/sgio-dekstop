@@ -2,9 +2,19 @@ body {
 	margin: 0;
 }
 
+.titlebar {
+	height: 30px;
+	background: #003366;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	-webkit-app-region: drag;
+}
+
 .app {
 	width: 100vw;
-	height: 100vh;
+	height: calc(100vh - 30px);
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
@@ -27,8 +37,8 @@ body {
 }
 
 .app-container {
-	background: #1890ff;
-	min-height: 100vh;
+	background: #003366;
+	height: inherit;
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
