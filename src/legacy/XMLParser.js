@@ -1,10 +1,6 @@
 import { root_directory } from './initial.js';
 import { openFile } from './FileManage.js';
-import {
-	setDBProgressCallbacks,
-	setTotalLayersCount,
-	initialDB,
-} from './DBManage.js';
+import { setDBProgressCallbacks, setTotalLayersCount, initialDB } from './DBManage.js';
 import { getZoomFromMeters } from './converter.js';
 import { map, layers } from './globals.js';
 import { LayerAtribs } from './Map.js';
@@ -37,6 +33,10 @@ export function setProgressCallbacks(callbacks) {
 export function configParser(data) {
 	const parser = new DOMParser();
 	const dom = parser.parseFromString(data, 'application/xml');
+
+	const appName = dom.getElementsByTagName('AppName').item(0).textContent;
+	document.title = appName;
+
 	const pathToLayers = dom.getElementsByTagName('PathToLayers').item(0).textContent;
 	const layersName = dom
 		.getElementsByTagName('LayersName')
