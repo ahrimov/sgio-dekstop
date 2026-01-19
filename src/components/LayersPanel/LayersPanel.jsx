@@ -92,7 +92,7 @@ const DraggableRasterLayer = ({ layer, toggleVisibility }) => {
 				<img src={icons[layer.get('icon')]} width={24} height={24} alt={layer.get('descr')} />
 			</IconWrapper>
 			<Text
-				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px' }}
+				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'default' }}
 				onClick={() => toggleVisibility(layer.get('id'), true)}
 				title={layer.get('descr')}
 				ellipsis
@@ -121,7 +121,7 @@ const DraggableVectorLayer = ({
 				<MenuOutlined />
 			</DragHandle>
 			<Text
-				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px' }}
+				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'default' }}
 				onClick={() => toggleVisibility(layer.id, false)}
 				title={layer.label}
 				ellipsis

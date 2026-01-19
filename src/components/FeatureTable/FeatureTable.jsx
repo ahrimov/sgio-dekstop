@@ -10,6 +10,7 @@ import { showOnMap } from '../../shared/mapEvents.js';
 import { showInfo } from '../../shared/featured-info-event.js';
 import { useUnit } from 'effector-react';
 import { $tableRefreshTrigger } from '../../shared/refreshTable.js';
+import styled from 'styled-components';
 
 export function FeatureTable({ layer }) {
 	const [features, setFeatures] = useState([]);
@@ -134,21 +135,23 @@ export function FeatureTable({ layer }) {
 	};
 
 	return (
-		<Table
-			columns={columns}
-			dataSource={features}
-			loading={loading}
-			pagination={{
-				current: pagination.current,
-				pageSize: pagination.pageSize,
-				total: pagination.total,
-				onChange: (page, pageSize) => setPagination(p => ({ ...p, current: page, pageSize })),
-				showSizeChanger: true,
-			}}
-			onChange={handleTableChange}
-			size="small"
-			scroll={{ x: true }}
-		></Table>
+		<FixedPaginationWrapper>
+			<Table
+				columns={columns}
+				dataSource={features}
+				loading={loading}
+				pagination={{
+					current: pagination.current,
+					pageSize: pagination.pageSize,
+					total: pagination.total,
+					onChange: (page, pageSize) => setPagination(p => ({ ...p, current: page, pageSize })),
+					showSizeChanger: true,
+				}}
+				onChange={handleTableChange}
+				size="small"
+				scroll={{ x: true }}
+			></Table>
+		</FixedPaginationWrapper>
 	);
 }
 
@@ -158,3 +161,24 @@ function enumOptionsToFilters(options) {
 		text: label,
 	}));
 }
+
+const FixedPaginationWrapper = styled.div`
+	.ant-table-wrapper {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.ant-table-container {
+		flex: 1;
+	}
+
+	.ant-table-pagination {
+		position: sticky;
+		bottom: 0;
+		background: #fff;
+		padding: 16px;
+		margin: 0 !important;
+		z-index: 10;
+		border-top: 1px solid #f0f0f0;
+	}
+`;
