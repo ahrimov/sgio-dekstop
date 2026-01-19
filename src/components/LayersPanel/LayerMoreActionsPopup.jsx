@@ -3,7 +3,7 @@ import { Popover, Button } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
-export function LayerMoreActionsPopup({ layer, onProps, onExport, onDelete }) {
+export function LayerMoreActionsPopup({ layer, onProps }) {
 	const content = (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
 			<Button type="text" size="small" onClick={() => onProps?.(layer)}>

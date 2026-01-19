@@ -9,7 +9,7 @@ import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import AttributeForm from '../AttributeForm/AttributeForm.jsx';
-import { $showOnMapFeature } from '../../shared/map-events.js';
+import { $showOnMapFeature } from '../../shared/mapEvents.js';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);

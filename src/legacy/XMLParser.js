@@ -669,63 +669,65 @@ function parseEnum(options_string) {
 }
 
 function parseBaseRasterLayers(jsonArray) {
-	return jsonArray.map(json => {
-		let source;
+	return jsonArray
+		.sort((a, b) => b.order - a.order)
+		.map((json, id) => {
+			let source;
 
-		if (json.projection === 'EPSG:3857') {
-			source = new XYZ({
-				projection: json.projection,
-				url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
-				tileGrid: createXYZ({
-					extent: [
-						-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
-					],
-					maxZoom: 19,
-				}),
-				tileSize: json.tileSize || 256,
-				cacheSize: 40,
-				crossOrigin: 'anonymous',
+			if (json.projection === 'EPSG:3857') {
+				source = new XYZ({
+					projection: json.projection,
+					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
+					tileGrid: createXYZ({
+						extent: [
+							-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
+						],
+						maxZoom: 19,
+					}),
+					tileSize: json.tileSize || 256,
+					cacheSize: 40,
+					crossOrigin: 'anonymous',
+				});
+			} else if (json.projection === 'EPSG:3395') {
+				source = new XYZ({
+					projection: json.projection,
+					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
+					tileGrid: createXYZ({
+						extent: [
+							-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
+						],
+					}),
+					tileSize: json.tileSize,
+					cacheSize: 40,
+				});
+			} else {
+				source = new XYZ({
+					projection: json.projection,
+					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
+					tileSize: json.tileSize,
+					cacheSize: 40,
+				});
+			}
+			if (json.useLocalTiles) {
+				source.setTileLoadFunction(tileLoadFunctionLocal);
+			}
+			if (json.id === 'Rosreestr') {
+				rosreestr_url = json.remote_url;
+				source.setTileUrlFunction(rosreetrUrlFunction);
+			}
+			return new TileLayer({
+				id: json.id,
+				descr: json.descr,
+				visible: json.visible,
+				zIndex: parseInt(json.order) || id,
+				icon: json.icon,
+				maxZoom: 24,
+				useLocalTiles: json.useLocalTiles,
+				local_path: json.local_path,
+				remote_url: json.remote_url,
+				source: source,
 			});
-		} else if (json.projection === 'EPSG:3395') {
-			source = new XYZ({
-				projection: json.projection,
-				url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
-				tileGrid: createXYZ({
-					extent: [
-						-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
-					],
-				}),
-				tileSize: json.tileSize,
-				cacheSize: 40,
-			});
-		} else {
-			source = new XYZ({
-				projection: json.projection,
-				url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
-				tileSize: json.tileSize,
-				cacheSize: 40,
-			});
-		}
-		if (json.useLocalTiles) {
-			source.setTileLoadFunction(tileLoadFunctionLocal);
-		}
-		if (json.id === 'Rosreestr') {
-			rosreestr_url = json.remote_url;
-			source.setTileUrlFunction(rosreetrUrlFunction);
-		}
-		return new TileLayer({
-			id: json.id,
-			descr: json.descr,
-			visible: json.visible,
-			zIndex: parseInt(json.order),
-			icon: json.icon,
-			maxZoom: 24,
-			useLocalTiles: json.useLocalTiles,
-			local_path: json.local_path,
-			remote_url: json.remote_url,
-			source: source,
 		});
-	});
 }
 
 export function readConfigFile(filePath) {

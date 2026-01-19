@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu } from 'electron';
+import { BrowserWindow, Menu, ipcMain } from 'electron';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -35,6 +35,29 @@ export function createMainWindow() {
 	if (isDev) {
 		mainWindow.loadFile('public/dist/dev/index.html');
 		mainWindow.webContents.on('did-finish-load', () => mainWindow.webContents.openDevTools());
+
+		ipcMain.on('show-context-menu', (event, data) => {
+			const template = [
+				{
+					label: 'Inspect Element',
+					click: () => {
+						mainWindow.webContents.inspectElement(data.x, data.y);
+						mainWindow.webContents.openDevTools();
+					},
+				},
+				{
+					label: 'Open DevTools',
+					click: () => mainWindow.webContents.openDevTools(),
+				},
+				{
+					label: 'Reload',
+					click: () => mainWindow.webContents.reload(),
+				},
+			];
+
+			const menu = Menu.buildFromTemplate(template);
+			menu.popup({ window: mainWindow });
+		});
 	} else {
 		mainWindow.loadFile('public/dist/prod/index.html');
 	}

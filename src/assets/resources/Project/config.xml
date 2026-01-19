@@ -2,7 +2,7 @@
 <template>
 	<main>
 		<Title>Карта_Общества</Title>
-		<AppName>СГИО.Декстоп, Версия 1.0.0 </AppName>
+		<AppName>СГИО.Десктоп, Версия 1.0.0 </AppName>
 		<version>0.1.0</version>
 	</main>
 	<MapView>

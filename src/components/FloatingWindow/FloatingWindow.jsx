@@ -26,14 +26,18 @@ const FloatingWindow = ({ initialPosition = { x: 100, y: 100 }, children }) => {
 
 			const container = containerRef.current;
 			const containerRect = container.getBoundingClientRect();
-			const viewportWidth = window.innerWidth;
-			const viewportHeight = window.innerHeight;
+			const rootNode = document.querySelector('#root');
+			if (!rootNode) return;
+			const viewportRect = rootNode.getBoundingClientRect();
 
 			let newX = e.clientX - dragOffset.current.x;
 			let newY = e.clientY - dragOffset.current.y;
 
-			newX = Math.max(0, Math.min(newX, viewportWidth - containerRect.width));
-			newY = Math.max(0, Math.min(newY, viewportHeight - containerRect.height));
+			newX = Math.max(0, Math.min(newX, viewportRect.width - containerRect.width));
+			newY = Math.max(
+				viewportRect.top,
+				Math.min(newY, viewportRect.height + viewportRect.top - containerRect.height)
+			);
 
 			setPosition({ x: newX, y: newY });
 		},
@@ -62,19 +66,15 @@ const FloatingWindow = ({ initialPosition = { x: 100, y: 100 }, children }) => {
 			style={{
 				left: position.x,
 				top: position.y,
-				cursor: isDragging ? 'grabbing' : 'grab',
 			}}
 			onMouseDown={handleMouseDown}
-			isDragging={isDragging}
 		>
 			{children}
 		</FloatingContainer>
 	);
 };
 
-const FloatingContainer = styled.div.withConfig({
-	shouldForwardProp: prop => prop !== 'isDragging',
-})`
+const FloatingContainer = styled.div`
 	position: fixed;
 	background: white;
 	border: 1px solid #ccc;
@@ -84,11 +84,6 @@ const FloatingContainer = styled.div.withConfig({
 	min-width: 200px;
 	min-height: 100px;
 	user-select: none;
-	cursor: ${props => (props.isDragging ? 'grabbing' : 'grab')};
-
-	&:active {
-		cursor: grabbing;
-	}
 `;
 
 export default FloatingWindow;

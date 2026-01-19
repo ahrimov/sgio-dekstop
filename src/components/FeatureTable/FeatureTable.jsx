@@ -6,7 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { ColumnSearch } from './ColumnSearch.jsx';
 import infoIcon from '../../assets/resources/images/assets/info.png';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
-import { showOnMap } from '../../shared/map-events.js';
+import { showOnMap } from '../../shared/mapEvents.js';
 import { showInfo } from '../../shared/featured-info-event.js';
 import { useUnit } from 'effector-react';
 import { $tableRefreshTrigger } from '../../shared/refreshTable.js';

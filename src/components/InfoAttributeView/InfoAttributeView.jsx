@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Typography, Descriptions, Button, Flex } from 'antd';
 import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
-import { showOnMap } from '../../shared/map-events.js';
+import { showOnMap } from '../../shared/mapEvents.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
@@ -58,8 +58,9 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 							justifyContent: 'space-between',
 							userSelect: 'none',
 						}}
+						className="drag-handle"
 					>
-						<span className="drag-handle" style={{ color: 'white', fontWeight: 500 }}>
+						<span style={{ color: 'white', fontWeight: 500 }}>
 							{layer.get ? layer.get('descr') : (layer.descr ?? 'Информация об объекте')}
 						</span>
 						<Button

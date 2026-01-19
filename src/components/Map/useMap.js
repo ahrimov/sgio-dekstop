@@ -43,6 +43,15 @@ export const useMap = containerRef => {
 			});
 
 			setTimeout(() => {
+				const canvas = containerRef.current.querySelector('canvas');
+				if (canvas) {
+					const context = canvas.getContext('2d');
+					console.log('Canvas context:', context);
+					console.log('Canvas attributes:', canvas.getContextAttributes?.());
+				}
+			}, 100);
+
+			setTimeout(() => {
 				if (mapInstance.current) {
 					mapInstance.current.updateSize();
 				}
@@ -63,7 +72,6 @@ export const useMap = containerRef => {
 	const updateMapSize = () => {
 		if (mapInstance.current) {
 			mapInstance.current.updateSize();
-			console.log('Map size manually updated');
 		}
 	};
 
