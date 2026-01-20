@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Typography, Descriptions, Button, Flex } from 'antd';
 import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
-import { showOnMap } from '../../shared/mapEvents.js';
+import { showOnMap } from '../../shared/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
+import { DARK_BLUE } from '../../consts/style.js';
 
 const { Text } = Typography;
 
@@ -61,7 +62,9 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 						className="drag-handle"
 					>
 						<span style={{ color: 'white', fontWeight: 500 }}>
-							{layer.get ? layer.get('descr') : (layer.descr ?? 'Информация об объекте')}
+							{layer.get
+								? layer.get('descr')
+								: (layer.descr ?? 'Информация об объекте')}
 						</span>
 						<Button
 							type="text"
@@ -104,13 +107,16 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 							width: '140px',
 							background: '#fafcff',
 							fontWeight: 500,
-							color: '#1166a2',
+							color: DARK_BLUE,
 						}}
 						contentStyle={{ background: '#fff' }}
 					>
 						{featureData
 							? visibleAtribs.map(atrib => (
-									<Descriptions.Item key={atrib.name} label={atrib.label || atrib.name}>
+									<Descriptions.Item
+										key={atrib.name}
+										label={atrib.label || atrib.name}
+									>
 										<Text>{formatValue(atrib, featureData[atrib.name])}</Text>
 									</Descriptions.Item>
 								))

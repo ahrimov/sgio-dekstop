@@ -6,6 +6,7 @@ import { icons } from '../../icons';
 import { LayerMoreActionsPopup } from './LayerMoreActionsPopup.jsx';
 import { Collapse, Typography } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
+import { MEDIUM_BLUE } from '../../consts/style.js';
 
 const { Text } = Typography;
 
@@ -294,7 +295,7 @@ const RasterLayerElementContainer = styled.div.withConfig({
 	display: grid;
 	grid-template-columns: 30px 40px 1fr 20px; /* Добавляем столбец для DragHandle */
 	align-content: center;
-	border-top: 1px solid #4c93c2;
+	border-top: 1px solid ${MEDIUM_BLUE};
 	padding: 2px;
 	height: 32px;
 	${props => props.active && 'background-color: rgb(255, 175, 48, 0.7);'}
@@ -342,7 +343,7 @@ const VectorLayerElementContainer = styled.div.withConfig({
 const LayersPanelContainer = styled.div`
 	position: relative;
 	background: rgba(255, 255, 255, 0.9);
-	border: 1px solid #4c93c2;
+	border: 1px solid ${MEDIUM_BLUE};
 	border-radius: 8px;
 	overflow: hidden;
 	height: 100%;

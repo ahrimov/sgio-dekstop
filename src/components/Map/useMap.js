@@ -8,13 +8,15 @@ import { Select } from 'ol/interaction.js';
 import { Style, Stroke, Fill, Circle } from 'ol/style.js';
 import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
 import { layers } from '../../legacy/globals.js';
-import { openFeatureSelector } from '../../shared/openFeatureSelectronEvent.js';
-import { showInfo } from '../../shared/featured-info-event.js';
+import { useUnit } from 'effector-react';
+import { $mapInteractionMode, INFO_INTERACTION } from '../../shared/mapInteractionMode.js';
+import { setMapClickInfoEvent, unsetMapClickInfoEvent } from './mapEvents/mapClickInfoEvent.js';
 
 export const useMap = containerRef => {
 	const mapInstance = useRef(null);
 	const [isMapReady, setIsMapReady] = useState(false);
 	const [mapStatus, setMapStatus] = useState('offline');
+	const mapInteractionMode = useUnit($mapInteractionMode);
 
 	const initializeMap = async () => {
 		if (!containerRef.current) {
@@ -57,7 +59,8 @@ export const useMap = containerRef => {
 				}
 			}, 100);
 
-			setupMapEvents();
+			mapInstance.current.on('moveend', handleMapMoveEnd);
+
 			saveMapPosition();
 			updateMapStatus();
 			addSelectInteraction();
@@ -109,38 +112,13 @@ export const useMap = containerRef => {
 		}
 	}, [isMapReady]);
 
-	const setupMapEvents = () => {
-		if (!mapInstance.current) return;
-
-		mapInstance.current.on('click', evt => {
-			if (!mapInstance.current.modify) {
-				const layersMap = new Map();
-				mapInstance.current.forEachFeatureAtPixel(
-					evt.pixel,
-					(feature, layer) => {
-						if (!layersMap.has(layer)) layersMap.set(layer, []);
-						layersMap.get(layer).push(feature);
-					},
-					{ hitTolerance: 5 }
-				);
-				const numberOfFeatures = layersMap.size;
-				if (numberOfFeatures === 0) {
-					return;
-				}
-				const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({ layer, features }));
-				if (numberOfFeatures > 1) {
-					openFeatureSelector(featuresByLayer);
-				} else {
-					showInfo({
-						featureId: featuresByLayer[0].features[0].id,
-						layer: featuresByLayer[0].layer,
-					});
-				}
-			}
-		});
-
-		mapInstance.current.on('moveend', handleMapMoveEnd);
-	};
+	useEffect(() => {
+		if (mapInteractionMode === INFO_INTERACTION) {
+			setMapClickInfoEvent(mapInstance.current);
+		} else {
+			unsetMapClickInfoEvent(mapInstance.current);
+		}
+	}, [mapInteractionMode]);
 
 	const handleMapMoveEnd = () => {
 		if (!mapInstance.current) return;
@@ -155,7 +133,11 @@ export const useMap = containerRef => {
 				const features = source.getFeaturesInExtent(extent);
 
 				for (let feature of features) {
-					const coordinates = feature.getGeometry().getCoordinates().toString().split(',');
+					const coordinates = feature
+						.getGeometry()
+						.getCoordinates()
+						.toString()
+						.split(',');
 					nodeCount += coordinates.length / 3;
 
 					if (nodeCount > (window.numberNodesOnMap || 1000)) {
@@ -169,7 +151,9 @@ export const useMap = containerRef => {
 	};
 
 	const updateMapStatus = () => {
-		const visibleBaseLayers = (window.baseRasterLayers || []).filter(layer => layer.get('visible'));
+		const visibleBaseLayers = (window.baseRasterLayers || []).filter(layer =>
+			layer.get('visible')
+		);
 		const isOnline = visibleBaseLayers.some(layer => !layer.get('useLocalTiles'));
 
 		setMapStatus(isOnline ? 'online' : 'offline');
@@ -249,7 +233,9 @@ export const useMap = containerRef => {
 
 		if (geometry.getType().includes('Point')) {
 			const center =
-				geometry.getType() === 'Point' ? geometry.getCoordinates() : geometry.getCoordinates()[0];
+				geometry.getType() === 'Point'
+					? geometry.getCoordinates()
+					: geometry.getCoordinates()[0];
 
 			view.animate({
 				center: center,

@@ -9,7 +9,8 @@ import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import AttributeForm from '../AttributeForm/AttributeForm.jsx';
-import { $showOnMapFeature } from '../../shared/mapEvents.js';
+import { $showOnMapFeature } from '../../shared/showOnMap.js';
+import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
@@ -49,16 +50,14 @@ const MapComponent = () => {
 	}, [showOnMapFeature, map]);
 
 	const {
-		drawButton,
 		controlButtons,
-		activeButton: activeEditingButton,
 		cancel: cancelEditing,
 		handleLayerSelector,
 		layer,
 		rejectCurrentFeature,
-	} = useDraw({ map, setCurrentFeature, buttonPosition: { y: 20, inverseX: 100 } });
+	} = useDraw({ map, setCurrentFeature });
 
-	const handleCloseLayerSelector = () => {
+	const handleCancelLayerSelector = () => {
 		cancelEditing();
 	};
 
@@ -81,17 +80,16 @@ const MapComponent = () => {
 
 				<ZoomControls map={map} />
 
-				{drawButton}
+				<MapButtonsContainer />
 
 				{controlButtons}
 
-				{activeEditingButton && (
-					<LayerSelector
-						handleLayerSelector={handleLayerSelector}
-						onClose={handleCloseLayerSelector}
-						vectorLayers={layers}
-					/>
-				)}
+				<LayerSelector
+					handleLayerSelector={handleLayerSelector}
+					onCancel={handleCancelLayerSelector}
+					vectorLayers={layers}
+				/>
+
 				{currentFeature && (
 					<AttributeForm
 						feature={currentFeature}

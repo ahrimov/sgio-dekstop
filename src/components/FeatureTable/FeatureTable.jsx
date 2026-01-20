@@ -6,8 +6,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import { ColumnSearch } from './ColumnSearch.jsx';
 import infoIcon from '../../assets/resources/images/assets/info.png';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
-import { showOnMap } from '../../shared/mapEvents.js';
-import { showInfo } from '../../shared/featured-info-event.js';
+import { showOnMap } from '../../shared/showOnMap.js';
+import { showInfo } from '../../shared/featuredInfoEvent.js';
 import { useUnit } from 'effector-react';
 import { $tableRefreshTrigger } from '../../shared/refreshTable.js';
 import styled from 'styled-components';
@@ -49,7 +49,12 @@ export function FeatureTable({ layer }) {
 				case 'STRING':
 					return {
 						...base,
-						filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+						filterDropdown: ({
+							setSelectedKeys,
+							selectedKeys,
+							confirm,
+							clearFilters,
+						}) => (
 							<ColumnSearch
 								setSelectedKeys={setSelectedKeys}
 								selectedKeys={selectedKeys}
@@ -144,7 +149,8 @@ export function FeatureTable({ layer }) {
 					current: pagination.current,
 					pageSize: pagination.pageSize,
 					total: pagination.total,
-					onChange: (page, pageSize) => setPagination(p => ({ ...p, current: page, pageSize })),
+					onChange: (page, pageSize) =>
+						setPagination(p => ({ ...p, current: page, pageSize })),
 					showSizeChanger: true,
 				}}
 				onChange={handleTableChange}

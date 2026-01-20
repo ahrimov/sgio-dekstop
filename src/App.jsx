@@ -13,12 +13,12 @@ import { MenuOutlined } from '@ant-design/icons';
 import './App.css';
 import { FeatureTable } from './components/FeatureTable/FeatureTable.jsx';
 import ruRU from 'antd/es/locale/ru_RU';
-import { $infoFeature, showInfo } from './shared/featured-info-event.js';
 import { useUnit } from 'effector-react';
 import { InfoAttributeView } from './components/InfoAttributeView/InfoAttributeView.jsx';
 import { $featureSelectorData, openFeatureSelector } from './shared/openFeatureSelectronEvent.js';
 import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.jsx';
 import { $numberOfLayers } from './shared/numberOfLayers.js';
+import { $infoFeature, showInfo } from './shared/featuredInfoEvent.js';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();

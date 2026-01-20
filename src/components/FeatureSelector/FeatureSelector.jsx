@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import styled from 'styled-components';
-import { showInfo } from '../../shared/featured-info-event.js';
+import { showInfo } from '../../shared/featuredInfoEvent.js';
+import { LIGHT_BLUE, MEDIUM_BLUE } from '../../consts/style.js';
 
 export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 	const initialPosition = useMemo(() => {
@@ -71,7 +72,7 @@ const FloatingWindowContainer = styled.div`
 `;
 
 const FloatingHeader = styled.div`
-	background: #4d94c2;
+	background: ${MEDIUM_BLUE};
 	color: white;
 	display: flex;
 	justify-content: space-between;
@@ -121,10 +122,10 @@ const FeatureItem = styled.div`
 	border-radius: 6px;
 	cursor: pointer;
 	transition: all 0.2s;
-	color: #4c93c2;
+	color: ${MEDIUM_BLUE};
 
 	&:hover {
-		background: #e8f8fd;
+		background: ${LIGHT_BLUE};
 	}
 `;
 

@@ -42,7 +42,6 @@ const reactConfig = {
     react: pluginReact,
   },
   rules: {
-    'react/react-in-jsx-scope': 'off',
     indent: [ "error", "tab" ],
     "no-undef": "error",
   },
