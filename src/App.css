@@ -12,9 +12,19 @@ body {
 	-webkit-app-region: drag;
 }
 
+.bottom {
+	height: 40px;
+	background: #003366;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	-webkit-app-region: drag;
+}
+
 .app {
 	width: 100vw;
-	height: calc(100vh - 30px);
+	height: calc(100vh - 70px);
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;

@@ -1,11 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import styled from 'styled-components';
 import { LIGHT_BLUE, MEDIUM_BLUE } from '../../consts/style.js';
 import { useUnit } from 'effector-react';
 import { $layerSelectorState, closeLayerSelector } from './layerSelectorState.js';
+import { useWindowControls } from '../WindowControls/useWindowControls.js';
 
 const LayerSelector = ({ handleLayerSelector, onCancel, vectorLayers = [] }) => {
+	const windowId = useMemo(() => 'layer-selector', []);
+	const { isMaximized } = useWindowControls({ windowId });
 	const layerSelectorState = useUnit($layerSelectorState);
 
 	const handleLayerSelect = layer => {
@@ -13,10 +16,10 @@ const LayerSelector = ({ handleLayerSelector, onCancel, vectorLayers = [] }) => 
 		handleLayerSelector(layer);
 	};
 
-	const handleCancelEvent = () => {
+	const handleCancelEvent = useCallback(() => {
 		closeLayerSelector();
 		onCancel();
-	};
+	}, []);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -34,14 +37,16 @@ const LayerSelector = ({ handleLayerSelector, onCancel, vectorLayers = [] }) => 
 	}, []);
 
 	return layerSelectorState ? (
-		<FloatingWindow initialPosition={initialPosition}>
+		<FloatingWindow
+			title={'Выберите слой'}
+			initialPosition={initialPosition}
+			width={350}
+			windowId={windowId}
+			onClose={handleCancelEvent}
+			showControls={true}
+		>
 			<FloatingWindowContainer>
-				<FloatingHeader className="drag-handle">
-					<h3 style={{ margin: 0, fontSize: '14px' }}>Выберите слой</h3>
-					<CloseButton onClick={handleCancelEvent}>x</CloseButton>
-				</FloatingHeader>
-
-				<FloatingContent>
+				<FloatingContent isMaximized={isMaximized}>
 					<LayersList>
 						{vectorLayers.map(layer => (
 							<LayerItem key={layer.id} onClick={() => handleLayerSelect(layer)}>
@@ -67,45 +72,12 @@ const FloatingWindowContainer = styled.div`
 	overflow: hidden;
 `;
 
-const FloatingHeader = styled.div`
-	background: ${MEDIUM_BLUE};
-	color: white;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0 16px;
-	height: 34px;
-	cursor: move;
-
-	&:active {
-		cursor: grabbing;
-	}
-`;
-
-const FloatingContent = styled.div`
+const FloatingContent = styled.div.withConfig({
+	shouldForwardProp: prop => prop !== 'isMaximized',
+})`
 	padding: 16px;
-	max-height: 400px;
-	max-width: 360px;
+	${props => (props.isMaximized ? 'max-height: calc(100vh - 150px);' : 'max-height: 400px;')}
 	overflow-y: auto;
-`;
-
-const CloseButton = styled.button`
-	background: none;
-	border: none;
-	font-size: 18px;
-	cursor: pointer;
-	color: white;
-	padding: 0;
-	width: 24px;
-	height: 24px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.2);
-		border-radius: 50%;
-	}
 `;
 
 const LayersList = styled.div`

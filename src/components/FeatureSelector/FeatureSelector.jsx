@@ -3,8 +3,11 @@ import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import styled from 'styled-components';
 import { showInfo } from '../../shared/featuredInfoEvent.js';
 import { LIGHT_BLUE, MEDIUM_BLUE } from '../../consts/style.js';
+import { useWindowControls } from '../WindowControls/useWindowControls.js';
 
 export function FeaturesSelector({ featuresByLayer = [], onClose }) {
+	const windowId = 'feature-selector';
+	const { isMaximized } = useWindowControls({ windowId });
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
 
@@ -21,13 +24,16 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 	}, []);
 
 	return (
-		<FloatingWindow initialPosition={initialPosition}>
+		<FloatingWindow
+			title={'Объекты на карте'}
+			initialPosition={initialPosition}
+			width={350}
+			windowId={windowId}
+			onClose={onClose}
+			showControls={true}
+		>
 			<FloatingWindowContainer>
-				<FloatingHeader className="drag-handle">
-					<h3 style={{ margin: 0, fontSize: '14px' }}>Объекты на карте</h3>
-					<CloseButton onClick={onClose}>×</CloseButton>
-				</FloatingHeader>
-				<FloatingContent>
+				<FloatingContent isMaximized={isMaximized}>
 					{featuresByLayer.length === 0 ? (
 						<EmptyMessage>Нет объектов в выбранной области</EmptyMessage>
 					) : (
@@ -71,34 +77,11 @@ const FloatingWindowContainer = styled.div`
 	overflow: hidden;
 `;
 
-const FloatingHeader = styled.div`
-	background: ${MEDIUM_BLUE};
-	color: white;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0 16px;
-	height: 34px;
-	cursor: move;
-`;
-
-const CloseButton = styled.button`
-	background: none;
-	border: none;
-	font-size: 18px;
-	cursor: pointer;
-	color: white;
-	width: 24px;
-	height: 24px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-`;
-
-const FloatingContent = styled.div`
+const FloatingContent = styled.div.withConfig({
+	shouldForwardProp: prop => prop !== 'isMaximized',
+})`
 	padding: 16px;
-	max-height: 400px;
-	max-width: 380px;
+	${props => !props.isMaximized && 'max-height: 400px;'}
 	overflow-y: auto;
 `;
 

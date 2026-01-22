@@ -1,7 +1,7 @@
 import { root_directory } from './initial.js';
 import { openFile } from './FileManage.js';
 import { setDBProgressCallbacks, setTotalLayersCount, initialDB } from './DBManage.js';
-import { getZoomFromMeters } from './converter.js';
+import { convertColorToHEX, getZoomFromMeters } from './converter.js';
 import { map, layers } from './globals.js';
 import { LayerAtribs } from './Map.js';
 import { minZIndexForVectorLayers } from './consts.js';
@@ -20,6 +20,7 @@ import XYZ from 'ol/source/XYZ.js';
 import TileLayer from 'ol/layer/Tile.js';
 import { createXYZ } from 'ol/tilegrid.js';
 import { setNumberOfLayers } from '../shared/numberOfLayers.js';
+import { generateColor } from '../shared/utils/colorGenerator.js';
 
 let progressCallbacks = {};
 
@@ -98,7 +99,10 @@ export function configParser(data) {
 					baseRasterLayers = parseBaseRasterLayers(jsonArray);
 				} catch (e) {
 					if (window.showAlert) {
-						window.showAlert('Внимание', `Некорректный json-файл: ${pathToBaseRasterLayers}`);
+						window.showAlert(
+							'Внимание',
+							`Некорректный json-файл: ${pathToBaseRasterLayers}`
+						);
 					} else {
 						console.error('Некорректный json-файл:', pathToBaseRasterLayers, e);
 					}
@@ -241,7 +245,10 @@ export function configParser(data) {
 			const geometryType = feature.getGeometry().getType();
 			if (
 				feature.label &&
-				!((geometryType === 'MultiLineString' || geometryType === 'LineString') && mapZoom >= 19)
+				!(
+					(geometryType === 'MultiLineString' || geometryType === 'LineString') &&
+					mapZoom >= 19
+				)
 			) {
 				const featureLabelStyle = featureStyle.getText();
 				featureLabelStyle.setText(feature.label);
@@ -290,7 +297,10 @@ export function configParser(data) {
 
 		let enabled = true;
 		if (typeof dom.getElementsByTagName('layerDb').item(0) != 'undefined') {
-			let enabled_string = dom.getElementsByTagName('layerDb').item(0).getAttribute('enabled');
+			let enabled_string = dom
+				.getElementsByTagName('layerDb')
+				.item(0)
+				.getAttribute('enabled');
 			if (enabled_string === 'false') {
 				enabled = false;
 			}
@@ -343,18 +353,24 @@ export async function pointStyleParse(dom) {
 				const color = convertColorToHEX(
 					iconStyle.getElementsByTagName('color').item(0)?.textContent || generateColor()
 				);
-				const form = iconStyle.getElementsByTagName('form').item(0)?.textContent || 'circle';
+				const form =
+					iconStyle.getElementsByTagName('form').item(0)?.textContent || 'circle';
 				const fill = new Fill({ color: color });
-				const outline = parseInt(iconStyle.getElementsByTagName('outline').item(0)?.textContent);
+				const outline = parseInt(
+					iconStyle.getElementsByTagName('outline').item(0)?.textContent
+				);
 				let stroke;
 				if (outline) {
 					const lineStyle = domStyle.getElementsByTagName('LineStyle').item(0);
 					if (lineStyle) {
 						const lineColor = convertColorToHEX(
-							lineStyle.getElementsByTagName('color').item(0)?.textContent || '#000000'
+							lineStyle.getElementsByTagName('color').item(0)?.textContent ||
+								'#000000'
 						);
 						const width =
-							parseInt(lineStyle.getElementsByTagName('width').item(0)?.textContent) || 1;
+							parseInt(
+								lineStyle.getElementsByTagName('width').item(0)?.textContent
+							) || 1;
 						stroke = new Stroke({
 							color: lineColor,
 							width: width,
@@ -364,34 +380,34 @@ export async function pointStyleParse(dom) {
 				const image = createImageStyleByForm(form, fill, imageSize, stroke);
 				style.setImage(image);
 			} else {
-				let imageSize = iconStyle.getElementsByTagName('size').item(0)?.textContent || 16;
-				href = href.replace('Public', '');
-				const icon = await new Promise((resolve, reject) => {
-					window.resolveLocalFileSystemURL(
-						cordova.file.applicationDirectory + 'www/resources/images/' + href,
-						fileEntry => {
-							const img = new Image();
-							img.onload = function () {
-								const scaleX = imageSize / this.width;
-								const scaleY = imageSize / this.height;
-								const scale = scaleX < scaleY ? scaleX : scaleY;
-								resolve(
-									new Icon({
-										src: fileEntry.toInternalURL(),
-										scale: scale,
-									})
-								);
-							};
-							img.src = fileEntry.toInternalURL();
-						},
-						e => {
-							console.log('Error while opening: ', href);
-							resolve(null);
-						}
-					);
-				});
-				if (!icon) return null;
-				style.setImage(icon);
+				// let imageSize = iconStyle.getElementsByTagName('size').item(0)?.textContent || 16;
+				// href = href.replace('Public', '');
+				// const icon = await new Promise((resolve, reject) => {
+				// 	window.resolveLocalFileSystemURL(
+				// 		cordova.file.applicationDirectory + 'www/resources/images/' + href,
+				// 		fileEntry => {
+				// 			const img = new Image();
+				// 			img.onload = function () {
+				// 				const scaleX = imageSize / this.width;
+				// 				const scaleY = imageSize / this.height;
+				// 				const scale = scaleX < scaleY ? scaleX : scaleY;
+				// 				resolve(
+				// 					new Icon({
+				// 						src: fileEntry.toInternalURL(),
+				// 						scale: scale,
+				// 					})
+				// 				);
+				// 			};
+				// 			img.src = fileEntry.toInternalURL();
+				// 		},
+				// 		e => {
+				// 			console.log('Error while opening: ', href);
+				// 			resolve(null);
+				// 		}
+				// 	);
+				// });
+				// if (!icon) return null;
+				// style.setImage(icon);
 			}
 		} else {
 			const defaultImage = new Circle({
@@ -409,8 +425,11 @@ export async function pointStyleParse(dom) {
 
 	function parsePointStyleOld(dom) {
 		const fill = new Fill({
-			color: dom.getElementsByTagName('Fill').item(0).getElementsByTagName('CssParameter').item(0)
-				.textContent,
+			color: dom
+				.getElementsByTagName('Fill')
+				.item(0)
+				.getElementsByTagName('CssParameter')
+				.item(0).textContent,
 		});
 		const xmlStroke = dom.getElementsByTagName('Stroke').item(0);
 		const stroke = new Stroke({
@@ -494,7 +513,8 @@ export function polygonStyleParse(dom) {
 		if (parseInt(outline)) {
 			const lineStyle = domStyle.getElementsByTagName('LineStyle').item(0);
 			if (lineStyle) {
-				const lineColor = lineStyle.getElementsByTagName('color').item(0)?.textContent || '#000000';
+				const lineColor =
+					lineStyle.getElementsByTagName('color').item(0)?.textContent || '#000000';
 				const width = lineStyle.getElementsByTagName('width').item(0)?.textContent || 1;
 				style.setStroke(
 					new Stroke({
@@ -680,7 +700,8 @@ function parseBaseRasterLayers(jsonArray) {
 					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
 					tileGrid: createXYZ({
 						extent: [
-							-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
+							-20037508.342789244, -20037508.342789244, 20037508.342789244,
+							20037508.342789244,
 						],
 						maxZoom: 19,
 					}),
@@ -694,7 +715,8 @@ function parseBaseRasterLayers(jsonArray) {
 					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
 					tileGrid: createXYZ({
 						extent: [
-							-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244,
+							-20037508.342789244, -20037508.342789244, 20037508.342789244,
+							20037508.342789244,
 						],
 					}),
 					tileSize: json.tileSize,

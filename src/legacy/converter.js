@@ -44,7 +44,7 @@ export function getZoomForExtent(extent, map){
 	return view.getZoomForResolution(resolution);
 }
 
-function convertColorToHEX(color){
+export function convertColorToHEX(color){
 	if(color.length === 8){
 		return '#' + color.slice(2, 8);
 	}

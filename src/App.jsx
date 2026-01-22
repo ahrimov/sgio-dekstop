@@ -19,6 +19,7 @@ import { $featureSelectorData, openFeatureSelector } from './shared/openFeatureS
 import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.jsx';
 import { $numberOfLayers } from './shared/numberOfLayers.js';
 import { $infoFeature, showInfo } from './shared/featuredInfoEvent.js';
+import { Taskbar } from './components/WindowControls/taskbar.jsx';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -135,6 +136,8 @@ const AppContent = () => {
 						onClose={() => openFeatureSelector(null)}
 					/>
 				)}
+
+				<Taskbar />
 
 				<LoadingScreen
 					visible={loadingState.visible}

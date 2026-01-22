@@ -1,17 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Typography, Descriptions, Button, Flex } from 'antd';
-import { CloseOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import { showOnMap } from '../../shared/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
 import { DARK_BLUE } from '../../consts/style.js';
+import { useWindowControls } from '../WindowControls/useWindowControls.js';
 
 const { Text } = Typography;
 
 export function InfoAttributeView({ featureId, layer, onClose }) {
 	const [featureData, setFeatureData] = useState(null);
+	const windowId = useMemo(() => `info-${featureId}`, [featureId]);
+	const { isMaximized } = useWindowControls({ windowId });
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -49,38 +52,27 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
 
 	return featureData ? (
-		<FloatingWindow initialPosition={initialPosition}>
+		<FloatingWindow
+			title={layer.get ? layer.get('descr') : (layer.descr ?? 'Информация об объекте')}
+			initialPosition={initialPosition}
+			width={350}
+			windowId={windowId}
+			onClose={onClose}
+			showControls={true}
+		>
 			<Card
-				title={
-					<div
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							userSelect: 'none',
-						}}
-						className="drag-handle"
-					>
-						<span style={{ color: 'white', fontWeight: 500 }}>
-							{layer.get
-								? layer.get('descr')
-								: (layer.descr ?? 'Информация об объекте')}
-						</span>
-						<Button
-							type="text"
-							size="small"
-							onClick={onClose}
-							icon={<CloseOutlined />}
-							style={{ color: 'white', marginLeft: 8 }}
-							aria-label="Закрыть"
-						/>
-					</div>
-				}
 				styles={{
 					header: { background: 'rgb(17, 102, 162)', color: 'white' },
 					body: { maxHeight: '65vh', overflow: 'auto', paddingTop: '10px' },
 				}}
-				style={{ width: 350, maxHeight: '80vh', overflow: 'auto', cursor: 'default' }}
+				style={{
+					width: '100%',
+					border: 'none',
+					boxShadow: 'none',
+					maxHeight: !isMaximized ? '80vh' : '',
+					overflow: 'auto',
+					cursor: 'default',
+				}}
 			>
 				<Flex vertical gap={5}>
 					<Flex gap={2} justify="flex-end">
