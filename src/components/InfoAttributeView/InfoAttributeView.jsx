@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, Typography, Descriptions, Button, Flex } from 'antd';
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { Card, Typography, Descriptions, Button, Flex, Form, Space } from 'antd';
+import {
+	CheckOutlined,
+	CloseOutlined,
+	DeleteOutlined,
+	EditOutlined,
+	RadiusSettingOutlined,
+	SaveOutlined,
+	SearchOutlined,
+} from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import { showOnMap } from '../../shared/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
@@ -8,11 +16,17 @@ import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
 import { DARK_BLUE } from '../../consts/style.js';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
+import { AttributeEditForm } from './AttributeEditForm.jsx';
+import { updateFeatureAttributes } from '../../features/saveFeature/updateFeature.js';
 
 const { Text } = Typography;
 
 export function InfoAttributeView({ featureId, layer, onClose }) {
 	const [featureData, setFeatureData] = useState(null);
+	const [isEditing, setIsEditing] = useState(false);
+	const [feature, setFeature] = useState(null);
+	const [form] = Form.useForm();
+	const [loading, setLoading] = useState(false);
 	const windowId = useMemo(() => `info-${featureId}`, [featureId]);
 	const { isMaximized } = useWindowControls({ windowId });
 
@@ -32,6 +46,15 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 				const data = await getFeatureAttributes(layer, featureId);
 				if (data) {
 					setFeatureData(data);
+					const features = layer.getSource().getFeatures();
+					const featureObj = features.find(feature => feature.get('id') === featureId);
+					setFeature(featureObj);
+
+					const initialValues = {};
+					layer.atribs.forEach(atrib => {
+						initialValues[atrib.name] = data[atrib.name] || '';
+					});
+					form.setFieldsValue(initialValues);
 				}
 			} catch (err) {
 				console.error('Error fetching feature attributes:', err);
@@ -39,7 +62,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		};
 
 		fetchFeatureAttributes();
-	}, [layer, featureId]);
+	}, [layer, featureId, form]);
 
 	const handleShowOnMap = () => {
 		showOnMap({ featureId: featureId, layer });
@@ -47,6 +70,63 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 
 	const handleDeleteFeature = () => {
 		deleteFeature(featureId, layer, onClose);
+	};
+
+	const handleEditClick = () => {
+		setIsEditing(true);
+	};
+
+	const handleSaveEdit = async () => {
+		try {
+			setLoading(true);
+			const values = await form.validateFields();
+
+			if (feature) {
+				Object.keys(values).forEach(key => {
+					feature.set(key, values[key]);
+				});
+
+				const processedValues = {};
+				visibleAtribs.forEach(atrib => {
+					const value = values[atrib.name];
+
+					if (atrib.type === 'DATE' && value && value.format) {
+						processedValues[atrib.name] = value.format('YYYY-MM-DD');
+					} else {
+						processedValues[atrib.name] = value;
+					}
+				});
+
+				updateFeatureAttributes(
+					layer,
+					featureId,
+					processedValues,
+					() => {
+						setFeatureData(prev => ({
+							...prev,
+							...processedValues,
+						}));
+						setIsEditing(false);
+					},
+					error => {
+						console.log(`Ошибка сохранения: ${error.message}`);
+					}
+				);
+			}
+
+			setIsEditing(false);
+		} catch (error) {
+			console.error('Error saving feature:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleCancelEdit = () => {
+		if (featureData) {
+			form.setFieldsValue(featureData);
+		}
+		setIsEditing(false);
 	};
 
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
@@ -63,7 +143,11 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			<Card
 				styles={{
 					header: { background: 'rgb(17, 102, 162)', color: 'white' },
-					body: { maxHeight: '65vh', overflow: 'auto', paddingTop: '10px' },
+					body: {
+						maxHeight: !isMaximized ? '65vh' : '',
+						overflow: 'auto',
+						paddingTop: '10px',
+					},
 				}}
 				style={{
 					width: '100%',
@@ -73,47 +157,87 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 					overflow: 'auto',
 					cursor: 'default',
 				}}
+				actions={
+					isEditing
+						? [
+								<Space key="actions">
+									<Button onClick={handleCancelEdit} icon={<CloseOutlined />}>
+										Отменить
+									</Button>
+									<Button
+										type="primary"
+										onClick={handleSaveEdit}
+										icon={<CheckOutlined />}
+										loading={loading}
+									>
+										Сохранить
+									</Button>
+								</Space>,
+							]
+						: null
+				}
 			>
 				<Flex vertical gap={5}>
 					<Flex gap={2} justify="flex-end">
-						<Button
-							title="Показать на карте"
-							shape="square"
-							icon={<SearchOutlined />}
-							onClick={handleShowOnMap}
-						/>
-						<Button
-							variant="outlined"
-							color="red"
-							title="Удалить объект"
-							shape="square"
-							icon={<DeleteOutlined />}
-							onClick={handleDeleteFeature}
-						/>
+						{isEditing ? null : (
+							<>
+								<Button
+									title="Редактировать геометрию (пока не реализовано)"
+									shape="square"
+									icon={<RadiusSettingOutlined />}
+								/>
+								<Button
+									title="Редактировать атрибуты"
+									shape="square"
+									icon={<EditOutlined />}
+									onClick={handleEditClick}
+								/>
+								<Button
+									title="Показать на карте"
+									shape="square"
+									icon={<SearchOutlined />}
+									onClick={handleShowOnMap}
+								/>
+								<Button
+									variant="outlined"
+									color="red"
+									title="Удалить объект"
+									shape="square"
+									icon={<DeleteOutlined />}
+									onClick={handleDeleteFeature}
+								/>
+							</>
+						)}
 					</Flex>
-					<Descriptions
-						column={1}
-						size="small"
-						bordered
-						labelStyle={{
-							width: '140px',
-							background: '#fafcff',
-							fontWeight: 500,
-							color: DARK_BLUE,
-						}}
-						contentStyle={{ background: '#fff' }}
-					>
-						{featureData
-							? visibleAtribs.map(atrib => (
-									<Descriptions.Item
-										key={atrib.name}
-										label={atrib.label || atrib.name}
-									>
-										<Text>{formatValue(atrib, featureData[atrib.name])}</Text>
-									</Descriptions.Item>
-								))
-							: null}
-					</Descriptions>
+					{isEditing ? (
+						<AttributeEditForm form={form} attributes={visibleAtribs} />
+					) : (
+						<Descriptions
+							column={1}
+							size="small"
+							bordered
+							labelStyle={{
+								width: '140px',
+								background: '#fafcff',
+								fontWeight: 500,
+								color: DARK_BLUE,
+							}}
+							contentStyle={{ background: '#fff' }}
+						>
+							{featureData
+								? visibleAtribs.map(atrib => (
+										<Descriptions.Item
+											key={atrib.name}
+											label={atrib.label || atrib.name}
+										>
+											<Text>
+												{formatValue(atrib, featureData[atrib.name])}
+											</Text>
+										</Descriptions.Item>
+									))
+								: null}
+						</Descriptions>
+					)}
 				</Flex>
 			</Card>
 		</FloatingWindow>

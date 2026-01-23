@@ -10,12 +10,13 @@ import {
 	DRAW_INTERACTION,
 } from '../../shared/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
+import { $drawingState } from './store.js';
 
 const { Text } = Typography;
 
 export function useDraw({ map, setCurrentFeature }) {
 	const {
-		startDrawing,
+		startDrawing: startDrawingGeometry,
 		undo,
 		reset,
 		finishEditing,
@@ -26,6 +27,7 @@ export function useDraw({ map, setCurrentFeature }) {
 		rejectCurrentFeature,
 	} = useDrawGeometry({ map });
 	const layerRef = useRef(null);
+	const drawingState = useUnit($drawingState);
 
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
@@ -42,10 +44,14 @@ export function useDraw({ map, setCurrentFeature }) {
 		}
 	}, [mapInteractionMode, isDrawing, rejectCurrentFeature, reset]);
 
-	const handleLayerSelector = layer => {
-		startDrawing(layer);
-		layerRef.current = layer;
-	};
+	useEffect(() => {
+		if (drawingState?.start) {
+			changeInteractionMode(DRAW_INTERACTION);
+			const layer = drawingState.layer;
+			startDrawingGeometry(layer);
+			layerRef.current = layer;
+		}
+	}, [drawingState, startDrawingGeometry]);
 
 	const cancel = () => {
 		changeInteractionMode(DEFAULT_INTERACTION);
@@ -107,7 +113,6 @@ export function useDraw({ map, setCurrentFeature }) {
 	return {
 		controlButtons,
 		cancel,
-		handleLayerSelector,
 		isDrawing,
 		layer: layerRef.current,
 		rejectCurrentFeature,

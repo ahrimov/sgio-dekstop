@@ -6,15 +6,15 @@ export function getFeatureDatas(
 	{ offset = 0, limit = 100, filters = {}, sorter = {} },
 	callback
 ) {
-    const tableName = layer.id;
-    const atribs = layer.atribs.map(a => a.name);
-    const fields = [...atribs, 'rowid as key'].join(', ');
-    const filterClauses = buildFilterClauses(layer.atribs, filters);
-    const where = filterClauses.length ? `WHERE ${filterClauses.join(' AND ')}` : '';
-    let orderBy = '';
-    if (sorter.field && sorter.order) {
-        orderBy = `ORDER BY "${sorter.field}" ${sorter.order}`;
-    }
+	const tableName = layer.id;
+	const atribs = layer.atribs.map(a => a.name);
+	const fields = [...atribs, 'rowid as key'].join(', ');
+	const filterClauses = buildFilterClauses(layer.atribs, filters);
+	const where = filterClauses.length ? `WHERE ${filterClauses.join(' AND ')}` : '';
+	let orderBy = '';
+	if (sorter.field && sorter.order) {
+		orderBy = `ORDER BY "${sorter.field}" ${sorter.order}`;
+	}
 
 	const sql = `SELECT ${fields} FROM ${tableName} ${where} ${orderBy} LIMIT ${limit} OFFSET ${offset}`;
 
@@ -35,6 +35,10 @@ export function getFeatureDatas(
 							item[atrib.name] = atrib.options[value];
 						}
 					}
+				}
+				if (atrib.type === 'DATE' && item[atrib.name]) {
+					const date = new Date(item[atrib.name]);
+					item[atrib.name] = date.toLocaleDateString('ru-RU');
 				}
 			});
 

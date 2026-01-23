@@ -5,15 +5,16 @@ import { LIGHT_BLUE, MEDIUM_BLUE } from '../../consts/style.js';
 import { useUnit } from 'effector-react';
 import { $layerSelectorState, closeLayerSelector } from './layerSelectorState.js';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
+import { startDrawing } from '../../features/draw/store.js';
 
-const LayerSelector = ({ handleLayerSelector, onCancel, vectorLayers = [] }) => {
+const LayerSelector = ({ onCancel, vectorLayers = [] }) => {
 	const windowId = useMemo(() => 'layer-selector', []);
 	const { isMaximized } = useWindowControls({ windowId });
 	const layerSelectorState = useUnit($layerSelectorState);
 
 	const handleLayerSelect = layer => {
 		closeLayerSelector();
-		handleLayerSelector(layer);
+		startDrawing(layer);
 	};
 
 	const handleCancelEvent = useCallback(() => {

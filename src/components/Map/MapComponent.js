@@ -52,7 +52,6 @@ const MapComponent = () => {
 	const {
 		controlButtons,
 		cancel: cancelEditing,
-		handleLayerSelector,
 		layer,
 		rejectCurrentFeature,
 	} = useDraw({ map, setCurrentFeature });
@@ -85,7 +84,6 @@ const MapComponent = () => {
 				{controlButtons}
 
 				<LayerSelector
-					handleLayerSelector={handleLayerSelector}
 					onCancel={handleCancelLayerSelector}
 					vectorLayers={layers}
 				/>

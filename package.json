@@ -12,15 +12,15 @@
 		"build-react": "node esbuild.config.js",
 		"dev-react": "node esbuild.config.js --dev",
 		"dev-full": "npm run dev-react & npm run electron-dev",
-
 		"build:rpm": "npm run build-react && electron-builder --linux rpm",
 		"build:tar": "electron-builder --linux tar.gz",
-    	"clean": "rm -rf dist"
+		"clean": "rm -rf dist"
 	},
 	"dependencies": {
 		"@ant-design/icons": "^6.1.0",
 		"antd": "^6.0.1",
 		"css-to-react-native": "^3.2.0",
+		"dayjs": "^1.11.19",
 		"effector": "^23.4.4",
 		"effector-react": "^23.3.0",
 		"ol": "^10.7.0",
@@ -69,18 +69,17 @@
 		"appId": "sgio-desktop",
 		"productName": "SGIO Desktop",
 		"copyright": "Copyright © 2026 SGIO-Inform",
-
 		"directories": {
-    		"output": "dist"
-    	},
-
+			"output": "dist"
+		},
 		"linux": {
-			"target": ["tar.gz"],
+			"target": [
+				"tar.gz"
+			],
 			"icon": "build/icons/",
 			"category": "Utility",
 			"maintainer": "SGIO Team <ahrimovanton@gmail.com>"
 		},
-
 		"extraResources": [
 			{
 				"from": "src/assets/resources/Project",
