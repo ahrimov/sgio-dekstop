@@ -17,7 +17,7 @@
 	</MapView>
 	<database>
 		<NameDB>sample</NameDB>
-		<FilenameDB>МГ_1.0.db</FilenameDB>
+		<FilenameDB>default.db</FilenameDB>
 		<PathToDB>db/</PathToDB>
 	</database>
 	<layers>
