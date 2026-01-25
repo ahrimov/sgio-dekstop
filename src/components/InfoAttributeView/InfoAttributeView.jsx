@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Typography, Descriptions, Button, Flex, Form, Space } from 'antd';
 import {
 	CheckOutlined,
@@ -6,7 +6,6 @@ import {
 	DeleteOutlined,
 	EditOutlined,
 	RadiusSettingOutlined,
-	SaveOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
@@ -17,7 +16,13 @@ import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatu
 import { DARK_BLUE } from '../../consts/style.js';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
 import { AttributeEditForm } from './AttributeEditForm.jsx';
-import { updateFeatureAttributes } from '../../features/saveFeature/updateFeature.js';
+import {
+	updateFeatureAttributes,
+	updateFeatureGeometry,
+} from '../../features/saveFeature/updateFeature.js';
+import { startGeometryEdit } from '../../features/draw/store.js';
+import { useUnit } from 'effector-react';
+import { $mapInteractionMode, GEOMETRY_EDIT_INTERACTION } from '../../shared/mapInteractionMode.js';
 
 const { Text } = Typography;
 
@@ -29,6 +34,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const [loading, setLoading] = useState(false);
 	const windowId = useMemo(() => `info-${featureId}`, [featureId]);
 	const { isMaximized } = useWindowControls({ windowId });
+	const isGeometryEditing = useUnit($mapInteractionMode) === GEOMETRY_EDIT_INTERACTION;
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -129,6 +135,42 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		setIsEditing(false);
 	};
 
+	const handleEditGeometryClick = useCallback(() => {
+		if (!feature) {
+			console.error('Не удалось начать редактирование геометрии');
+			return;
+		}
+
+		startGeometryEdit({ feature, layer });
+	}, [feature, layer]);
+
+	const handleSaveGeometryEdit = useCallback(() => {
+		try {
+			setLoading(true);
+
+			const features = layer.getSource().getFeatures();
+			const updatedFeature = features.find(f => f.get('id') === featureId);
+
+			if (updatedFeature) {
+				updateFeatureGeometry(
+					layer,
+					featureId,
+					updatedFeature.getGeometry(),
+					() => {
+						setFeature(updatedFeature);
+					},
+					error => {
+						console.error(`Ошибка сохранения геометрии: ${error.message}`);
+					}
+				);
+			}
+		} catch (error) {
+			console.error('Error saving geometry:', error);
+		} finally {
+			setLoading(false);
+		}
+	}, [layer, featureId]);
+
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
 
 	return featureData ? (
@@ -174,17 +216,39 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 									</Button>
 								</Space>,
 							]
-						: null
+						: isGeometryEditing
+							? [
+									<Space key="geometry-actions">
+										<Button
+											onClick={() => {
+												/* отмена редактирования геометрии */
+											}}
+											icon={<CloseOutlined />}
+										>
+											Отменить
+										</Button>
+										<Button
+											type="primary"
+											onClick={handleSaveGeometryEdit}
+											icon={<CheckOutlined />}
+											loading={loading}
+										>
+											Сохранить геометрию
+										</Button>
+									</Space>,
+								]
+							: null
 				}
 			>
 				<Flex vertical gap={5}>
 					<Flex gap={2} justify="flex-end">
-						{isEditing ? null : (
+						{isEditing || isGeometryEditing ? null : (
 							<>
 								<Button
-									title="Редактировать геометрию (пока не реализовано)"
+									title="Редактировать геометрию"
 									shape="square"
 									icon={<RadiusSettingOutlined />}
+									onClick={handleEditGeometryClick}
 								/>
 								<Button
 									title="Редактировать атрибуты"

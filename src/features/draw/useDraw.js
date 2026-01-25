@@ -8,50 +8,85 @@ import {
 	changeInteractionMode,
 	DEFAULT_INTERACTION,
 	DRAW_INTERACTION,
+	GEOMETRY_EDIT_INTERACTION,
 } from '../../shared/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
-import { $drawingState } from './store.js';
+import { $drawingState, DRAWING_TYPE, EDITING_TYPE } from './store.js';
 
 const { Text } = Typography;
 
 export function useDraw({ map, setCurrentFeature }) {
 	const {
 		startDrawing: startDrawingGeometry,
+		startGeometryEdit: startGeometryEditInteraction,
+		finishGeometryEdit: finishGeometryEditInteraction,
+		cancelGeometryEdit: cancelGeometryEditInteraction,
 		undo,
 		reset,
 		finishEditing,
 		showUndoButton,
 		acceptButtonDisabled,
 		isDrawing,
+		isModifying,
 		canReset,
 		rejectCurrentFeature,
 	} = useDrawGeometry({ map });
 	const layerRef = useRef(null);
+	const featureRef = useRef(null);
 	const drawingState = useUnit($drawingState);
 
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
 	const closeControlPanel = () => {
-		rejectCurrentFeature();
+		if (isDrawing) {
+			rejectCurrentFeature();
+		} else if (isModifying) {
+			cancelGeometryEditInteraction();
+		}
 		reset();
 		changeInteractionMode(DEFAULT_INTERACTION);
 	};
 
 	useEffect(() => {
-		if (mapInteractionMode !== DRAW_INTERACTION && isDrawing) {
-			rejectCurrentFeature();
+		if (
+			mapInteractionMode !== DRAW_INTERACTION &&
+			mapInteractionMode !== GEOMETRY_EDIT_INTERACTION
+		) {
+			if (isDrawing) {
+				rejectCurrentFeature();
+			}
+			if (isModifying) {
+				cancelGeometryEditInteraction();
+			}
 			reset();
 		}
-	}, [mapInteractionMode, isDrawing, rejectCurrentFeature, reset]);
+	}, [
+		mapInteractionMode,
+		isDrawing,
+		isModifying,
+		rejectCurrentFeature,
+		reset,
+		cancelGeometryEditInteraction,
+	]);
 
 	useEffect(() => {
-		if (drawingState?.start) {
+		if (drawingState?.type === DRAWING_TYPE && drawingState?.start) {
 			changeInteractionMode(DRAW_INTERACTION);
 			const layer = drawingState.layer;
 			startDrawingGeometry(layer);
 			layerRef.current = layer;
 		}
 	}, [drawingState, startDrawingGeometry]);
+
+	useEffect(() => {
+		if (drawingState?.type === EDITING_TYPE && drawingState?.start) {
+			changeInteractionMode(GEOMETRY_EDIT_INTERACTION);
+			const { feature, layer } = drawingState;
+			startGeometryEditInteraction(feature, layer);
+			layerRef.current = layer;
+			featureRef.current = feature;
+		}
+	}, [drawingState, startGeometryEditInteraction]);
 
 	const cancel = () => {
 		changeInteractionMode(DEFAULT_INTERACTION);
@@ -66,7 +101,18 @@ export function useDraw({ map, setCurrentFeature }) {
 		changeInteractionMode(DEFAULT_INTERACTION);
 	};
 
-	const controlButtons = isDrawing && (
+	const handleFinishGeometryEdit = () => {
+		const result = finishGeometryEditInteraction();
+		if (result) {
+			const { feature, geometry } = result;
+			setCurrentFeature?.(feature);
+			changeInteractionMode(DEFAULT_INTERACTION);
+			return { feature, geometry };
+		}
+		return null;
+	};
+
+	const controlButtons = (isDrawing || isModifying) && (
 		<ControlPanel>
 			<CloseButton onClick={closeControlPanel}>
 				<CloseOutlined />
@@ -74,13 +120,21 @@ export function useDraw({ map, setCurrentFeature }) {
 			<Flex vertical gap={10} style={{ width: '100%' }}>
 				<Flex justify="center">
 					<Text style={{ color: 'rgb(17, 102, 162)' }}>
-						{layerRef.current?.get('descr')}
+						{isDrawing
+							? `Создание: ${layerRef.current?.get('descr')}`
+							: `Редактирование: ${layerRef.current?.get('descr')}`}
 					</Text>
 				</Flex>
 				<Flex justify="center" gap={10}>
 					<ControlButton
 						disabled={!canReset}
-						onClick={() => canReset && rejectCurrentFeature()}
+						onClick={() => {
+							if (isDrawing) {
+								canReset && rejectCurrentFeature();
+							} else if (isModifying) {
+								cancelGeometryEditInteraction();
+							}
+						}}
 					>
 						<CloseOutlined style={{ color: 'red' }} />
 						Отменить
@@ -99,7 +153,13 @@ export function useDraw({ map, setCurrentFeature }) {
 					</ControlButton>
 					<ControlButton
 						type="primary"
-						onClick={handleFinishEditing}
+						onClick={() => {
+							if (isDrawing) {
+								handleFinishEditing();
+							} else if (isModifying) {
+								handleFinishGeometryEdit();
+							}
+						}}
 						disabled={acceptButtonDisabled}
 					>
 						<CheckOutlined style={{ color: 'black' }} />
@@ -113,7 +173,8 @@ export function useDraw({ map, setCurrentFeature }) {
 	return {
 		controlButtons,
 		cancel,
-		isDrawing,
+		isDrawing: isDrawing || isModifying,
+		isModifyingGeometry: isModifying,
 		layer: layerRef.current,
 		rejectCurrentFeature,
 	};

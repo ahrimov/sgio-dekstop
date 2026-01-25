@@ -137,6 +137,50 @@ export function updateFeatureAttributes(layer, featureId, updatedAttributes, onS
 	}
 }
 
+export function updateFeatureGeometry(layer, featureId, geometry, onSuccess, onError) {
+	try {
+		const source = layer.getSource();
+		const features = source.getFeatures();
+		const feature = features.find(f => f.get('id') === featureId);
+		
+		if (!feature) {
+			throw new Error(`Фича с ID ${featureId} не найдена в слое ${layer.id}`);
+		}
+		
+		if (!geometry) {
+			throw new Error('Не указана новая геометрия');
+		}
+		
+		feature.setGeometry(geometry);
+		
+		const featureString = writeFeatureInKML(feature);
+		
+		const query = `
+			UPDATE ${layer.id} 
+			SET Geometry = GeomFromText('${featureString}', 3857)
+			WHERE id = ${featureId};
+		`;
+		
+		requestToDB(query, () => {
+			feature.id = featureId;
+			feature.layerID = layer.id;
+			
+			feature.changed();
+			
+			setTimeout(() => refreshFeatureTable(), 50);
+			
+			if (onSuccess) onSuccess(feature);
+		});
+	} catch (error) {
+		console.error('Error updating feature geometry:', error);
+		if (onError) {
+			onError(error);
+		} else {
+			alert(`Ошибка обновления геометрии: ${error.message}`);
+		}
+	}
+}
+
 function toSqlValue(val) {
 	if (typeof val === 'string') {
 		return escapeSqlString(val);
