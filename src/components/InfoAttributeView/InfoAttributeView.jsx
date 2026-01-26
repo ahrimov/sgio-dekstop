@@ -20,9 +20,15 @@ import {
 	updateFeatureAttributes,
 	updateFeatureGeometry,
 } from '../../features/saveFeature/updateFeature.js';
-import { startGeometryEdit } from '../../features/draw/store.js';
+import { finishGeometryEdit, startGeometryEdit } from '../../features/draw/store.js';
 import { useUnit } from 'effector-react';
-import { $mapInteractionMode, GEOMETRY_EDIT_INTERACTION } from '../../shared/mapInteractionMode.js';
+import {
+	$mapInteractionMode,
+	changeInteractionMode,
+	DEFAULT_INTERACTION,
+	GEOMETRY_EDIT_INTERACTION,
+} from '../../shared/mapInteractionMode.js';
+import { $infoAttributeState, CANCEL_EDITING, FINISH_EDITING } from './store.js';
 
 const { Text } = Typography;
 
@@ -35,6 +41,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const windowId = useMemo(() => `info-${featureId}`, [featureId]);
 	const { isMaximized } = useWindowControls({ windowId });
 	const isGeometryEditing = useUnit($mapInteractionMode) === GEOMETRY_EDIT_INTERACTION;
+	const infoAttributeState = useUnit($infoAttributeState);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -45,6 +52,37 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			y: 100,
 		};
 	}, []);
+
+	const handleCancelEditGeometry = useCallback(() => {
+		changeInteractionMode(DEFAULT_INTERACTION);
+	}, []);
+
+	const handleSaveGeometryEdit = useCallback(() => {
+		try {
+			setLoading(true);
+
+			const features = layer.getSource().getFeatures();
+			const updatedFeature = features.find(f => f.get('id') === featureId);
+
+			if (updatedFeature) {
+				updateFeatureGeometry(
+					layer,
+					featureId,
+					updatedFeature.getGeometry(),
+					() => {
+						setFeature(updatedFeature);
+					},
+					error => {
+						console.error(`Ошибка сохранения геометрии: ${error.message}`);
+					}
+				);
+			}
+		} catch (error) {
+			console.error('Error saving geometry:', error);
+		} finally {
+			setLoading(false);
+		}
+	}, [layer, featureId]);
 
 	useEffect(() => {
 		const fetchFeatureAttributes = async () => {
@@ -69,6 +107,14 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 
 		fetchFeatureAttributes();
 	}, [layer, featureId, form]);
+
+	useEffect(() => {
+		if (infoAttributeState?.editingType === FINISH_EDITING) {
+			handleSaveGeometryEdit();
+		} else if (infoAttributeState?.editingType === CANCEL_EDITING) {
+			handleCancelEditGeometry();
+		}
+	}, [handleCancelEditGeometry, handleSaveGeometryEdit, infoAttributeState]);
 
 	const handleShowOnMap = () => {
 		showOnMap({ featureId: featureId, layer });
@@ -144,33 +190,6 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		startGeometryEdit({ feature, layer });
 	}, [feature, layer]);
 
-	const handleSaveGeometryEdit = useCallback(() => {
-		try {
-			setLoading(true);
-
-			const features = layer.getSource().getFeatures();
-			const updatedFeature = features.find(f => f.get('id') === featureId);
-
-			if (updatedFeature) {
-				updateFeatureGeometry(
-					layer,
-					featureId,
-					updatedFeature.getGeometry(),
-					() => {
-						setFeature(updatedFeature);
-					},
-					error => {
-						console.error(`Ошибка сохранения геометрии: ${error.message}`);
-					}
-				);
-			}
-		} catch (error) {
-			console.error('Error saving geometry:', error);
-		} finally {
-			setLoading(false);
-		}
-	}, [layer, featureId]);
-
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
 
 	return featureData ? (
@@ -220,16 +239,16 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 							? [
 									<Space key="geometry-actions">
 										<Button
-											onClick={() => {
-												/* отмена редактирования геометрии */
-											}}
+											onClick={handleCancelEditGeometry}
 											icon={<CloseOutlined />}
 										>
 											Отменить
 										</Button>
 										<Button
 											type="primary"
-											onClick={handleSaveGeometryEdit}
+											onClick={() => {
+												finishGeometryEdit();
+											}}
 											icon={<CheckOutlined />}
 											loading={loading}
 										>

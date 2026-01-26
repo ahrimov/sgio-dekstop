@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Draw, Modify } from 'ol/interaction.js';
 import Collection from 'ol/Collection.js';
 import VectorSource from 'ol/source/Vector';
+import { finishEditingGeometry } from '../../components/InfoAttributeView/store';
 
 export function useDrawGeometry({ map }) {
 	const [isDrawing, setIsDrawing] = useState(false);
@@ -85,6 +86,8 @@ export function useDrawGeometry({ map }) {
 		setAcceptButtonDisabled(true);
 		setCanReset(false);
 
+		finishEditingGeometry();
+
 		return { feature, geometry: updatedGeometry };
 	}, [clearInteractions]);
 
@@ -97,8 +100,7 @@ export function useDrawGeometry({ map }) {
 		if (originalGeometry) {
 			feature.setGeometry(originalGeometry);
 		}
-
-	}, [clearInteractions]);
+	}, []);
 
 	const startModifying = useCallback(
 		feature => {
@@ -114,7 +116,7 @@ export function useDrawGeometry({ map }) {
 
 			setIsModifying(true);
 		},
-		[map]
+		[clearInteractions, map]
 	);
 
 	const startDrawing = useCallback(

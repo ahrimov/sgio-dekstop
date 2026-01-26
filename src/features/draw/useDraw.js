@@ -12,6 +12,7 @@ import {
 } from '../../shared/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
 import { $drawingState, DRAWING_TYPE, EDITING_TYPE } from './store.js';
+import { cancelEditingGeometry } from '../../components/InfoAttributeView/store.js';
 
 const { Text } = Typography;
 
@@ -42,6 +43,7 @@ export function useDraw({ map, setCurrentFeature }) {
 			rejectCurrentFeature();
 		} else if (isModifying) {
 			cancelGeometryEditInteraction();
+			cancelEditingGeometry();
 		}
 		reset();
 		changeInteractionMode(DEFAULT_INTERACTION);
@@ -88,6 +90,13 @@ export function useDraw({ map, setCurrentFeature }) {
 		}
 	}, [drawingState, startGeometryEditInteraction]);
 
+	useEffect(() => {
+		if (drawingState?.type === EDITING_TYPE && !drawingState?.start) {
+			finishGeometryEditInteraction();
+			changeInteractionMode(DEFAULT_INTERACTION);
+		}
+	}, [drawingState, finishGeometryEditInteraction]);
+
 	const cancel = () => {
 		changeInteractionMode(DEFAULT_INTERACTION);
 		reset();
@@ -105,7 +114,6 @@ export function useDraw({ map, setCurrentFeature }) {
 		const result = finishGeometryEditInteraction();
 		if (result) {
 			const { feature, geometry } = result;
-			setCurrentFeature?.(feature);
 			changeInteractionMode(DEFAULT_INTERACTION);
 			return { feature, geometry };
 		}
@@ -139,18 +147,20 @@ export function useDraw({ map, setCurrentFeature }) {
 						<CloseOutlined style={{ color: 'red' }} />
 						Отменить
 					</ControlButton>
-					<ControlButton
-						disabled={!showUndoButton}
-						onClick={() => showUndoButton && undo()}
-					>
-						<ReloadOutlined
-							style={{
-								color: 'black',
-								transform: 'scaleX(-1)',
-							}}
-							rotate={0}
-						/>
-					</ControlButton>
+					{isDrawing && (
+						<ControlButton
+							disabled={!showUndoButton}
+							onClick={() => showUndoButton && undo()}
+						>
+							<ReloadOutlined
+								style={{
+									color: 'black',
+									transform: 'scaleX(-1)',
+								}}
+								rotate={0}
+							/>
+						</ControlButton>
+					)}
 					<ControlButton
 						type="primary"
 						onClick={() => {

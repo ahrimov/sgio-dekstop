@@ -1,6 +1,6 @@
 import { createEvent, createStore } from 'effector';
 
-export const DRAWING_TYPE ='drawing';
+export const DRAWING_TYPE = 'drawing';
 export const EDITING_TYPE = 'geometry_edit';
 
 export const startDrawing = createEvent();
@@ -8,6 +8,7 @@ export const cancelDrawing = createEvent();
 
 export const startGeometryEdit = createEvent();
 export const cancelGeometryEdit = createEvent();
+export const finishGeometryEdit = createEvent();
 
 export const $drawingState = createStore(null)
 	.on(startDrawing, (_, layer) => ({ type: DRAWING_TYPE, layer, start: true }))
@@ -18,4 +19,13 @@ export const $drawingState = createStore(null)
 		layer,
 		start: true,
 	}))
-	.on(cancelGeometryEdit, () => null)
+	.on(finishGeometryEdit, (prevState) => {
+		if (prevState && prevState.type === EDITING_TYPE) {
+			return {
+				...prevState,
+				start: false,
+			};
+		}
+		return null;
+	})
+	.on(cancelGeometryEdit, () => null);
