@@ -13,7 +13,7 @@ import { showOnMap } from '../../shared/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
-import { DARK_BLUE } from '../../consts/style.js';
+import { DARK_BLUE, WHITE } from '../../consts/style.js';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
 import { AttributeEditForm } from './AttributeEditForm.jsx';
 import {
@@ -121,6 +121,9 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	};
 
 	const handleDeleteFeature = () => {
+		if (isGeometryEditing) {
+			handleCancelEditGeometry();
+		}
 		deleteFeature(featureId, layer, onClose);
 	};
 
@@ -182,13 +185,24 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	};
 
 	const handleEditGeometryClick = useCallback(() => {
+		if (isGeometryEditing) {
+			handleCancelEditGeometry();
+			return;
+		}
 		if (!feature) {
 			console.error('Не удалось начать редактирование геометрии');
 			return;
 		}
 
 		startGeometryEdit({ feature, layer });
-	}, [feature, layer]);
+	}, [feature, handleCancelEditGeometry, isGeometryEditing, layer]);
+
+	const handleClose = useCallback(() => {
+		onClose();
+		if (isGeometryEditing) {
+			handleCancelEditGeometry();
+		}
+	}, [onClose, isGeometryEditing, handleCancelEditGeometry]);
 
 	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
 
@@ -198,7 +212,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			initialPosition={initialPosition}
 			width={350}
 			windowId={windowId}
-			onClose={onClose}
+			onClose={handleClose}
 			showControls={true}
 		>
 			<Card
@@ -261,19 +275,21 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			>
 				<Flex vertical gap={5}>
 					<Flex gap={2} justify="flex-end">
-						{isEditing || isGeometryEditing ? null : (
+						{isEditing ? null : (
 							<>
 								<Button
 									title="Редактировать геометрию"
 									shape="square"
 									icon={<RadiusSettingOutlined />}
 									onClick={handleEditGeometryClick}
+									styles={{root: {backgroundColor: isGeometryEditing ? DARK_BLUE : null, color:  isGeometryEditing ? WHITE : null}}}
 								/>
 								<Button
 									title="Редактировать атрибуты"
 									shape="square"
 									icon={<EditOutlined />}
 									onClick={handleEditClick}
+									disabled={isGeometryEditing}
 								/>
 								<Button
 									title="Показать на карте"
