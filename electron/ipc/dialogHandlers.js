@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, BrowserWindow } from 'electron';
 
 export function registerDialogIpc() {
 	ipcMain.handle('dialog-openFile', async (event, options) => {
@@ -13,4 +13,6 @@ export function registerDialogIpc() {
 
 		return result.filePaths[0];
 	});
+	ipcMain.handle('show-message-box', (event, opts) => dialog.showMessageBox(BrowserWindow.getFocusedWindow(), opts));
+	ipcMain.handle('show-save-dialog', (event, opts) => dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), opts));
 }

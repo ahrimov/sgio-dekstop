@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import { MenuOutlined, CloseOutlined } from '@ant-design/icons';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { MenuOutlined, PlusOutlined } from '@ant-design/icons';
 import './LayersPanel.css';
 import styled from 'styled-components';
 import { icons } from '../../icons';
 import { LayerMoreActionsPopup } from './LayerMoreActionsPopup.jsx';
-import { Collapse, Typography } from 'antd';
+import { Button, Collapse, Typography } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
-import { MEDIUM_BLUE } from '../../consts/style.js';
+import { MEDIUM_BLUE, WHITE } from '../../consts/style.js';
+import { addNewLayer } from '../../features/KMLLayer/addNewLayer.js';
+import { useUnit } from 'effector-react';
+import { $layers } from '../../legacy/globals.js';
 
 const { Text } = Typography;
 
@@ -41,14 +44,20 @@ const RasterLayersList = ({ layers, moveLayer, toggleVisibility }) => {
 };
 
 const VectorLayersList = ({
-	layers,
 	moveLayer,
 	toggleVisibility,
 	onClickMore,
 	currentElementWithActions,
 	handleFeaturesClick,
+	parentScrollRef,
 }) => {
-	const [visibleVectorLayers, setVisibleVectorLayers] = useState(layers);
+	const layerList = useUnit($layers);
+	const [visibleVectorLayers, setVisibleVectorLayers] = useState(layerList);
+
+	useEffect(() => {
+		setVisibleVectorLayers(layerList);
+	}, [layerList]);
+
 
 	return (
 		<ReactSortable
@@ -64,7 +73,7 @@ const VectorLayersList = ({
 				}
 			}}
 		>
-			{layers.map((layer, idx) => {
+			{layerList.map((layer, idx) => {
 				return (
 					<DraggableVectorLayer
 						key={layer.id}
@@ -76,6 +85,7 @@ const VectorLayersList = ({
 						onClickMore={onClickMore}
 						currentElementWithActions={currentElementWithActions}
 						handleFeaturesClick={handleFeaturesClick}
+						parentScrollRef={parentScrollRef}
 					/>
 				);
 			})}
@@ -90,7 +100,12 @@ const DraggableRasterLayer = ({ layer, toggleVisibility }) => {
 				<MenuOutlined />
 			</DragHandle>
 			<IconWrapper onClick={() => toggleVisibility(layer.get('id'), true)}>
-				<img src={icons[layer.get('icon')]} width={24} height={24} alt={layer.get('descr')} />
+				<img
+					src={icons[layer.get('icon')]}
+					width={24}
+					height={24}
+					alt={layer.get('descr')}
+				/>
 			</IconWrapper>
 			<Text
 				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'default' }}
@@ -110,6 +125,7 @@ const DraggableVectorLayer = ({
 	currentElementWithActions,
 	id,
 	handleFeaturesClick,
+	parentScrollRef,
 }) => {
 	return (
 		<VectorLayerElementContainer
@@ -130,16 +146,22 @@ const DraggableVectorLayer = ({
 				{layer.label}
 			</Text>
 			<div className="layer-actions">
-				<LayerMoreActionsPopup layer={layer} onProps={handleFeaturesClick} onExport={() => {}} />
+				<LayerMoreActionsPopup
+					layer={layer}
+					onProps={handleFeaturesClick}
+					onExport={() => { }}
+					parentScrollRef={parentScrollRef}
+				/>
 			</div>
 		</VectorLayerElementContainer>
 	);
 };
 
-const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, onClose }) => {
+const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }) => {
 	const [rasterLayers, setRasterLayers] = useState(baseRasterLayers);
 	const [vectorLayers, setVectorLayers] = useState(layers);
 	const [currentElementWithActions, setCurrentElementWithActions] = useState(-1);
+	const scrollRef = useRef(null);
 
 	const toggleLayerVisibility = (layerId, isRaster = false) => {
 		if (isRaster) {
@@ -199,6 +221,11 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, 
 		});
 	};
 
+	const handleAddLayerClick = useCallback(async () => {
+		const fileName = await electronAPI.openFileDialog();
+		addNewLayer(fileName);
+	}, []);
+
 	const rasterCollapseItems = [
 		{
 			key: '1',
@@ -223,6 +250,7 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, 
 					onClickMore={handleClickOnMore}
 					currentElementWithActions={currentElementWithActions}
 					handleFeaturesClick={handleFeaturesClick}
+					parentScrollRef={scrollRef}
 				/>
 			),
 			styles: { body: vectorSectionBodyStyle, title: vectorSectionHeaderStyle },
@@ -232,13 +260,23 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick, 
 	return (
 		<LayersPanelContainer>
 			<Header>
-				<span>Слои</span>
-				<CloseButton onClick={onClose}>
-					<CloseOutlined />
-				</CloseButton>
+				<div style={{ width: 32 }} />
+				<span
+					style={{ flex: 1, textAlign: 'center', pointerEvents: 'none', fontWeight: 500 }}
+				>
+					Слои
+				</span>
+				<Button
+					title="Добавить слой"
+					icon={<PlusOutlined />}
+					type="text"
+					style={{ borderRadius: '16px' }}
+					styles={{ icon: { color: WHITE } }}
+					onClick={handleAddLayerClick}
+				/>
 			</Header>
 
-			<PanelContent>
+			<PanelContent ref={scrollRef}>
 				<Collapse
 					style={{
 						background: 'white',
@@ -352,36 +390,15 @@ const LayersPanelContainer = styled.div`
 	flex-direction: column;
 `;
 
-const CloseButton = styled.button`
-	position: absolute;
-	right: 8px;
-	top: 50%;
-	transform: translateY(-50%);
-	background: none;
-	border: none;
-	color: white;
-	cursor: pointer;
-	font-size: 14px;
-	padding: 4px;
-	border-radius: 3px;
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.2);
-	}
-`;
-
 const Header = styled.div`
 	height: 32px;
-	cursor: default;
 	display: flex;
-	justify-content: center;
 	align-items: center;
 	background-color: rgb(76 147 194 / 70%);
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;
 	color: white;
-	position: relative;
-	flex: 0 0 32px;
+	padding: 0 10px;
 `;
 
 const PanelContent = styled.div`

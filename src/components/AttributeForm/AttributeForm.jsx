@@ -45,7 +45,7 @@ const AttributeForm = ({ feature, layer, onSave, onCancel }) => {
 				feature.set(key, values[key]);
 			});
 
-			addNewFeature(layer, feature);
+			await addNewFeature(layer, feature);
 			onSave(feature);
 		} catch (error) {
 			alert(error);

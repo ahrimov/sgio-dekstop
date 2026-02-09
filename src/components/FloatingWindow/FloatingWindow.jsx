@@ -125,7 +125,7 @@ const FloatingWindow = ({
 			onMouseDown={handleMouseDown}
 		>
 			<WindowHeader className="drag-handle">
-				<WindowTitle>{title}</WindowTitle>
+				<WindowTitle title={title}>{title}</WindowTitle>
 				{showControls && <WindowControls windowId={windowId} onClose={handleClose} />}
 			</WindowHeader>
 
@@ -161,6 +161,10 @@ const WindowTitle = styled.span`
 	color: white;
 	font-weight: 500;
 	font-size: 14px;
+	max-width: 220px;
+    overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 `;
 
 const WindowContent = styled.div`

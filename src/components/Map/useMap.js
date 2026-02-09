@@ -11,12 +11,15 @@ import { layers } from '../../legacy/globals.js';
 import { useUnit } from 'effector-react';
 import { $mapInteractionMode, INFO_INTERACTION } from '../../shared/mapInteractionMode.js';
 import { setMapClickInfoEvent, unsetMapClickInfoEvent } from './mapEvents/mapClickInfoEvent.js';
+import { $deletedMapLayer, $newMapLayer } from '../../shared/updateMapLayers.js';
 
 export const useMap = containerRef => {
 	const mapInstance = useRef(null);
 	const [isMapReady, setIsMapReady] = useState(false);
 	const [mapStatus, setMapStatus] = useState('offline');
 	const mapInteractionMode = useUnit($mapInteractionMode);
+	const newMapLayer = useUnit($newMapLayer);
+	const deletedMapLayer = useUnit($deletedMapLayer);
 
 	const initializeMap = async () => {
 		if (!containerRef.current) {
@@ -43,15 +46,6 @@ export const useMap = containerRef => {
 					pinchRotate: false,
 				}),
 			});
-
-			setTimeout(() => {
-				const canvas = containerRef.current.querySelector('canvas');
-				if (canvas) {
-					const context = canvas.getContext('2d');
-					console.log('Canvas context:', context);
-					console.log('Canvas attributes:', canvas.getContextAttributes?.());
-				}
-			}, 100);
 
 			setTimeout(() => {
 				if (mapInstance.current) {
@@ -119,6 +113,18 @@ export const useMap = containerRef => {
 			unsetMapClickInfoEvent(mapInstance.current);
 		}
 	}, [mapInteractionMode]);
+
+	useEffect(() => {
+		if (newMapLayer && mapInstance.current) {
+			mapInstance.current.addLayer(newMapLayer);
+		}
+	}, [newMapLayer])
+
+	useEffect(() => {
+		if (deletedMapLayer && mapInstance.current) {
+			mapInstance.current.removeLayer(deletedMapLayer);
+		}
+	}, [deletedMapLayer]);
 
 	const handleMapMoveEnd = () => {
 		if (!mapInstance.current) return;

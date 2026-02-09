@@ -62,7 +62,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			setLoading(true);
 
 			const features = layer.getSource().getFeatures();
-			const updatedFeature = features.find(f => f.get('id') === featureId);
+			const updatedFeature = features.find(f => f.id === featureId);
 
 			if (updatedFeature) {
 				updateFeatureGeometry(
@@ -87,11 +87,11 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	useEffect(() => {
 		const fetchFeatureAttributes = async () => {
 			try {
-				const data = await getFeatureAttributes(layer, featureId);
+				const data = layer.get('kmlType') ? getFeatureAttributesFromKML(layer, featureId) : await getFeatureAttributes(layer, featureId);
 				if (data) {
 					setFeatureData(data);
 					const features = layer.getSource().getFeatures();
-					const featureObj = features.find(feature => feature.get('id') === featureId);
+					const featureObj = features.find(feature => feature.id === featureId);
 					setFeature(featureObj);
 
 					const initialValues = {};
@@ -235,41 +235,41 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 				actions={
 					isEditing
 						? [
-								<Space key="actions">
-									<Button onClick={handleCancelEdit} icon={<CloseOutlined />}>
+							<Space key="actions">
+								<Button onClick={handleCancelEdit} icon={<CloseOutlined />}>
+									Отменить
+								</Button>
+								<Button
+									type="primary"
+									onClick={handleSaveEdit}
+									icon={<CheckOutlined />}
+									loading={loading}
+								>
+									Сохранить
+								</Button>
+							</Space>,
+						]
+						: isGeometryEditing
+							? [
+								<Space key="geometry-actions">
+									<Button
+										onClick={handleCancelEditGeometry}
+										icon={<CloseOutlined />}
+									>
 										Отменить
 									</Button>
 									<Button
 										type="primary"
-										onClick={handleSaveEdit}
+										onClick={() => {
+											finishGeometryEdit();
+										}}
 										icon={<CheckOutlined />}
 										loading={loading}
 									>
-										Сохранить
+										Сохранить геометрию
 									</Button>
 								</Space>,
 							]
-						: isGeometryEditing
-							? [
-									<Space key="geometry-actions">
-										<Button
-											onClick={handleCancelEditGeometry}
-											icon={<CloseOutlined />}
-										>
-											Отменить
-										</Button>
-										<Button
-											type="primary"
-											onClick={() => {
-												finishGeometryEdit();
-											}}
-											icon={<CheckOutlined />}
-											loading={loading}
-										>
-											Сохранить геометрию
-										</Button>
-									</Space>,
-								]
 							: null
 				}
 			>
@@ -282,7 +282,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 									shape="square"
 									icon={<RadiusSettingOutlined />}
 									onClick={handleEditGeometryClick}
-									styles={{root: {backgroundColor: isGeometryEditing ? DARK_BLUE : null, color:  isGeometryEditing ? WHITE : null}}}
+									styles={{ root: { backgroundColor: isGeometryEditing ? DARK_BLUE : null, color: isGeometryEditing ? WHITE : null } }}
 								/>
 								<Button
 									title="Редактировать атрибуты"
@@ -320,20 +320,28 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 								background: '#fafcff',
 								fontWeight: 500,
 								color: DARK_BLUE,
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+								display: 'inline-block',
 							}}
 							contentStyle={{ background: '#fff' }}
 						>
 							{featureData
 								? visibleAtribs.map(atrib => (
-										<Descriptions.Item
-											key={atrib.name}
-											label={atrib.label || atrib.name}
-										>
-											<Text>
-												{formatValue(atrib, featureData[atrib.name])}
-											</Text>
-										</Descriptions.Item>
-									))
+									<Descriptions.Item
+										key={atrib.name}
+										label={
+											<span title={atrib.label || atrib.name}>
+												{atrib.label || atrib.name}
+											</span>
+										}
+									>
+										<Text>
+											{formatValue(atrib, featureData[atrib.name])}
+										</Text>
+									</Descriptions.Item>
+								))
 								: null}
 						</Descriptions>
 					)}
@@ -341,4 +349,15 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			</Card>
 		</FloatingWindow>
 	) : null;
+}
+
+function getFeatureAttributesFromKML(layer, featureId) {
+	const features = layer.getSource().getFeatures();
+	const feature = features.find(f =>
+		String(f.get('ID')) === String(featureId)
+	);
+	if (!feature) return null;
+	const props = feature.getProperties();
+	const { geometry, ...attrs } = props;
+	return attrs;
 }

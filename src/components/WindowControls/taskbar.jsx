@@ -38,7 +38,7 @@ const TaskbarContainer = styled.div`
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 40px;
+	height: 50px;
 	background: ${SUPER_DARK_BLUE};
 	display: flex;
 	align-items: center;
