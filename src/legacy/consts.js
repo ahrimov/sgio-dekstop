@@ -8,3 +8,5 @@ export const selectedColor = 'rgb(255, 153, 0)';
 export const defaultNumberNodesOnMap = 10000;
 
 export const minZIndexForVectorLayers = 100;
+
+export const tempKMLDir = 'temp_KML';

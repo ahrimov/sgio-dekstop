@@ -1,6 +1,6 @@
 import { root_directory } from './initial.js';
 import { openFile } from './FileManage.js';
-import { setDBProgressCallbacks, setTotalLayersCount, initialDB } from './DBManage.js';
+import { setDBProgressCallbacks, setTotalLayersCount, initialDB, updateTotalLayersCount } from './DBManage.js';
 import { convertColorToHEX, getZoomFromMeters } from './converter.js';
 import { map, layers } from './globals.js';
 import { LayerAtribs } from './Map.js';
@@ -15,12 +15,12 @@ import Stroke from 'ol/style/Stroke.js';
 import Circle from 'ol/style/Circle.js';
 import Text from 'ol/style/Text.js';
 import RegularShape from 'ol/style/RegularShape.js';
-import Icon from 'ol/style/Icon.js';
 import XYZ from 'ol/source/XYZ.js';
 import TileLayer from 'ol/layer/Tile.js';
 import { createXYZ } from 'ol/tilegrid.js';
 import { setNumberOfLayers } from '../shared/numberOfLayers.js';
 import { generateColor } from '../shared/utils/colorGenerator.js';
+import { addExistingKMLLayers } from '../features/KMLLayer/addExistingLayer.js';
 
 let progressCallbacks = {};
 
@@ -127,6 +127,7 @@ export function configParser(data) {
 				});
 			});
 		}
+		addExistingKMLLayers(updateTotalLayersCount, updateLayerProgress);
 	}
 	processLayersSerially();
 
@@ -365,7 +366,7 @@ export async function pointStyleParse(dom) {
 					if (lineStyle) {
 						const lineColor = convertColorToHEX(
 							lineStyle.getElementsByTagName('color').item(0)?.textContent ||
-								'#000000'
+							'#000000'
 						);
 						const width =
 							parseInt(
@@ -750,40 +751,4 @@ function parseBaseRasterLayers(jsonArray) {
 				source: source,
 			});
 		});
-}
-
-export function readConfigFile(filePath) {
-	return new Promise((resolve, reject) => {
-		window.resolveLocalFileSystemURL(
-			filePath,
-			function (fileEntry) {
-				fileEntry.file(function (file) {
-					const reader = new FileReader();
-					reader.onloadend = function () {
-						resolve(reader.result);
-					};
-					reader.onerror = reject;
-					reader.readAsText(file);
-				}, reject);
-			},
-			reject
-		);
-	});
-}
-
-export function writeConfigFile(filePath, content) {
-	return new Promise((resolve, reject) => {
-		window.resolveLocalFileSystemURL(
-			filePath,
-			function (fileEntry) {
-				fileEntry.createWriter(function (fileWriter) {
-					fileWriter.onwriteend = resolve;
-					fileWriter.onerror = reject;
-					const blob = new Blob([content], { type: 'text/xml' });
-					fileWriter.write(blob);
-				}, reject);
-			},
-			reject
-		);
-	});
 }

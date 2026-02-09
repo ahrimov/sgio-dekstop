@@ -203,7 +203,7 @@ const ControlPanel = styled.div`
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	z-index: 1000;
-	height: 63px;
+	height: 83px;
 	width: 325px;
 	color: rgb(17, 102, 162);
 	border: 2px solid rgb(17, 102, 162);

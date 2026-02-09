@@ -20,9 +20,89 @@ export function FeatureTable({ layer }) {
 	const [pagination, setPagination] = useState({ current: 1, pageSize: 100, total: 0 });
 
 	const refreshTrigger = useUnit($tableRefreshTrigger);
-
 	useEffect(() => {
 		setLoading(true);
+
+		if (layer.get && layer.get('kmlType')) {
+			loadKMLFeatures({
+				layer,
+				antdFilters,
+				sorter,
+				pagination,
+				setFeatures,
+				setLoading,
+				setPagination,
+			});
+		} else {
+			loadDBFeatures({
+				layer,
+				antdFilters,
+				sorter,
+				pagination,
+				setFeatures,
+				setLoading,
+				setPagination,
+			});
+		}
+		// eslint-disable-next-line
+	}, [layer, pagination.pageSize, antdFilters, pagination.current, sorter, refreshTrigger]);
+
+	function loadKMLFeatures({ layer, antdFilters, sorter, pagination, setFeatures, setLoading, setPagination }) {
+		const { current, pageSize } = pagination;
+		const source = layer.getSource?.();
+
+		if (!source || !source.getFeatures) {
+			setFeatures([]);
+			setPagination(p => ({ ...p, total: 0 }));
+			setLoading(false);
+			return;
+		}
+
+		let featuresArr = source.getFeatures();
+		if (antdFilters && Object.keys(antdFilters).length) {
+			featuresArr = featuresArr.filter(f => {
+				return Object.entries(antdFilters).every(([key, val]) => {
+					const featureVal = f.get(key);
+					if (Array.isArray(val)) {
+						return val.includes(featureVal);
+					}
+					return String(featureVal ?? '').toLowerCase().includes(String(val ?? '').toLowerCase());
+				});
+			});
+		}
+
+		if (sorter && sorter.field && sorter.order) {
+			const { field, order } = sorter;
+			featuresArr = featuresArr.slice().sort((a, b) => {
+				const va = a.get(field);
+				const vb = b.get(field);
+				if (va == null && vb != null) return 1;
+				if (va != null && vb == null) return -1;
+				if (va == null && vb == null) return 0;
+				if (order === 'ASC') return String(va).localeCompare(String(vb));
+				else return String(vb).localeCompare(String(va));
+			});
+		}
+
+		const total = featuresArr.length;
+		const paginated = featuresArr.slice((current - 1) * pageSize, current * pageSize);
+
+		const data = paginated.map((f) => {
+			const attrs = {};
+			const props = f.getProperties();
+
+			layer.atribs.forEach(a => attrs[a.name] = props[a.name]);
+			attrs.key = f.id;
+			attrs.id = f.id;
+			return attrs;
+		});
+
+		setFeatures(data);
+		setPagination(p => ({ ...p, total }));
+		setLoading(false);
+	}
+
+	function loadDBFeatures({ layer, antdFilters, sorter, pagination, setFeatures, setLoading, setPagination }) {
 		const { current, pageSize } = pagination;
 		getFeaturesTotal(layer, antdFilters, total => {
 			setPagination(p => ({ ...p, total }));
@@ -35,7 +115,7 @@ export function FeatureTable({ layer }) {
 				}
 			);
 		});
-	}, [layer, pagination.pageSize, antdFilters, pagination.current, sorter, refreshTrigger]);
+	}
 
 	const basicColumns = useMemo(() => {
 		return layer.atribs.map((atrib, i) => {

@@ -23,6 +23,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
 	inspectElement: (x, y) => ipcRenderer.send('inspect-element', x, y),
 	showContextMenu: () => ipcRenderer.send('show-context-menu'),
+
+	deleteFile: filePath => ipcRenderer.invoke('fs-deleteFile', filePath),
+
+	showMessageBox: (opts) => ipcRenderer.invoke('show-message-box', opts),
+	showSaveDialog: (opts) => ipcRenderer.invoke('show-save-dialog', opts),
 });
 
 window.addEventListener('contextmenu', e => {

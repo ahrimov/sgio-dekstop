@@ -1,8 +1,9 @@
-import { requestToDB } from '../../legacy/DBManage.js';
+import { requestToDBPromise } from '../../legacy/DBManage.js';
 import { refreshFeatureTable } from '../../shared/refreshTable.js';
+import { syncChangesWithKML } from '../KMLLayer/syncChangesWithKML.js';
 import { writeFeatureInKML } from './writeFeatureInKml.js';
 
-export function addNewFeature(layer, feature) {
+export async function addNewFeature(layer, feature) {
 	if (!feature.get('id')) {
 		feature.set('id', generateId(layer));
 	}
@@ -16,30 +17,37 @@ export function addNewFeature(layer, feature) {
 	const atribNames = Object.keys(filteredProps);
 	const atribValues = Object.values(filteredProps).map(toSqlValue);
 	const feautureString = writeFeatureInKML(feature);
-	const query = `
+	feature.isNew = true;
+
+	try {
+		const kmlType = layer.get('kmlType');
+		if (kmlType) {
+			await syncChangesWithKML(layer.id);
+		} else {
+			const query = `
                 INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
                 VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
                 ;`;
-	try {
-		requestToDB(query, () => {
-			feature.id = feature.get('id');
-			feature.layerID = layer.id;
+			await requestToDBPromise(query);
+		}
 
-			const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
-			if (typeIndex >= 0) {
-				feature.type = filteredProps[typeIndex];
-			} else {
-				feature.type = 'default';
-			}
+		feature.id = feature.get('id');
+		feature.layerID = layer.id;
 
-			const labelIndex = atribNames.indexOf(layer.labelColumn);
-			if (labelIndex >= 0) {
-				feature.label = filteredProps[labelIndex];
-			}
+		const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
+		if (typeIndex >= 0) {
+			feature.type = filteredProps[typeIndex];
+		} else {
+			feature.type = 'default';
+		}
 
-			feature.changed();
-			setTimeout(() => refreshFeatureTable(), 50);
-		});
+		const labelIndex = atribNames.indexOf(layer.labelColumn);
+		if (labelIndex >= 0) {
+			feature.label = filteredProps[labelIndex];
+		}
+
+		feature.changed();
+		setTimeout(() => refreshFeatureTable(), 50);
 	} catch (error) {
 		alert(error);
 	}
@@ -58,19 +66,19 @@ function generateId(layer) {
 }
 
 function toSqlValue(val) {
-    if (typeof val === 'string') {
-        return escapeSqlString(val);
-    }
-    if (val instanceof Date) {
-        return escapeSqlString(val.toISOString());
-    }
-    if (typeof val === 'number' || typeof val === 'boolean') {
-        return val;
-    }
-    if (val !== null && val !== undefined) {
-        return escapeSqlString(val.toString());
-    }
-    return 'NULL';
+	if (typeof val === 'string') {
+		return escapeSqlString(val);
+	}
+	if (val instanceof Date) {
+		return escapeSqlString(val.toISOString());
+	}
+	if (typeof val === 'number' || typeof val === 'boolean') {
+		return val;
+	}
+	if (val !== null && val !== undefined) {
+		return escapeSqlString(val.toString());
+	}
+	return 'NULL';
 }
 
 function escapeSqlString(str) {
