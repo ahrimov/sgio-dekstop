@@ -20,6 +20,7 @@ import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.j
 import { $numberOfLayers } from './shared/numberOfLayers.js';
 import { $infoFeature, showInfo } from './shared/featuredInfoEvent.js';
 import { Taskbar } from './components/WindowControls/taskbar.jsx';
+import { InfoModal } from './components/InfoModal/InfoModal.jsx';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -36,7 +37,7 @@ const AppContent = () => {
 			onFinish: finishLoading,
 		});
 
-		setDBProgressCallbacks(updateProgress, () => {});
+		setDBProgressCallbacks(updateProgress, () => { });
 
 		window.showAlert = (title, message) => {
 			Modal.error({
@@ -138,6 +139,7 @@ const AppContent = () => {
 				)}
 
 				<Taskbar />
+				<InfoModal />
 
 				<LoadingScreen
 					visible={loadingState.visible}

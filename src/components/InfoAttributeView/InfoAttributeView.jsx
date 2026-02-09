@@ -358,6 +358,6 @@ function getFeatureAttributesFromKML(layer, featureId) {
 	);
 	if (!feature) return null;
 	const props = feature.getProperties();
-	const { geometry, ...attrs } = props;
+	const { geometry, id, lgAttach, ...attrs } = props;
 	return attrs;
 }
