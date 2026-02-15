@@ -1,5 +1,5 @@
 import { requestToDBPromise } from '../../legacy/DBManage';
-import { refreshFeatureTable } from '../../shared/refreshTable';
+import { refreshFeatureTable } from '../../store/refreshTable';
 import { syncChangesWithKML } from '../KMLLayer/syncChangesWithKML';
 import { writeFeatureInKML } from './writeFeatureInKml';
 

@@ -9,7 +9,7 @@ import {
 	SearchOutlined,
 } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
-import { showOnMap } from '../../shared/showOnMap.js';
+import { showOnMap } from '../../store/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
@@ -27,8 +27,10 @@ import {
 	changeInteractionMode,
 	DEFAULT_INTERACTION,
 	GEOMETRY_EDIT_INTERACTION,
-} from '../../shared/mapInteractionMode.js';
+} from '../../store/mapInteractionMode.js';
 import { $infoAttributeState, CANCEL_EDITING, FINISH_EDITING } from './store.js';
+import { useConfig } from '../../context/ConfigContext.jsx';
+import { filterSystemProperties } from '../../utils/filterSystemProperties.js';
 
 const { Text } = Typography;
 
@@ -42,6 +44,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const { isMaximized } = useWindowControls({ windowId });
 	const isGeometryEditing = useUnit($mapInteractionMode) === GEOMETRY_EDIT_INTERACTION;
 	const infoAttributeState = useUnit($infoAttributeState);
+	const { config } = useConfig();
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -88,6 +91,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		const fetchFeatureAttributes = async () => {
 			try {
 				const data = layer.get('kmlType') ? getFeatureAttributesFromKML(layer, featureId) : await getFeatureAttributes(layer, featureId);
+				const atribs = filterSystemProperties(layer.atribs, config);
 				if (data) {
 					setFeatureData(data);
 					const features = layer.getSource().getFeatures();
@@ -95,7 +99,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 					setFeature(featureObj);
 
 					const initialValues = {};
-					layer.atribs.forEach(atrib => {
+					atribs.forEach(atrib => {
 						initialValues[atrib.name] = data[atrib.name] || '';
 					});
 					form.setFieldsValue(initialValues);
@@ -204,7 +208,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		}
 	}, [onClose, isGeometryEditing, handleCancelEditGeometry]);
 
-	const visibleAtribs = layer.atribs.filter(atrib => atrib.visible !== false);
+	const visibleAtribs = filterSystemProperties(layer.atribs, config).filter(atrib => atrib.visible !== false);
 
 	return featureData ? (
 		<FloatingWindow

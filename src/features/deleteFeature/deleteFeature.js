@@ -1,5 +1,5 @@
 import { requestToDB } from '../../legacy/DBManage';
-import { refreshFeatureTable } from '../../shared/refreshTable';
+import { refreshFeatureTable } from '../../store/refreshTable';
 import { syncChangesWithKML } from '../KMLLayer/syncChangesWithKML';
 
 export async function deleteFeature(featureId, layer, callback) {

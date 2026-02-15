@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import styled from 'styled-components';
-import { showInfo } from '../../shared/featuredInfoEvent.js';
+import { showInfo } from '../../store/featuredInfoEvent.js';
 import { LIGHT_BLUE, MEDIUM_BLUE } from '../../consts/style.js';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
 

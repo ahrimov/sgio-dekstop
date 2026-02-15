@@ -5,9 +5,9 @@ import VectorSource from 'ol/source/Vector';
 import { minZIndexForVectorLayers, tempKMLDir } from '../../legacy/consts';
 import { Circle, Fill, Stroke, Style } from 'ol/style';
 import { app_device_directory } from '../../legacy/initial';
-import { generateColor } from '../../shared/utils/colorGenerator';
+import { generateColor } from '../../utils/colorGenerator';
 import { saveFile } from '../../legacy/FileManage';
-import { addLayerToMap } from '../../shared/updateMapLayers';
+import { addLayerToMap } from '../../store/updateMapLayers';
 
 export async function addNewLayer(fullPath) {
 	const answer = window.confirm(

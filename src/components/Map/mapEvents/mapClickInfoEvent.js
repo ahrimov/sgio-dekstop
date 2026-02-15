@@ -1,5 +1,5 @@
-import { showInfo } from '../../../shared/featuredInfoEvent';
-import { openFeatureSelector } from '../../../shared/openFeatureSelectronEvent';
+import { showInfo } from '../../../store/featuredInfoEvent';
+import { openFeatureSelector } from '../../../store/openFeatureSelectronEvent';
 
 export function setMapClickInfoEvent(map) {
 	if (!map) return;

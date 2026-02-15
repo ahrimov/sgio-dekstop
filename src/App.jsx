@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { LoadingProvider, useLoading } from './components/LoadingScreen/LoadingContext.js';
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen.jsx';
-import { setProgressCallbacks } from './legacy/XMLParser.js';
+import { setProgressCallbacks, setConfigUpdateCallback } from './legacy/XMLParser.js';
 import { setDBProgressCallbacks, loadAllLayers } from './legacy/DBManage.js';
 import { ConfigProvider, Modal } from 'antd';
+import { ConfigProvider as AppConfigProvider, useConfig } from './context/ConfigContext.jsx';
 import MapComponent from './components/Map/MapComponent.js';
 import LayersPanel from './components/LayersPanel/LayersPanel.jsx';
 import { layers } from './legacy/globals.js';
@@ -15,15 +16,16 @@ import { FeatureTable } from './components/FeatureTable/FeatureTable.jsx';
 import ruRU from 'antd/es/locale/ru_RU';
 import { useUnit } from 'effector-react';
 import { InfoAttributeView } from './components/InfoAttributeView/InfoAttributeView.jsx';
-import { $featureSelectorData, openFeatureSelector } from './shared/openFeatureSelectronEvent.js';
+import { $featureSelectorData, openFeatureSelector } from './store/openFeatureSelectronEvent.js';
 import { FeaturesSelector } from './components/FeatureSelector/FeatureSelector.jsx';
-import { $numberOfLayers } from './shared/numberOfLayers.js';
-import { $infoFeature, showInfo } from './shared/featuredInfoEvent.js';
+import { $numberOfLayers } from './store/numberOfLayers.js';
+import { $infoFeature, showInfo } from './store/featuredInfoEvent.js';
 import { Taskbar } from './components/WindowControls/taskbar.jsx';
 import { InfoModal } from './components/InfoModal/InfoModal.jsx';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
+	const { updateConfig } = useConfig();
 	const [showLayersPanel, setShowLayersPanel] = useState(true);
 	const [activeLayer, setActiveLayer] = useState(null);
 	const infoFeature = useUnit($infoFeature);
@@ -36,6 +38,8 @@ const AppContent = () => {
 			onProgress: updateProgress,
 			onFinish: finishLoading,
 		});
+
+		setConfigUpdateCallback(updateConfig);
 
 		setDBProgressCallbacks(updateProgress, () => { });
 
@@ -155,9 +159,11 @@ const AppContent = () => {
 
 export const App = () => {
 	return (
-		<LoadingProvider>
-			<AppContent />
-		</LoadingProvider>
+		<AppConfigProvider>
+			<LoadingProvider>
+				<AppContent />
+			</LoadingProvider>
+		</AppConfigProvider>
 	);
 };
 

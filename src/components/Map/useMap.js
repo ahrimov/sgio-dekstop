@@ -9,9 +9,9 @@ import { Style, Stroke, Fill, Circle } from 'ol/style.js';
 import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
 import { layers } from '../../legacy/globals.js';
 import { useUnit } from 'effector-react';
-import { $mapInteractionMode, INFO_INTERACTION } from '../../shared/mapInteractionMode.js';
+import { $mapInteractionMode, INFO_INTERACTION } from '../../store/mapInteractionMode.js';
 import { setMapClickInfoEvent, unsetMapClickInfoEvent } from './mapEvents/mapClickInfoEvent.js';
-import { $deletedMapLayer, $newMapLayer } from '../../shared/updateMapLayers.js';
+import { $deletedMapLayer, $newMapLayer } from '../../store/updateMapLayers.js';
 
 export const useMap = containerRef => {
 	const mapInstance = useRef(null);

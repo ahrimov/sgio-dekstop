@@ -9,7 +9,7 @@ import {
 	DEFAULT_INTERACTION,
 	DRAW_INTERACTION,
 	GEOMETRY_EDIT_INTERACTION,
-} from '../../shared/mapInteractionMode.js';
+} from '../../store/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
 import { $drawingState, DRAWING_TYPE, EDITING_TYPE } from './store.js';
 import { cancelEditingGeometry } from '../../components/InfoAttributeView/store.js';

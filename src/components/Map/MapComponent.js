@@ -9,7 +9,7 @@ import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import AttributeForm from '../AttributeForm/AttributeForm.jsx';
-import { $showOnMapFeature } from '../../shared/showOnMap.js';
+import { $showOnMapFeature } from '../../store/showOnMap.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 
 const MapComponent = () => {

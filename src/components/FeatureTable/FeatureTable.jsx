@@ -6,10 +6,10 @@ import { SearchOutlined } from '@ant-design/icons';
 import { ColumnSearch } from './ColumnSearch.jsx';
 import infoIcon from '../../assets/resources/images/assets/info.png';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
-import { showOnMap } from '../../shared/showOnMap.js';
-import { showInfo } from '../../shared/featuredInfoEvent.js';
+import { showOnMap } from '../../store/showOnMap.js';
+import { showInfo } from '../../store/featuredInfoEvent.js';
 import { useUnit } from 'effector-react';
-import { $tableRefreshTrigger } from '../../shared/refreshTable.js';
+import { $tableRefreshTrigger } from '../../store/refreshTable.js';
 import styled from 'styled-components';
 
 export function FeatureTable({ layer }) {
@@ -118,7 +118,8 @@ export function FeatureTable({ layer }) {
 	}
 
 	const basicColumns = useMemo(() => {
-		return layer.atribs.map((atrib, i) => {
+		const atribs = layer.atribs; //filterSystemProperties(layer.atribs, config);
+		return atribs.map((atrib, i) => {
 			const base = {
 				title: i === 0 ? '№' : atrib.label,
 				dataIndex: atrib.name,

@@ -4,7 +4,7 @@ import { ClearOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { startDrawing } from '../../features/draw/store';
 import { requestToDB } from '../../legacy/DBManage';
-import { refreshFeatureTable } from '../../shared/refreshTable';
+import { refreshFeatureTable } from '../../store/refreshTable';
 import { syncChangesWithKML } from '../../features/KMLLayer/syncChangesWithKML';
 import { deleteLayer } from '../../features/KMLLayer/deleteLayer';
 import { saveKMLToFile } from '../../features/KMLLayer/saveKMLToFile';

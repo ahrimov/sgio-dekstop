@@ -20,6 +20,7 @@
 		<FilenameDB>default.db</FilenameDB>
 		<PathToDB>db/</PathToDB>
 	</database>
+	<ShowSystemProperties>false</ShowSystemProperties>
 	<layers>
 		<VectorLayers>
 			<NumberOfLayers>42</NumberOfLayers>

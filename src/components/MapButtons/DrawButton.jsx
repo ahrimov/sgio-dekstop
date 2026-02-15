@@ -5,7 +5,7 @@ import {
 	$mapInteractionMode,
 	changeInteractionMode,
 	DRAW_INTERACTION,
-} from '../../shared/mapInteractionMode.js';
+} from '../../store/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
 import { openLayerSelector } from '../LayerSelector/layerSelectorState.js';
 

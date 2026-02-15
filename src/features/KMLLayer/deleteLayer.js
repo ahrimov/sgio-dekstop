@@ -1,7 +1,7 @@
 import { deleteLayerFromList, layers } from "../../legacy/globals";
 import { root_directory } from "../../legacy/initial";
-import { refreshFeatureTable } from "../../shared/refreshTable";
-import { deleteLayerFromMap } from "../../shared/updateMapLayers";
+import { refreshFeatureTable } from "../../store/refreshTable";
+import { deleteLayerFromMap } from "../../store/updateMapLayers";
 
 export function deleteLayer(layerID) {
     const layer = layers.find(layer => layer.get('id') === layerID);

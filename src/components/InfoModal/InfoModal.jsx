@@ -18,7 +18,7 @@ export function InfoModal() {
         >
             <div>
                 СГИО.Декстоп 1.0.0<br />
-                "ООО Геосервис-Информ"<br />
+                &quot;ООО Геосервис-Информ&quot;<br />
                 О любых проблемах пишите на почту support@corelight.ru
                 <br />
             </div>

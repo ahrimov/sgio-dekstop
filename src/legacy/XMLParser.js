@@ -18,17 +18,22 @@ import RegularShape from 'ol/style/RegularShape.js';
 import XYZ from 'ol/source/XYZ.js';
 import TileLayer from 'ol/layer/Tile.js';
 import { createXYZ } from 'ol/tilegrid.js';
-import { setNumberOfLayers } from '../shared/numberOfLayers.js';
-import { generateColor } from '../shared/utils/colorGenerator.js';
+import { setNumberOfLayers } from '../store/numberOfLayers.js';
+import { generateColor } from '../utils/colorGenerator.js';
 import { addExistingKMLLayers } from '../features/KMLLayer/addExistingLayer.js';
 
 let progressCallbacks = {};
+let configUpdateCallback = null;
 
 export let currentMapView = null;
 export let baseRasterLayers = [];
 
 export function setProgressCallbacks(callbacks) {
 	progressCallbacks = callbacks;
+}
+
+export function setConfigUpdateCallback(callback) {
+	configUpdateCallback = callback;
 }
 
 export function configParser(data) {
@@ -72,6 +77,15 @@ export function configParser(data) {
 	const filenameDB = dom.getElementsByTagName('FilenameDB').item(0).textContent;
 	const pathToDB = dom.getElementsByTagName('PathToDB').item(0).textContent;
 	initialDB(root_directory + pathToDB, filenameDB, nameDB);
+
+	const showSystemPropertiesElement = dom.getElementsByTagName('ShowSystemProperties').item(0);
+	const showSystemProperties = showSystemPropertiesElement
+		? showSystemPropertiesElement.textContent === 'true'
+		: false;
+	
+	if (configUpdateCallback) {
+		configUpdateCallback({ showSystemProperties });
+	}
 
 	const centerLong = parseFloat(dom.getElementsByTagName('longitude').item(0).textContent);
 	const centerLat = parseFloat(dom.getElementsByTagName('latitude').item(0).textContent);

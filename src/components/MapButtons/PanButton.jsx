@@ -5,7 +5,7 @@ import {
 	$mapInteractionMode,
 	changeInteractionMode,
 	DEFAULT_INTERACTION,
-} from '../../shared/mapInteractionMode.js';
+} from '../../store/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
 
 export function PanButton() {

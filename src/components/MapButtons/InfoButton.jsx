@@ -5,7 +5,7 @@ import {
 	$mapInteractionMode,
 	changeInteractionMode,
 	INFO_INTERACTION,
-} from '../../shared/mapInteractionMode.js';
+} from '../../store/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
 
 export function InfoButton() {
