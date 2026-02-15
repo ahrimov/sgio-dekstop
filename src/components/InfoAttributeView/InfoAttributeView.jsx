@@ -214,7 +214,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		<FloatingWindow
 			title={layer.get ? layer.get('descr') : (layer.descr ?? 'Информация об объекте')}
 			initialPosition={initialPosition}
-			width={350}
+			width={550}
 			windowId={windowId}
 			onClose={handleClose}
 			showControls={true}
@@ -315,39 +315,72 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 					{isEditing ? (
 						<AttributeEditForm form={form} attributes={visibleAtribs} />
 					) : (
-						<Descriptions
-							column={1}
-							size="small"
-							bordered
-							labelStyle={{
-								width: '140px',
-								background: '#fafcff',
-								fontWeight: 500,
-								color: DARK_BLUE,
-								overflow: 'hidden',
-								textOverflow: 'ellipsis',
-								whiteSpace: 'nowrap',
-								display: 'inline-block',
-							}}
-							contentStyle={{ background: '#fff' }}
-						>
-							{featureData
-								? visibleAtribs.map(atrib => (
-									<Descriptions.Item
-										key={atrib.name}
-										label={
-											<span title={atrib.label || atrib.name}>
-												{atrib.label || atrib.name}
-											</span>
-										}
-									>
-										<Text>
-											{formatValue(atrib, featureData[atrib.name])}
-										</Text>
-									</Descriptions.Item>
-								))
-								: null}
-						</Descriptions>
+						(() => {
+							const totalItems = visibleAtribs.length;
+							
+							let columnsCount = 1;
+							if (totalItems > 10) {
+								columnsCount = 3;
+							} else if (totalItems > 4) {
+								columnsCount = 2;
+							}
+							
+							const columns = [];
+							if (columnsCount === 1) {
+								columns.push(visibleAtribs);
+							} else {
+								const itemsPerColumn = Math.ceil(totalItems / columnsCount);
+								for (let i = 0; i < columnsCount; i++) {
+									const start = i * itemsPerColumn;
+									const end = Math.min(start + itemsPerColumn, totalItems);
+									if (start < totalItems) {
+										columns.push(visibleAtribs.slice(start, end));
+									}
+								}
+							}
+							
+							return (
+								<Flex gap={10} wrap="nowrap" style={{ overflowX: 'auto' }}>
+									{columns.map((columnAttribs, columnIndex) => (
+										<div key={columnIndex} style={{ flex: columnsCount > 1 ? '0 0 auto' : '1', minWidth: '300px' }}>
+											<Descriptions
+												column={1}
+												size="small"
+												bordered
+												labelStyle={{
+													width: '140px',
+													background: '#fafcff',
+													fontWeight: 500,
+													color: DARK_BLUE,
+													overflow: 'hidden',
+													textOverflow: 'ellipsis',
+													whiteSpace: 'nowrap',
+													display: 'inline-block',
+												}}
+												contentStyle={{ background: '#fff' }}
+											>
+												{featureData
+													? columnAttribs.map(atrib => (
+														<Descriptions.Item
+															key={atrib.name}
+															label={
+																<span title={atrib.label || atrib.name}>
+																	{atrib.label || atrib.name}
+																</span>
+															}
+														>
+															<Text>
+																{formatValue(atrib, featureData[atrib.name])}
+															</Text>
+														</Descriptions.Item>
+													))
+													: null}
+											</Descriptions>
+										</div>
+									))}
+								</Flex>
+							);
+						})()
 					)}
 				</Flex>
 			</Card>
