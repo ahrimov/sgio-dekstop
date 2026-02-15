@@ -39,6 +39,12 @@ export function useDraw({ map, setCurrentFeature }) {
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
 	const closeControlPanel = () => {
+		if (isDrawing || isModifying) {
+			const answer = window.confirm("На карте есть несохраненный объект. Если вы продолжите, то он будет потерян. Продолжить?");
+			if (!answer) {
+				return;
+			}
+		}
 		if (isDrawing) {
 			rejectCurrentFeature();
 		} else if (isModifying) {
