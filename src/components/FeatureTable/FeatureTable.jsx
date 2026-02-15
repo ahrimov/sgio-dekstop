@@ -238,6 +238,7 @@ export function FeatureTable({ layer }) {
 				onChange={handleTableChange}
 				size="small"
 				scroll={{ x: true }}
+				style={{ headerBorderRadius: '14px' }}
 			></Table>
 		</TopPaginationWrapper>
 	);
