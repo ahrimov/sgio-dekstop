@@ -6,7 +6,7 @@ import { icons } from '../../icons';
 import { LayerMoreActionsPopup } from './LayerMoreActionsPopup.jsx';
 import { Button, Collapse, Typography } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
-import { MEDIUM_BLUE, WHITE } from '../../consts/style.js';
+import { MEDIUM_BLUE } from '../../consts/style.js';
 import { addNewLayer } from '../../features/KMLLayer/addNewLayer.js';
 import { useUnit } from 'effector-react';
 import { $layers } from '../../legacy/globals.js';
@@ -259,22 +259,6 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }
 
 	return (
 		<LayersPanelContainer>
-			<Header>
-				<div style={{ width: 32 }} />
-				<span
-					style={{ flex: 1, textAlign: 'center', pointerEvents: 'none', fontWeight: 500 }}
-				>
-					Слои
-				</span>
-				<Button
-					title="Добавить слой"
-					icon={<PlusOutlined />}
-					type="text"
-					style={{ borderRadius: '16px' }}
-					styles={{ icon: { color: WHITE } }}
-					onClick={handleAddLayerClick}
-				/>
-			</Header>
 
 			<PanelContent ref={scrollRef}>
 				<Collapse
@@ -287,6 +271,18 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }
 					items={rasterCollapseItems}
 				/>
 			</PanelContent>
+
+			<AddLayerButtonContainer>
+				<Button
+					title="Добавить слой"
+					type="primary"
+					icon={<PlusOutlined />}
+					style={{ width: '100%' }}
+					onClick={handleAddLayerClick}
+				>
+					Добавить слой
+				</Button>
+			</AddLayerButtonContainer>
 		</LayersPanelContainer>
 	);
 };
@@ -399,6 +395,15 @@ const Header = styled.div`
 	border-top-right-radius: 7px;
 	color: white;
 	padding: 0 10px;
+	justify-content: center;
+	font-weight: 500;
+	font-size: 14px;
+`;
+
+const AddLayerButtonContainer = styled.div`
+	padding: 8px;
+	background: white;
+
 `;
 
 const PanelContent = styled.div`
