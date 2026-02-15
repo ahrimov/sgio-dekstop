@@ -18,7 +18,7 @@ export const LoadingScreen = ({
       footer={null}
       width={450}
       centered
-      maskClosable={false}
+      mask={false}
     >
       <Space style={{ width: '100%' }} size="middle">
         <Title level={4} style={{ margin: 0, textAlign: 'center' }}>
