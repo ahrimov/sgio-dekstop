@@ -11,14 +11,15 @@ export function InfoModal() {
             open={visible}
             onCancel={closeInfoModal}
             onOk={closeInfoModal}
-            title="СГИО.Десктоп"
+            title="О приложении"
             okText="OK"
             cancelButtonProps={{ style: { display: 'none' } }}
             centered
         >
             <div>
-                Версия: 1.0.0<br />
-                {new Date().getFullYear()}<br />
+                СГИО.Декстоп 1.0.0<br />
+                "ООО Геосервис-Информ"<br />
+                О любых проблемах пишите на почту support@corelight.ru
                 <br />
             </div>
         </Modal>
