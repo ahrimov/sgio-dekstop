@@ -221,7 +221,7 @@ export function FeatureTable({ layer }) {
 	};
 
 	return (
-		<FixedPaginationWrapper>
+		<TopPaginationWrapper>
 			<Table
 				columns={columns}
 				dataSource={features}
@@ -233,12 +233,13 @@ export function FeatureTable({ layer }) {
 					onChange: (page, pageSize) =>
 						setPagination(p => ({ ...p, current: page, pageSize })),
 					showSizeChanger: true,
+					position: ['topLeft'],
 				}}
 				onChange={handleTableChange}
 				size="small"
 				scroll={{ x: true }}
 			></Table>
-		</FixedPaginationWrapper>
+		</TopPaginationWrapper>
 	);
 }
 
@@ -249,23 +250,17 @@ function enumOptionsToFilters(options) {
 	}));
 }
 
-const FixedPaginationWrapper = styled.div`
-	.ant-table-wrapper {
-		display: flex;
-		flex-direction: column;
+const TopPaginationWrapper = styled.div`
+	.ant-table-pagination {
+		margin-bottom: 16px !important;
 	}
 
 	.ant-table-container {
-		flex: 1;
+		border-radius: 0 0 14px 14px;
+		overflow: hidden;
 	}
 
-	.ant-table-pagination {
-		position: sticky;
-		bottom: 0;
-		background: #fff;
-		padding: 16px;
-		margin: 0 !important;
-		z-index: 10;
-		border-top: 1px solid #f0f0f0;
+	.ant-table {
+		border-radius: 0 0 14px 14px;
 	}
 `;
