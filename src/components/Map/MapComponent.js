@@ -11,11 +11,13 @@ import { useDraw } from '../../features/draw/useDraw.js';
 import AttributeForm from '../AttributeForm/AttributeForm.jsx';
 import { $showOnMapFeature } from '../../store/showOnMap.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
+import FullscreenButton from './FullscreenButton.jsx';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
 	const { isMapReady, updateMapSize, map } = useMap(mapContainerRef);
 	const [currentFeature, setCurrentFeature] = useState(null);
+	const [isFullscreen, setIsFullscreen] = useState(false);
 
 	useEffect(() => {
 		if (isMapReady) {
@@ -70,12 +72,23 @@ const MapComponent = () => {
 		cancelEditing();
 	};
 
+	const toggleFullscreen = () => {
+		setIsFullscreen(!isFullscreen);
+		setTimeout(() => {
+			if (map) {
+				map.updateSize();
+			}
+		}, 100);
+	};
+
 	return (
 		<div className="map-container-wrapper">
-			<div className="map-wrapper">
+			<div className={`map-wrapper ${isFullscreen ? 'map-fullscreen' : ''}`}>
 				<div ref={mapContainerRef} className="map-container" />
 
 				<img className="crosshair" src={crosshairImage} alt="crosshair" />
+
+				<FullscreenButton isFullscreen={isFullscreen} onToggle={toggleFullscreen} />
 
 				<ZoomControls map={map} />
 

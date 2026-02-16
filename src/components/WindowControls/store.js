@@ -12,7 +12,7 @@ export const windowZIndexChanged = createEvent();
 
 export const $windows = createStore({});
 export const $focusedWindowId = createStore(null);
-export const $maxZIndex = createStore(1000);
+export const $maxZIndex = createStore(100000);
 export const $visibleWindows = $windows.map(windows =>
 	Object.values(windows).filter(w => w.isVisible && !w.isMinimized)
 );

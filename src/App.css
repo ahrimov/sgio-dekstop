@@ -28,6 +28,8 @@ body {
 	justify-content: center;
 	align-items: center;
 	-webkit-app-region: drag;
+	position: relative;
+	z-index: 100000;
 }
 
 .bottom {

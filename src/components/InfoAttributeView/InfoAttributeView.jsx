@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { Card, Typography, Descriptions, Button, Flex, Form, Space } from 'antd';
 import {
 	CheckOutlined,
@@ -13,7 +13,8 @@ import { showOnMap } from '../../store/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
 import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
-import { DARK_BLUE, WHITE } from '../../consts/style.js';
+import { DARK_BLUE, WHITE, ORANGE, BLACK } from '../../consts/style.js';
+import { Style, Stroke, Fill, RegularShape } from 'ol/style';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
 import { AttributeEditForm } from './AttributeEditForm.jsx';
 import {
@@ -45,6 +46,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const isGeometryEditing = useUnit($mapInteractionMode) === GEOMETRY_EDIT_INTERACTION;
 	const infoAttributeState = useUnit($infoAttributeState);
 	const { config } = useConfig();
+	const originalStyleRef = useRef(null);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -110,7 +112,70 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		};
 
 		fetchFeatureAttributes();
-	}, [layer, featureId, form]);
+	}, [layer, featureId, form, config]);
+
+	useEffect(() => {
+		if (!feature) return;
+
+		const applyHighlight = () => {
+			originalStyleRef.current = feature.getStyle();
+
+			const geometry = feature.getGeometry();
+			const geometryType = geometry.getType();
+
+			let highlightStyle;
+			if (geometryType === 'Point' || geometryType === 'MultiPoint') {
+				highlightStyle = new Style({
+					image: new RegularShape({
+						points: 4,
+						radius: 10,
+						angle: Math.PI / 4,
+						fill: new Fill({ color: ORANGE }),
+						stroke: new Stroke({ color: BLACK, width: 2 }),
+					}),
+				});
+			} else if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
+				highlightStyle = [
+					new Style({
+						stroke: new Stroke({ color: BLACK, width: 6 }),
+					}),
+					new Style({
+						stroke: new Stroke({ color: WHITE, width: 4 }),
+					}),
+				];
+			} else {
+				[
+					new Style({
+						stroke: new Stroke({ color: BLACK, width: 6 }),
+					}),
+					new Style({
+						stroke: new Stroke({ color: WHITE, width: 4 }),
+					}),
+				];
+			}
+
+			feature.setStyle(highlightStyle);
+		};
+
+		const removeHighlight = () => {
+			if (originalStyleRef.current !== null) {
+				feature.setStyle(originalStyleRef.current);
+				originalStyleRef.current = null;
+			} else {
+				feature.setStyle(undefined);
+			}
+		};
+
+		if (!isGeometryEditing) {
+			applyHighlight();
+		} else {
+			removeHighlight();
+		}
+
+		return () => {
+			removeHighlight();
+		};
+	}, [feature, isGeometryEditing]);
 
 	useEffect(() => {
 		if (infoAttributeState?.editingType === FINISH_EDITING) {
@@ -395,6 +460,7 @@ function getFeatureAttributesFromKML(layer, featureId) {
 	);
 	if (!feature) return null;
 	const props = feature.getProperties();
+	// eslint-disable-next-line no-unused-vars
 	const { geometry, id, lgAttach, ...attrs } = props;
 	return attrs;
 }

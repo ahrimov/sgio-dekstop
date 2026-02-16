@@ -119,7 +119,7 @@ const FloatingWindow = ({
 				width: isMaximized ? '100vw' : width,
 				minHeight: isMaximized ? '100vh' : '',
 				borderRadius: isMaximized ? '0' : '8px',
-				zIndex: windowState?.zIndex || 1000,
+				zIndex: windowState?.zIndex || 100000,
 			}}
 			$isMaximized={isMaximized}
 			onMouseDown={handleMouseDown}
@@ -160,11 +160,12 @@ const WindowHeader = styled.div`
 const WindowTitle = styled.span`
 	color: white;
 	font-weight: 500;
-	font-size: 14px;
 	max-width: 220px;
     overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	fontWeight: bold,
+	fontSize: 16px,
 `;
 
 const WindowContent = styled.div`

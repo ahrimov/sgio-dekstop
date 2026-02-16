@@ -1,0 +1,39 @@
+.fullscreen-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-top-right-radius: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 0;
+  transition: all 0.2s ease;
+  box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.15);
+
+}
+
+.fullscreen-button svg {
+  color: #555;
+  width: 16px;
+  height: 16px;
+}
+
+.map-fullscreen {
+  position: fixed !important;
+  left: 0 !important;
+  width: 100vw !important;
+  z-index: 9999 !important;
+  margin: 0 !important;
+  height: calc(100vh - 80px) !important;
+}
+
+.map-fullscreen .map-container {
+  width: 100% !important;
+  height: 100% !important;
+}

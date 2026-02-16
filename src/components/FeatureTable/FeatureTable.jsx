@@ -252,8 +252,18 @@ function enumOptionsToFilters(options) {
 }
 
 const TopPaginationWrapper = styled.div`
+	position: relative;
+
 	.ant-table-pagination {
 		margin-bottom: 16px !important;
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		background: #ffffff;
+		padding: 12px 0;
+		border-radius: 8px;
+		box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
+		margin: 0 !important;
 	}
 
 	.ant-table-container {
