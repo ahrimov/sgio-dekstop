@@ -17,8 +17,8 @@ const BaseMapButtonStyle = styled(Button).withConfig({
 	border: 1px solid ${MEDIUM_DARK_BLUE} !important;
 	box-shadow: 0 0 0 ${MEDIUM_BLUE} !important;
 	border-radius: 20px;
-	height: 40px;
-	width: 40px;
+	height: 34px;
+	width: 34px;
 	top: ${props => props.top}px;
 	right: ${props => props.right}px;
 

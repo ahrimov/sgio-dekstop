@@ -43,7 +43,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 		switch (atrib.type) {
 			case 'ENUM':
 				return (
-					<Form.Item {...commonProps}>
+					<Form.Item {...commonProps} style={{ marginBottom: '6px' }}>
 						<Select>
 							{Object.entries(atrib.options || {}).map(
 								([value, label], index) => (
@@ -59,7 +59,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			case 'NUMBER':
 			case 'DOUBLE':
 				return (
-					<Form.Item {...commonProps}>
+					<Form.Item {...commonProps} style={{ marginBottom: '6px' }}>
 						<Input type="number" placeholder="Введите число" />
 					</Form.Item>
 				);
@@ -80,6 +80,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 							}
 							return date;
 						}}
+						style={{ marginBottom: '6px' }}
 					>
 						<DatePicker
 							format="YYYY-MM-DD"
@@ -92,7 +93,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			case 'STRING':
 			default:
 				return (
-					<Form.Item {...commonProps}>
+					<Form.Item {...commonProps} style={{ marginBottom: '6px' }}>
 						<Input placeholder={`Введите текст`} />
 					</Form.Item>
 				);

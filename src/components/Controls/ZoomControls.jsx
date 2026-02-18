@@ -28,13 +28,13 @@ const ZoomControls = ({ map }) => {
 
   return (
     <ZoomControlsContainer>
-      <ZoomButton 
+      <ZoomButtonPlus 
         type="primary" 
         icon={<PlusOutlined />}
         onClick={handleZoomIn}
         title="Увеличить"
       />
-      <ZoomButton 
+      <ZoomButtonMinus 
         type="primary" 
         icon={<MinusOutlined />}
         onClick={handleZoomOut}
@@ -55,34 +55,31 @@ const ZoomControlsContainer = styled.div`
   z-index: 1000;
 `;
 
-const ZoomButton = styled(Button)`
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50% !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  
-  border: none;
-  min-width: 45px;
-  padding: 0;
+const ZoomButtonPlus = styled(Button)`
+  border-radius: 16px 16px 0px 0px;
+    background: white;
+    color: rgb(76, 147, 194);
+    border: 1px solid;
+    position: absolute;
+    z-index: 10;
+    cursor: pointer;
+    bottom: 38px;
+    width: 24px !important;
+    height: 24px !important;
+`;
 
-  .anticon {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  &:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s ease;
-  }
-  
-  &:active {
-    transform: scale(0.95);
-  }
+const ZoomButtonMinus = styled(Button)`
+  border-radius: 0px 0px 16px 16px;
+  background: white;
+  color: rgb(76, 147, 194);
+  border: 1px solid;
+  position: absolute;
+  z-index: 10;
+  cursor: pointer;
+  bottom: 38px;
+  width: 24px !important;
+  height: 24px !important;
+  top: -39px;
 `;
 
 export default ZoomControls;
