@@ -60,6 +60,29 @@ export function createMainWindow() {
 		});
 	} else {
 		mainWindow.loadFile('public/dist/prod/index.html');
+
+		ipcMain.on('show-context-menu', (event, data) => {
+			const template = [
+				{
+					label: 'Inspect Element',
+					click: () => {
+						mainWindow.webContents.inspectElement(data.x, data.y);
+						mainWindow.webContents.openDevTools();
+					},
+				},
+				{
+					label: 'Open DevTools',
+					click: () => mainWindow.webContents.openDevTools(),
+				},
+				{
+					label: 'Reload',
+					click: () => mainWindow.webContents.reload(),
+				},
+			];
+
+			const menu = Menu.buildFromTemplate(template);
+			menu.popup({ window: mainWindow });
+		});
 	}
 
 	Menu.setApplicationMenu(null);
