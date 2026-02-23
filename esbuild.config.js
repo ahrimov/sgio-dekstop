@@ -40,10 +40,16 @@ function getBuildOptions(distDir, { minify = false, sourcemap = true, mode = 'de
     plugins: [
       cssModulesPlugin(),
       copy({
-        assets: {
-          from: ['./assets/resources/images/logos/*'],
-          to: [path.join(distDir, 'assets/resources/images/logos')],
-        }
+        assets: [
+          {
+            from: ['./assets/resources/images/logos/*'],
+            to: [path.join(distDir, 'assets/resources/images/logos')],
+          },
+          {
+            from: ['./public/favicon.ico'],
+            to: [distDir],
+          }
+        ]
       }),
       htmlPlugin(distDir)
     ],

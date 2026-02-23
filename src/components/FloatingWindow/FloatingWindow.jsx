@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { windowClosed, windowCreated } from '../WindowControls/store.js';
 import { WindowControls } from '../WindowControls/windowControls.jsx';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
+import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
+import { WHITE } from '../../consts/style.js';
+
+const { Text } = Typography;
 
 const FloatingWindow = ({
 	title,
@@ -10,9 +15,17 @@ const FloatingWindow = ({
 	initialPosition = { x: 100, y: 100 },
 	width = 350,
 	height,
+	titleWidth,
 	onClose,
 	windowId,
 	showControls = true,
+	isMultiple = false,
+	onPrevious,
+	onNext,
+	current,
+	total = 0,
+	disablePrevious = false,
+	disableNext = false,
 }) => {
 	const {
 		window: windowState,
@@ -125,7 +138,30 @@ const FloatingWindow = ({
 			onMouseDown={handleMouseDown}
 		>
 			<WindowHeader className="drag-handle">
-				<WindowTitle title={title}>{title}</WindowTitle>
+				{isMultiple ? (
+					<>
+						<ControlButton onClick={onPrevious} disabled={disablePrevious}>
+							<DoubleLeftOutlined />
+						</ControlButton>
+						<ControlButton onClick={onNext} disabled={disableNext}>
+							<DoubleRightOutlined />
+						</ControlButton>
+						<Text
+							style={{
+								color: WHITE,
+								paddingLeft: '5px',
+								paddingRight: '5px',
+								width: '65px',
+								fontSize: '12px',
+							}}
+						>
+							{current + 1} из {total}
+						</Text>
+					</>
+				) : null}
+				<WindowTitle title={title} $titleWidth={titleWidth}>
+					{title}
+				</WindowTitle>
 				{showControls && <WindowControls windowId={windowId} onClose={handleClose} />}
 			</WindowHeader>
 
@@ -159,13 +195,37 @@ const WindowHeader = styled.div`
 
 const WindowTitle = styled.span`
 	color: white;
-	font-weight: 500;
-	max-width: 220px;
+	font-weight: 600;
+	max-width: ${props => (props.$titleWidth ? props.$titleWidth : '220px')};
     overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	fontWeight: bold,
 	fontSize: 16px,
+`;
+
+const ControlButton = styled.button`
+	background: none;
+	width: 28px;
+	height: 28px;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	color: #ffffff;
+	transition: all 0.2s;
+	border: 1px solid #ffffff;
+
+	&:hover:not(:disabled) {
+		color: #000000;
+		background-color: #ffffff;
+	}
+	
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
 `;
 
 const WindowContent = styled.div`

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Form, Input, Select, Button, Card, Space, DatePicker } from 'antd';
+import { Form, Input, Select, Button, Card, Space, DatePicker, ConfigProvider } from 'antd';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import './style.css';
@@ -164,14 +164,24 @@ const AttributeForm = ({ feature, layer, onSave, onCancel }) => {
 					</Space>,
 				]}
 			>
-				<Form
-					form={form}
-					layout="vertical"
-					size="small"
-					styles={{ label: { color: 'rgb(17, 102, 162)' } }}
+				<ConfigProvider
+					theme={{
+						components: {
+							Form: {
+								itemMarginBottom: 10,
+							},
+						},
+					}}
 				>
-					{visibleAtribs.map(renderFormItem)}
-				</Form>
+					<Form
+						form={form}
+						layout="vertical"
+						size="small"
+						styles={{ label: { color: 'rgb(17, 102, 162)' } }}
+					>
+						{visibleAtribs.map(renderFormItem)}
+					</Form>
+				</ConfigProvider>
 			</Card>
 		</FloatingWindow>
 	);

@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, ipcMain } from 'electron';
+import { BrowserWindow, Menu, ipcMain, app } from 'electron';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -8,6 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export function createMainWindow() {
+	// Определяем путь к иконке в зависимости от режима
+	const iconPath = isDev
+		? path.join(app.getAppPath(), 'build', 'icons', 'icon.png')
+		: path.join(__dirname, '..', 'build', 'icons', 'icon.png');
+
 	const mainWindow = new BrowserWindow({
 		width: 1400,
 		height: 900,
@@ -29,7 +34,7 @@ export function createMainWindow() {
 			allowRunningInsecureContent: true,
 			preload: path.join(__dirname, 'preload.js'),
 		},
-		icon: path.join(__dirname, 'assets', 'icon.png'),
+		icon: iconPath,
 	});
 
 	if (isDev) {

@@ -1,5 +1,4 @@
-import { showInfo } from '../../../store/featuredInfoEvent';
-import { openFeatureSelector } from '../../../store/openFeatureSelectronEvent';
+import { showInfo, showInfoMultiple } from '../../../store/featuredInfoEvent';
 
 export function setMapClickInfoEvent(map) {
 	if (!map) return;
@@ -35,9 +34,17 @@ function handleMapClickInfoEvent(map) {
 				layer,
 				features,
 			}));
-			if (numberOfFeatures > 1) {
-				openFeatureSelector(featuresByLayer);
+			
+			// Calculate total number of features across all layers
+			const totalFeatures = featuresByLayer.reduce((sum, item) => sum + item.features.length, 0);
+			
+			if (totalFeatures > 1) {
+				// Show InfoAttributeView with multiple features
+				showInfoMultiple({
+					featuresByLayer,
+				});
 			} else {
+				// Show InfoAttributeView with single feature
 				showInfo({
 					featureId: featuresByLayer[0].features[0].id,
 					layer: featuresByLayer[0].layer,

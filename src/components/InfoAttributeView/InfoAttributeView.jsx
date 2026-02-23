@@ -35,13 +35,39 @@ import { filterSystemProperties } from '../../utils/filterSystemProperties.js';
 
 const { Text } = Typography;
 
-export function InfoAttributeView({ featureId, layer, onClose }) {
+export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer = null }) {
 	const [featureData, setFeatureData] = useState(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [feature, setFeature] = useState(null);
 	const [form] = Form.useForm();
 	const [loading, setLoading] = useState(false);
-	const windowId = useMemo(() => `info-${featureId}`, [featureId]);
+	const [currentIndex, setCurrentIndex] = useState(0);
+	
+	const allFeatures = useMemo(() => {
+		if (!featuresByLayer) return null;
+		return featuresByLayer.flatMap(({ layer, features }) =>
+			features.map(feature => ({ feature, layer }))
+		);
+	}, [featuresByLayer]);
+	
+	const currentFeatureData = useMemo(() => {
+		if (allFeatures && allFeatures.length > 0) {
+			return allFeatures[currentIndex];
+		}
+		return { feature: { id: featureId }, layer };
+	}, [allFeatures, currentIndex, featureId, layer]);
+	
+	const activeFeatureId = currentFeatureData.feature.id;
+	const activeLayer = currentFeatureData.layer;
+	const isMultiple = allFeatures && allFeatures.length > 1;
+	
+	const windowId = useMemo(() => {
+		if (isMultiple) {
+			return 'info-multiple-features';
+		}
+		return `info-${activeFeatureId}`;
+	}, [isMultiple, activeFeatureId]);
+
 	const { isMaximized } = useWindowControls({ windowId });
 	const isGeometryEditing = useUnit($mapInteractionMode) === GEOMETRY_EDIT_INTERACTION;
 	const infoAttributeState = useUnit($infoAttributeState);
@@ -64,7 +90,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	}, []);
 
 	const handleCancelEditGeometryRef = useRef(handleCancelEditGeometry);
-	
+
 	useEffect(() => {
 		isGeometryEditingRef.current = isGeometryEditing;
 		handleCancelEditGeometryRef.current = handleCancelEditGeometry;
@@ -74,13 +100,13 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		try {
 			setLoading(true);
 
-			const features = layer.getSource().getFeatures();
-			const updatedFeature = features.find(f => f.id === featureId);
+			const features = activeLayer.getSource().getFeatures();
+			const updatedFeature = features.find(f => f.id === activeFeatureId);
 
 			if (updatedFeature) {
 				updateFeatureGeometry(
-					layer,
-					featureId,
+					activeLayer,
+					activeFeatureId,
 					updatedFeature.getGeometry(),
 					() => {
 						setFeature(updatedFeature);
@@ -95,17 +121,17 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		} finally {
 			setLoading(false);
 		}
-	}, [layer, featureId]);
+	}, [activeLayer, activeFeatureId]);
 
 	useEffect(() => {
 		const fetchFeatureAttributes = async () => {
 			try {
-				const data = layer.get('kmlType') ? getFeatureAttributesFromKML(layer, featureId) : await getFeatureAttributes(layer, featureId);
-				const atribs = filterSystemProperties(layer.atribs, config);
+				const data = activeLayer.get('kmlType') ? getFeatureAttributesFromKML(activeLayer, activeFeatureId) : await getFeatureAttributes(activeLayer, activeFeatureId);
+				const atribs = filterSystemProperties(activeLayer.atribs, config);
 				if (data) {
 					setFeatureData(data);
-					const features = layer.getSource().getFeatures();
-					const featureObj = features.find(feature => feature.id === featureId);
+					const features = activeLayer.getSource().getFeatures();
+					const featureObj = features.find(feature => feature.id === activeFeatureId);
 					setFeature(featureObj);
 
 					const initialValues = {};
@@ -120,7 +146,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		};
 
 		fetchFeatureAttributes();
-	}, [layer, featureId, form, config]);
+	}, [activeLayer, activeFeatureId, form, config]);
 
 	useEffect(() => {
 		if (!feature) return;
@@ -194,15 +220,27 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	}, [handleCancelEditGeometry, handleSaveGeometryEdit, infoAttributeState]);
 
 	const handleShowOnMap = () => {
-		showOnMap({ featureId: featureId, layer });
+		showOnMap({ featureId: activeFeatureId, layer: activeLayer });
 	};
 
 	const handleDeleteFeature = () => {
 		if (isGeometryEditing) {
 			handleCancelEditGeometry();
 		}
-		deleteFeature(featureId, layer, onClose);
+		deleteFeature(activeFeatureId, activeLayer, onClose);
 	};
+	
+	const handlePrevious = useCallback(() => {
+		if (isEditing || isGeometryEditing) return;
+		setIsEditing(false);
+		setCurrentIndex(prev => (prev > 0 ? prev - 1 : allFeatures.length - 1));
+	}, [isEditing, isGeometryEditing, allFeatures]);
+	
+	const handleNext = useCallback(() => {
+		if (isEditing || isGeometryEditing) return;
+		setIsEditing(false);
+		setCurrentIndex(prev => (prev < allFeatures.length - 1 ? prev + 1 : 0));
+	}, [isEditing, isGeometryEditing, allFeatures]);
 
 	const handleEditClick = () => {
 		setIsEditing(true);
@@ -230,8 +268,8 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 				});
 
 				updateFeatureAttributes(
-					layer,
-					featureId,
+					activeLayer,
+					activeFeatureId,
 					processedValues,
 					() => {
 						setFeatureData(prev => ({
@@ -271,8 +309,8 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 			return;
 		}
 
-		startGeometryEdit({ feature, layer });
-	}, [feature, handleCancelEditGeometry, isGeometryEditing, layer]);
+		startGeometryEdit({ feature, layer: activeLayer });
+	}, [feature, handleCancelEditGeometry, isGeometryEditing, activeLayer]);
 
 	const handleClose = useCallback(() => {
 		onClose();
@@ -281,16 +319,24 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 		}
 	}, [onClose]);
 
-	const visibleAtribs = filterSystemProperties(layer.atribs, config).filter(atrib => atrib.visible !== false);
+	const visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(atrib => atrib.visible !== false);
 
 	return featureData ? (
 		<FloatingWindow
-			title={layer.get ? layer.get('descr') : (layer.descr ?? 'Информация об объекте')}
+			title={activeLayer.get ? activeLayer.get('descr') : (activeLayer.descr ?? 'Информация об объекте')}
 			initialPosition={initialPosition}
 			width={550}
 			windowId={windowId}
 			onClose={handleClose}
 			showControls={true}
+			titleWidth={'400px'}
+			isMultiple={isMultiple}
+			onPrevious={handlePrevious}
+			onNext={handleNext}
+			current={currentIndex}
+			total={allFeatures?.length || 1}
+			disablePrevious={currentIndex === 0 || isEditing || isGeometryEditing}
+			disableNext={currentIndex === (allFeatures?.length || 1) - 1 || isEditing || isGeometryEditing}
 		>
 			<Card
 				styles={{

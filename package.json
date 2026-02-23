@@ -77,9 +77,17 @@
 			"target": [
 				"tar.gz"
 			],
-			"icon": "build/icons/",
+			"icon": "build/icons/icon.png",
 			"category": "Utility",
 			"maintainer": "SGIO Team <ahrimovanton@gmail.com>"
+		},
+		"mac": {
+			"icon": "build/icons/icon.png",
+			"category": "public.app-category.utilities"
+		},
+		"win": {
+			"icon": "build/icons/icon.png",
+			"target": "nsis"
 		},
 		"extraResources": [
 			{

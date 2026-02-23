@@ -29,7 +29,6 @@ import {
 	acceptKMLImport,
 } from './store/kmlImportDialog.js';
 import { importKML } from './legacy/KMLadapter.js';
-import { DARK_BLUE } from './consts/style.js';
 import { KMLImportProgress } from './components/KMLImport/KMLImportProgress.jsx';
 import {
 	$kmlImportProgress,
@@ -163,6 +162,7 @@ const AppContent = () => {
 					<InfoAttributeView
 						featureId={infoFeature.featureId}
 						layer={infoFeature.layer}
+						featuresByLayer={infoFeature.featuresByLayer}
 						onClose={() => showInfo(null)}
 					/>
 				)}
@@ -209,19 +209,9 @@ const AppContent = () => {
 export const App = () => {
 	return (
 		<AppConfigProvider>
-			<ConfigProvider
-				theme={{
-					components: {
-						Modal: {
-							headerBg: DARK_BLUE,
-						},
-					},
-				}}
-			>
 				<LoadingProvider>
 					<AppContent />
 				</LoadingProvider>
-			</ConfigProvider>
 		</AppConfigProvider>
 	);
 };
