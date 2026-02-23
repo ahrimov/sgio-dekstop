@@ -39,6 +39,11 @@ const MapComponent = () => {
 			const foundFeature = features.find(feature => feature.id === featureId);
 			if (!foundFeature) return;
 
+			const geometry = foundFeature.getGeometry();
+			if (!geometry) {
+				window.alert('У выбранного объекта нет геометрии');
+				return;
+			}
 			const extent = foundFeature.getGeometry().getExtent();
 			map.getView().fit(extent, { duration: 200, maxZoom: 18, padding: [40, 40, 40, 40] });
 

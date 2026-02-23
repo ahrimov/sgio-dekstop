@@ -1,5 +1,5 @@
 import WKT from 'ol/format/WKT';
-import { requestToDB } from './DBManage';
+import { requestToDB, requestToDBPromise } from './DBManage';
 import Polygon, { circular } from 'ol/geom/Polygon';
 import { LineString, Point } from 'ol/geom';
 import { add } from 'ol/coordinate';
@@ -31,7 +31,7 @@ export async function importKML(
 
 	let textFinishingLoading = 'Импорт KML завершён.';
 
-	startLoading(features.length, 'Импорт KML…');
+	startLoading(features.length, 'Импорт KML');
 
 	let featureMaxID;
 
@@ -46,7 +46,7 @@ export async function importKML(
 		let props;
 		props = filterProperties(feature.getProperties(), dict, layer);
 
-		let feature_id = props[dict[layer.atribs[0].name]];
+		let feature_id = Number(props[dict[layer.atribs[0].name]]);
 
 		if (typeof feature_id == 'undefined') {
 			if (typeof featureMaxID == 'undefined') {
@@ -82,20 +82,20 @@ export async function importKML(
 				const userAnswer = window.confirm(permissionToUpdateFeaturesMessage);
 				if (userAnswer) {
 					permissionToUpdateFeatures = 1;
-					updateFeaturesFromKML();
+					await updateFeaturesFromKML();
 				} else {
 					permissionToUpdateFeatures = 0;
 					updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
 					continue;
 				}
 			} else if (permissionToUpdateFeatures) {
-				updateFeaturesFromKML();
+				await updateFeaturesFromKML();
 			} else {
 				updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
 				continue;
 			}
 
-			function updateFeaturesFromKML() {
+			async function updateFeaturesFromKML() {
 				let updates = [];
 				const atribNames = [];
 				const values = [];
@@ -120,23 +120,22 @@ export async function importKML(
 				feautureString = convertToGeometryType(feautureString, layer.geometryType);
 				updates.push(`Geometry = GeomFromText('${feautureString}', 3857)`);
 				query = `UPDATE ${layer.id} SET ${updates.join(', ')} WHERE ${layer.atribs[0].name} = ${feature_id} `;
-				requestToDB(query, () => {
-					for (let old_feature of layer.getSource().getFeatures()) {
-						if (old_feature.id == feature_id) {
-							old_feature.setGeometry(feature.getGeometry());
+				await requestToDBPromise(query);
+				for (let old_feature of layer.getSource().getFeatures()) {
+					if (old_feature.id == feature_id) {
+						old_feature.setGeometry(feature.getGeometry());
 
-							const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
-							if (typeIndex >= 0) old_feature.type = values[typeIndex];
+						const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
+						if (typeIndex >= 0) old_feature.type = values[typeIndex];
 
-							const labelIndex = atribNames.indexOf(layer.labelColumn);
-							if (labelIndex >= 0) old_feature.label = values[labelIndex];
+						const labelIndex = atribNames.indexOf(layer.labelColumn);
+						if (labelIndex >= 0) old_feature.label = values[labelIndex];
 
-							acceptedNumberOfFeatures += 1;
-							updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
-							break;
-						}
+						acceptedNumberOfFeatures += 1;
+						updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
+						break;
 					}
-				});
+				}
 			}
 		} else {
 			let atribNames = [];
@@ -163,21 +162,21 @@ export async function importKML(
                 INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
                 VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
             ;`;
-			requestToDB(query, () => {
-				feature.id = feature_id;
-				feature.layerID = layer.id;
+			await requestToDBPromise(query);
 
-				const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
-				if (typeIndex >= 0) feature.type = values[typeIndex];
-				else feature.type = 'default';
-				const labelIndex = atribNames.indexOf(layer.labelColumn);
-				if (labelIndex >= 0) feature.label = values[labelIndex];
+			feature.id = feature_id;
+			feature.layerID = layer.id;
 
-				feature.setStyle(layer.getStyle());
-				layer.getSource().addFeature(feature);
-				acceptedNumberOfFeatures += 1;
-				updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
-			});
+			const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
+			if (typeIndex >= 0) feature.type = values[typeIndex];
+			else feature.type = 'default';
+			const labelIndex = atribNames.indexOf(layer.labelColumn);
+			if (labelIndex >= 0) feature.label = values[labelIndex];
+
+			feature.setStyle(layer.getStyle());
+			layer.getSource().addFeature(feature);
+			acceptedNumberOfFeatures += 1;
+			updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
 		}
 	}
 
@@ -186,7 +185,7 @@ export async function importKML(
 	if (sourceNumberOfFeatures !== acceptedNumberOfFeatures) {
 		textFinishingLoading += ` Не все объекты были загружены. Загружено объектов ${acceptedNumberOfFeatures} из ${sourceNumberOfFeatures}.`;
 	}
-	window.alert({ title: 'Окончание импорта KML', message: textFinishingLoading });
+	window.alert(textFinishingLoading);
 
 	function convertToGeometryType(inp_string, type) {
 		let l_brackets = '((';
@@ -339,4 +338,4 @@ function getAtribByName(atribs, atribName) {
 	}
 }
 
-const permissionToUpdateFeaturesMessage = `Выявлено, что в базе данных и в импортируемом KML-файле имеются объекты с одинаковыми идентификаторами. Если Вы подтвердите обновление, то объекты в базе данных будут заменены на объекты из KML-файла. Иначе, будут оставлены исходные объекты базы данных. Объекты с несовпадающими идентификаторами будут импортированы.Выполнить обновление?`;
+const permissionToUpdateFeaturesMessage = `Выявлено, что в базе данных и в импортируемом KML-файле имеются объекты с одинаковыми идентификаторами. Если Вы подтвердите обновление, то объекты в базе данных будут заменены на объекты из KML-файла. Иначе, будут оставлены исходные объекты базы данных. Объекты с несовпадающими идентификаторами будут импортированы. Выполнить обновление?`;

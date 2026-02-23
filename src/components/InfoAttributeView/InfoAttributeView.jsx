@@ -47,6 +47,7 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const infoAttributeState = useUnit($infoAttributeState);
 	const { config } = useConfig();
 	const originalStyleRef = useRef(null);
+	const isGeometryEditingRef = useRef(isGeometryEditing);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -61,6 +62,13 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 	const handleCancelEditGeometry = useCallback(() => {
 		changeInteractionMode(DEFAULT_INTERACTION);
 	}, []);
+
+	const handleCancelEditGeometryRef = useRef(handleCancelEditGeometry);
+	
+	useEffect(() => {
+		isGeometryEditingRef.current = isGeometryEditing;
+		handleCancelEditGeometryRef.current = handleCancelEditGeometry;
+	}, [isGeometryEditing, handleCancelEditGeometry]);
 
 	const handleSaveGeometryEdit = useCallback(() => {
 		try {
@@ -268,10 +276,10 @@ export function InfoAttributeView({ featureId, layer, onClose }) {
 
 	const handleClose = useCallback(() => {
 		onClose();
-		if (isGeometryEditing) {
-			handleCancelEditGeometry();
+		if (isGeometryEditingRef.current) {
+			handleCancelEditGeometryRef.current();
 		}
-	}, [onClose, isGeometryEditing, handleCancelEditGeometry]);
+	}, [onClose]);
 
 	const visibleAtribs = filterSystemProperties(layer.atribs, config).filter(atrib => atrib.visible !== false);
 

@@ -22,6 +22,21 @@ import { $numberOfLayers } from './store/numberOfLayers.js';
 import { $infoFeature, showInfo } from './store/featuredInfoEvent.js';
 import { Taskbar } from './components/WindowControls/taskbar.jsx';
 import { InfoModal } from './components/InfoModal/InfoModal.jsx';
+import { AttributeComparisonDialog } from './components/KMLImport/AttributeComparisonDialog.jsx';
+import {
+	$kmlImportDialogData,
+	closeKMLImportDialog,
+	acceptKMLImport,
+} from './store/kmlImportDialog.js';
+import { importKML } from './legacy/KMLadapter.js';
+import { DARK_BLUE } from './consts/style.js';
+import { KMLImportProgress } from './components/KMLImport/KMLImportProgress.jsx';
+import {
+	$kmlImportProgress,
+	startKMLImport,
+	updateKMLImportProgress,
+	finishKMLImport,
+} from './store/kmlImportProgress.js';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -31,6 +46,8 @@ const AppContent = () => {
 	const infoFeature = useUnit($infoFeature);
 	const featureSelectorData = useUnit($featureSelectorData);
 	const numberOfLayers = useUnit($numberOfLayers);
+	const kmlImportDialogData = useUnit($kmlImportDialogData);
+	const kmlImportProgress = useUnit($kmlImportProgress);
 
 	useEffect(() => {
 		setProgressCallbacks({
@@ -41,7 +58,7 @@ const AppContent = () => {
 
 		setConfigUpdateCallback(updateConfig);
 
-		setDBProgressCallbacks(updateProgress, () => { });
+		setDBProgressCallbacks(updateProgress, () => {});
 
 		window.showAlert = (title, message) => {
 			Modal.error({
@@ -84,6 +101,21 @@ const AppContent = () => {
 
 	const handleFeaturesClick = layer => {
 		setActiveLayer(layer);
+	};
+
+	const handleAcceptKMLImport = dict => {
+		if (!kmlImportDialogData) return;
+
+		const { layerId, features } = kmlImportDialogData;
+
+		const loadingCallbacks = {
+			startLoading: (total, message) => startKMLImport({ total, message }),
+			updateProgress: (current, message) => updateKMLImportProgress({ current, message }),
+			finishLoading: () => finishKMLImport(),
+		};
+
+		importKML(layerId, dict, features, loadingCallbacks);
+		acceptKMLImport();
 	};
 
 	return (
@@ -145,6 +177,23 @@ const AppContent = () => {
 				<Taskbar />
 				<InfoModal />
 
+				<KMLImportProgress
+					visible={kmlImportProgress.visible}
+					message={kmlImportProgress.message}
+					current={kmlImportProgress.current}
+					total={kmlImportProgress.total}
+				/>
+
+				{kmlImportDialogData && (
+					<AttributeComparisonDialog
+						visible={!!kmlImportDialogData}
+						onClose={closeKMLImportDialog}
+						layerAttributes={kmlImportDialogData.layerAttributes || []}
+						kmlProperties={kmlImportDialogData.properties || []}
+						onAccept={handleAcceptKMLImport}
+					/>
+				)}
+
 				<LoadingScreen
 					visible={loadingState.visible}
 					current={loadingState.current}
@@ -160,9 +209,19 @@ const AppContent = () => {
 export const App = () => {
 	return (
 		<AppConfigProvider>
-			<LoadingProvider>
-				<AppContent />
-			</LoadingProvider>
+			<ConfigProvider
+				theme={{
+					components: {
+						Modal: {
+							headerBg: DARK_BLUE,
+						},
+					},
+				}}
+			>
+				<LoadingProvider>
+					<AppContent />
+				</LoadingProvider>
+			</ConfigProvider>
 		</AppConfigProvider>
 	);
 };

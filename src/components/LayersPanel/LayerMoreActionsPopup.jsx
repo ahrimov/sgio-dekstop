@@ -3,11 +3,12 @@ import { Popover, Button, Typography } from 'antd';
 import { ClearOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { startDrawing } from '../../features/draw/store';
-import { requestToDB } from '../../legacy/DBManage';
-import { refreshFeatureTable } from '../../store/refreshTable';
-import { syncChangesWithKML } from '../../features/KMLLayer/syncChangesWithKML';
 import { deleteLayer } from '../../features/KMLLayer/deleteLayer';
 import { saveKMLToFile } from '../../features/KMLLayer/saveKMLToFile';
+import { exportKMLFromDB } from '../../features/KMLLayer/exportKMLFromDB';
+import { clearLayer } from '../../features/clear/clearLayer';
+import { selectKMLFile, readKMLForComparison } from '../../features/KMLImport/compareAttributes';
+import { openKMLImportDialog } from '../../store/kmlImportDialog';
 
 const { Text } = Typography;
 
@@ -19,7 +20,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 		const elem = parentScrollRef?.current || window;
 		const close = () => {
 			setVisible(false);
-		}
+		};
 		elem.addEventListener('scroll', close, { passive: true });
 		return () => elem.removeEventListener('scroll', close);
 	}, [visible, parentScrollRef]);
@@ -27,21 +28,70 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 	const kmlType = layer.get('kmlType');
 	const content = (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-			<Button type="text" size="small" onClick={() => {
-				setVisible(false);
-				setTimeout(() => {
-					onProps?.(layer);
-				}, 20);
-			}
-			}>
+			<Button
+				type="text"
+				size="small"
+				onClick={() => {
+					setVisible(false);
+					setTimeout(() => {
+						onProps?.(layer);
+					}, 20);
+				}}
+			>
 				Объекты
 			</Button>
-			<Button type="text" size="small" onClick={() => {
-				setVisible(false);
-				startDrawing(layer)
-			}}>
+			<Button
+				type="text"
+				size="small"
+				onClick={() => {
+					setVisible(false);
+					startDrawing(layer);
+				}}
+			>
 				Добавить объект
 			</Button>
+			{!kmlType && (
+				<>
+					<Button
+						type="text"
+						size="small"
+						onClick={async () => {
+							setVisible(false);
+							try {
+								const filePath = await selectKMLFile();
+								if (!filePath) return;
+
+								const { features, properties } =
+									await readKMLForComparison(filePath);
+
+								openKMLImportDialog({
+									layerId: layer.id,
+									layerAttributes: layer.atribs || [],
+									features,
+									properties,
+								});
+							} catch (error) {
+								window.alert(
+									'Ошибка',
+									error.message || 'Ошибка при чтении KML файла'
+								);
+							}
+						}}
+					>
+						Импорт KML
+					</Button>
+					<Button
+						type="text"
+						size="small"
+						onClick={() => {
+							setVisible(false);
+							exportKMLFromDB(layer.id);
+						}}
+					>
+						Экспорт KML
+					</Button>
+				</>
+			)}
 			{kmlType && (
 				<Button
 					type="text"
@@ -59,25 +109,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 				size="small"
 				onClick={() => {
 					setVisible(false);
-					const confirmed = window.confirm(
-						`Вы уверены, что хотите очистить слой "${layer.get('descr') || layer.id}"?`
-					);
-
-					if (!confirmed) return;
-
-					if (kmlType) {
-						const features = layer.getSource().getFeatures();
-						features.forEach(feature => feature.deleted = true);
-						syncChangesWithKML(layer.id);
-						refreshFeatureTable();
-					} else {
-						const query = `DELETE FROM ${layer.id};`;
-
-						requestToDB(query, () => {
-							layer.getSource().clear();
-							refreshFeatureTable();
-						});
-					}
+					clearLayer(layer);
 				}}
 			>
 				<ClearOutlined style={{ color: 'red' }} />
