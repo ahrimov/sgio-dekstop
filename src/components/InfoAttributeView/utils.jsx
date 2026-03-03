@@ -12,7 +12,7 @@ export function formatValue(atrib, value) {
 		}
 	}
 	return value === undefined || value === null || value === '' ? (
-		<span style={{ color: '#bbb' }}>—</span>
+		<span style={{ color: '#bbb', }}>—</span>
 	) : (
 		value
 	);

@@ -36,9 +36,20 @@ const FloatingWindow = ({
 		bounds,
 	} = useWindowControls({ windowId });
 	const [isDragging, setIsDragging] = useState(false);
+	const [isResizing, setIsResizing] = useState(false);
 	const dragOffset = useRef({ x: 0, y: 0 });
+	const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0 });
+	const [size, setSize] = useState({ width, height });
+	const initialHeightRef = useRef(null);
 	const containerRef = useRef();
 	const { x, y } = bounds || initialPosition;
+
+	useEffect(() => {
+		if (containerRef.current && initialHeightRef.current === null) {
+			const rect = containerRef.current.getBoundingClientRect();
+			initialHeightRef.current = rect.height;
+		}
+	}, []);
 
 	useEffect(() => {
 		windowCreated({
@@ -59,6 +70,9 @@ const FloatingWindow = ({
 
 	const handleMouseDown = useCallback(
 		e => {
+			if (e.target.closest('.resize-handle')) {
+				return;
+			}
 			if (e.target.closest('.drag-handle')) {
 				const rect = containerRef.current.getBoundingClientRect();
 				dragOffset.current = {
@@ -75,36 +89,84 @@ const FloatingWindow = ({
 		[focus]
 	);
 
+	const handleResizeMouseDown = useCallback(
+		e => {
+			e.stopPropagation();
+			e.preventDefault();
+
+			const rect = containerRef.current.getBoundingClientRect();
+			resizeStart.current = {
+				x: e.clientX,
+				y: e.clientY,
+				width: rect.width,
+				height: rect.height,
+			};
+			setIsResizing(true);
+			focus();
+		},
+		[focus]
+	);
+
 	const handleMouseMove = useCallback(
 		e => {
-			if (!isDragging || isMaximized) return;
+			if (isMaximized) return;
 
-			const container = containerRef.current;
-			const containerRect = container.getBoundingClientRect();
-			const rootNode = document.querySelector('#root');
-			if (!rootNode) return;
-			const viewportRect = rootNode.getBoundingClientRect();
+			if (isDragging) {
+				const container = containerRef.current;
+				const containerRect = container.getBoundingClientRect();
+				const rootNode = document.querySelector('#root');
+				if (!rootNode) return;
+				const viewportRect = rootNode.getBoundingClientRect();
 
-			let newX = e.clientX - dragOffset.current.x;
-			let newY = e.clientY - dragOffset.current.y;
+				let newX = e.clientX - dragOffset.current.x;
+				let newY = e.clientY - dragOffset.current.y;
 
-			newX = Math.max(0, Math.min(newX, viewportRect.width - containerRect.width));
-			newY = Math.max(
-				viewportRect.top,
-				Math.min(newY, viewportRect.height + viewportRect.top - containerRect.height)
-			);
+				newX = Math.max(0, Math.min(newX, viewportRect.width - containerRect.width));
+				newY = Math.max(
+					viewportRect.top,
+					Math.min(newY, viewportRect.height + viewportRect.top - containerRect.height)
+				);
 
-			move({ x: newX, y: newY });
+				move({ x: newX, y: newY });
+			} else if (isResizing) {
+				const deltaX = e.clientX - resizeStart.current.x;
+				const deltaY = e.clientY - resizeStart.current.y;
+
+				const rootNode = document.querySelector('#root');
+				if (!rootNode) return;
+				const viewportRect = rootNode.getBoundingClientRect();
+
+				const currentX = bounds?.x || initialPosition.x;
+				const currentY = bounds?.y || initialPosition.y;
+
+				const minHeight = initialHeightRef.current || height || 350;
+				const minWidth = width || 360;
+
+				const maxWidth = viewportRect.width - currentX;
+				const maxHeight = viewportRect.height + viewportRect.top - currentY;
+
+				let newWidth = resizeStart.current.width + deltaX;
+				let newHeight = resizeStart.current.height + deltaY;
+
+				newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+				newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight));
+
+				setSize({
+					width: newWidth,
+					height: newHeight,
+				});
+			}
 		},
-		[isDragging, isMaximized, move]
+		[isDragging, isResizing, isMaximized, move]
 	);
 
 	const handleMouseUp = useCallback(() => {
 		setIsDragging(false);
+		setIsResizing(false);
 	}, []);
 
 	useEffect(() => {
-		if (isDragging) {
+		if (isDragging || isResizing) {
 			document.addEventListener('mousemove', handleMouseMove);
 			document.addEventListener('mouseup', handleMouseUp);
 
@@ -113,7 +175,7 @@ const FloatingWindow = ({
 				document.removeEventListener('mouseup', handleMouseUp);
 			};
 		}
-	}, [isDragging, handleMouseMove, handleMouseUp]);
+	}, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
 
 	const handleClose = () => {
 		if (onClose) onClose();
@@ -129,8 +191,8 @@ const FloatingWindow = ({
 			style={{
 				left: x,
 				top: y,
-				width: isMaximized ? '100vw' : width,
-				minHeight: isMaximized ? '100vh' : '',
+				width: isMaximized ? '100vw' : size.width,
+				height: isMaximized ? '100vh' : size.height || 'auto',
 				borderRadius: isMaximized ? '0' : '8px',
 				zIndex: windowState?.zIndex || 100000,
 			}}
@@ -166,6 +228,9 @@ const FloatingWindow = ({
 			</WindowHeader>
 
 			<WindowContent>{children}</WindowContent>
+			{!isMaximized && (
+				<ResizeHandle className="resize-handle" onMouseDown={handleResizeMouseDown} />
+			)}
 		</FloatingContainer>
 	);
 };
@@ -180,6 +245,7 @@ const FloatingContainer = styled.div`
 	min-width: 200px;
 	min-height: 100px;
 	user-select: none;
+	overflow: hidden;
 `;
 
 const WindowHeader = styled.div`
@@ -202,6 +268,7 @@ const WindowTitle = styled.span`
 	white-space: nowrap;
 	fontWeight: bold,
 	fontSize: 16px,
+	font-family: "Arial Narrow", sans-serif;
 `;
 
 const ControlButton = styled.button`
@@ -221,7 +288,7 @@ const ControlButton = styled.button`
 		color: #000000;
 		background-color: #ffffff;
 	}
-	
+
 	&:disabled {
 		opacity: 0.4;
 		cursor: not-allowed;
@@ -230,6 +297,34 @@ const ControlButton = styled.button`
 
 const WindowContent = styled.div`
 	overflow: auto;
+	flex: 1;
+`;
+
+const ResizeHandle = styled.div`
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 16px;
+	height: 16px;
+	cursor: nwse-resize;
+	z-index: 10;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+
+	&::before {
+		content: '';
+		position: absolute;
+		bottom: 0px;
+		right: 5px;
+		width: 1px;
+		height: 12px;
+		background: #999;
+		transform: rotate(45deg);
+		box-shadow:
+			4px -3px 0 0 #999,
+			6px -6px 0 0 #999;
+	}
 `;
 
 export default FloatingWindow;

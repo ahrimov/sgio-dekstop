@@ -5,6 +5,7 @@ import { setProgressCallbacks, setConfigUpdateCallback } from './legacy/XMLParse
 import { setDBProgressCallbacks, loadAllLayers } from './legacy/DBManage.js';
 import { ConfigProvider, Modal } from 'antd';
 import { ConfigProvider as AppConfigProvider, useConfig } from './context/ConfigContext.jsx';
+import { MessageProvider } from './context/MessageContext.jsx';
 import MapComponent from './components/Map/MapComponent.js';
 import LayersPanel from './components/LayersPanel/LayersPanel.jsx';
 import { layers } from './legacy/globals.js';
@@ -118,90 +119,105 @@ const AppContent = () => {
 	};
 
 	return (
-		<ConfigProvider locale={ruRU}>
-			<div className="app">
-				<div className="app-controls">
-					{!showLayersPanel && (
-						<div className="app-controls">
-							<Button
-								type="primary"
-								icon={<MenuOutlined />}
-								onClick={toggleLayersPanel}
-								className="layers-toggle-btn"
-							>
-								Слои
-							</Button>
-						</div>
-					)}
-				</div>
-				{loadingState.total && !loadingState.visible ? (
-					<div className="app-container">
-						<div className="top-row">
-							{showLayersPanel && (
-								<div className="layers-panel-wrapper">
-									<LayersPanel
-										baseRasterLayers={baseRasterLayers}
-										layers={layers}
-										onClose={closeLayersPanel}
-										handleFeaturesClick={handleFeaturesClick}
-									/>
-								</div>
-							)}
-							<div className={`map-content ${showLayersPanel ? 'with-panel' : ''}`}>
-								<MapComponent />
-							</div>
-						</div>
-						{activeLayer && (
-							<div className="table-wrapper">
-								<FeatureTable key={activeLayer.id} layer={activeLayer} />
+		<ConfigProvider
+			locale={ruRU}
+			theme={{
+				components: {
+					Message: {
+						contentBg: '#fff',
+						contentPadding: '10px 16px',
+						zIndexPopup: 10000000000,
+					},
+				},
+			}}
+		>
+			<MessageProvider>
+				<div className="app">
+					<div className="app-controls">
+						{!showLayersPanel && (
+							<div className="app-controls">
+								<Button
+									type="primary"
+									icon={<MenuOutlined />}
+									onClick={toggleLayersPanel}
+									className="layers-toggle-btn"
+								>
+									Слои
+								</Button>
 							</div>
 						)}
 					</div>
-				) : null}
-				{infoFeature && (
-					<InfoAttributeView
-						featureId={infoFeature.featureId}
-						layer={infoFeature.layer}
-						featuresByLayer={infoFeature.featuresByLayer}
-						onClose={() => showInfo(null)}
+					{loadingState.total && !loadingState.visible ? (
+						<div className="app-container">
+							<div className="top-row">
+								{showLayersPanel && (
+									<div className="layers-panel-wrapper">
+										<LayersPanel
+											baseRasterLayers={baseRasterLayers}
+											layers={layers}
+											onClose={closeLayersPanel}
+											handleFeaturesClick={handleFeaturesClick}
+										/>
+									</div>
+								)}
+								<div
+									className={`map-content ${showLayersPanel ? 'with-panel' : ''}`}
+								>
+									<MapComponent />
+								</div>
+							</div>
+							{activeLayer && (
+								<div className="table-wrapper">
+									<FeatureTable key={activeLayer.id} layer={activeLayer} />
+								</div>
+							)}
+						</div>
+					) : null}
+					{infoFeature && (
+						<InfoAttributeView
+							featureId={infoFeature.featureId}
+							layer={infoFeature.layer}
+							featuresByLayer={infoFeature.featuresByLayer}
+							onClose={() => showInfo(null)}
+						/>
+					)}
+
+					{featureSelectorData?.length && (
+						<FeaturesSelector
+							featuresByLayer={featureSelectorData}
+							onClose={() => openFeatureSelector(null)}
+						/>
+					)}
+
+					<Taskbar />
+					<InfoModal />
+
+					<KMLImportProgress
+						visible={kmlImportProgress.visible}
+						message={kmlImportProgress.message}
+						current={kmlImportProgress.current}
+						total={kmlImportProgress.total}
 					/>
-				)}
 
-				{featureSelectorData?.length && (
-					<FeaturesSelector
-						featuresByLayer={featureSelectorData}
-						onClose={() => openFeatureSelector(null)}
+					{kmlImportDialogData && (
+						<AttributeComparisonDialog
+							visible={!!kmlImportDialogData}
+							onClose={closeKMLImportDialog}
+							layerAttributes={kmlImportDialogData.layerAttributes || []}
+							kmlProperties={kmlImportDialogData.properties || []}
+							onAccept={handleAcceptKMLImport}
+						/>
+					)}
+
+					<LoadingScreen
+						visible={loadingState.visible}
+						current={loadingState.current}
+						total={loadingState.total}
+						currentFile={loadingState.currentFile}
+						message={loadingState.message}
 					/>
-				)}
-
-				<Taskbar />
-				<InfoModal />
-
-				<KMLImportProgress
-					visible={kmlImportProgress.visible}
-					message={kmlImportProgress.message}
-					current={kmlImportProgress.current}
-					total={kmlImportProgress.total}
-				/>
-
-				{kmlImportDialogData && (
-					<AttributeComparisonDialog
-						visible={!!kmlImportDialogData}
-						onClose={closeKMLImportDialog}
-						layerAttributes={kmlImportDialogData.layerAttributes || []}
-						kmlProperties={kmlImportDialogData.properties || []}
-						onAccept={handleAcceptKMLImport}
-					/>
-				)}
-
-				<LoadingScreen
-					visible={loadingState.visible}
-					current={loadingState.current}
-					total={loadingState.total}
-					currentFile={loadingState.currentFile}
-					message={loadingState.message}
-				/>
-			</div>
+				</div>
+			</MessageProvider>
 		</ConfigProvider>
 	);
 };
@@ -209,9 +225,9 @@ const AppContent = () => {
 export const App = () => {
 	return (
 		<AppConfigProvider>
-				<LoadingProvider>
-					<AppContent />
-				</LoadingProvider>
+			<LoadingProvider>
+				<AppContent />
+			</LoadingProvider>
 		</AppConfigProvider>
 	);
 };

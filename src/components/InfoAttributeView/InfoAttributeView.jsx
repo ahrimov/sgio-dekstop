@@ -1,26 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { Card, Typography, Descriptions, Button, Flex, Form, Space } from 'antd';
+import { Card, Button, Flex, Form, Space } from 'antd';
 import {
 	CheckOutlined,
 	CloseOutlined,
-	DeleteOutlined,
-	EditOutlined,
-	RadiusSettingOutlined,
-	SearchOutlined,
 } from '@ant-design/icons';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import { showOnMap } from '../../store/showOnMap.js';
 import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
-import { formatValue } from './utils.jsx';
 import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
-import { DARK_BLUE, WHITE, ORANGE, BLACK } from '../../consts/style.js';
+import { WHITE, ORANGE, BLACK } from '../../consts/style.js';
 import { Style, Stroke, Fill, RegularShape } from 'ol/style';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
 import { AttributeEditForm } from './AttributeEditForm.jsx';
+import editGeometry from '../../assets/resources/images/assets/editGeometry.png';
+import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
+import deleteIcon from '../../assets/resources/images/assets/delete.png';
+import saveIcon from '../../assets/resources/images/assets/save.png';
 import {
 	updateFeatureAttributes,
 	updateFeatureGeometry,
 } from '../../features/saveFeature/updateFeature.js';
+import { addNewFeature } from '../../features/saveFeature/addNewFeature.js';
 import { finishGeometryEdit, startGeometryEdit } from '../../features/draw/store.js';
 import { useUnit } from 'effector-react';
 import {
@@ -32,16 +32,17 @@ import {
 import { $infoAttributeState, CANCEL_EDITING, FINISH_EDITING } from './store.js';
 import { useConfig } from '../../context/ConfigContext.jsx';
 import { filterSystemProperties } from '../../utils/filterSystemProperties.js';
+import { BaseMapButton } from '../MapButtons/BaseMapButton.jsx';
+import { useMessage } from '../../context/MessageContext.jsx';
 
-const { Text } = Typography;
-
-export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer = null }) {
+export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer = null, initialFeature = null }) {
+	const messageApi = useMessage();
 	const [featureData, setFeatureData] = useState(null);
-	const [isEditing, setIsEditing] = useState(false);
-	const [feature, setFeature] = useState(null);
+	const [feature, setFeature] = useState(initialFeature);
 	const [form] = Form.useForm();
 	const [loading, setLoading] = useState(false);
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const [isNewFeature, setIsNewFeature] = useState(!!initialFeature);
 	
 	const allFeatures = useMemo(() => {
 		if (!featuresByLayer) return null;
@@ -126,6 +127,24 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 	useEffect(() => {
 		const fetchFeatureAttributes = async () => {
 			try {
+				if (initialFeature) {
+					const atribs = filterSystemProperties(activeLayer.atribs, config);
+					const data = {};
+					atribs.forEach(atrib => {
+						data[atrib.name] = initialFeature.get(atrib.name) || '';
+					});
+					setFeatureData(data);
+					setFeature(initialFeature);
+					
+					const initialValues = {};
+					atribs.forEach(atrib => {
+						initialValues[atrib.name] = data[atrib.name] || '';
+					});
+					form.setFieldsValue(initialValues);
+					setIsNewFeature(true);
+					return;
+				}
+
 				const data = activeLayer.get('kmlType') ? getFeatureAttributesFromKML(activeLayer, activeFeatureId) : await getFeatureAttributes(activeLayer, activeFeatureId);
 				const atribs = filterSystemProperties(activeLayer.atribs, config);
 				if (data) {
@@ -139,6 +158,7 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 						initialValues[atrib.name] = data[atrib.name] || '';
 					});
 					form.setFieldsValue(initialValues);
+					setIsNewFeature(false);
 				}
 			} catch (err) {
 				console.error('Error fetching feature attributes:', err);
@@ -146,7 +166,7 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 		};
 
 		fetchFeatureAttributes();
-	}, [activeLayer, activeFeatureId, form, config]);
+	}, [activeLayer, activeFeatureId, form, config, initialFeature]);
 
 	useEffect(() => {
 		if (!feature) return;
@@ -227,24 +247,25 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 		if (isGeometryEditing) {
 			handleCancelEditGeometry();
 		}
-		deleteFeature(activeFeatureId, activeLayer, onClose);
+		
+		if (isNewFeature && feature) {
+			const source = activeLayer.getSource();
+			source.removeFeature(feature);
+			onClose();
+		} else {
+			deleteFeature(activeFeatureId, activeLayer, onClose);
+		}
 	};
 	
 	const handlePrevious = useCallback(() => {
-		if (isEditing || isGeometryEditing) return;
-		setIsEditing(false);
+		if (isGeometryEditing) return;
 		setCurrentIndex(prev => (prev > 0 ? prev - 1 : allFeatures.length - 1));
-	}, [isEditing, isGeometryEditing, allFeatures]);
+	}, [isGeometryEditing, allFeatures]);
 	
 	const handleNext = useCallback(() => {
-		if (isEditing || isGeometryEditing) return;
-		setIsEditing(false);
+		if (isGeometryEditing) return;
 		setCurrentIndex(prev => (prev < allFeatures.length - 1 ? prev + 1 : 0));
-	}, [isEditing, isGeometryEditing, allFeatures]);
-
-	const handleEditClick = () => {
-		setIsEditing(true);
-	};
+	}, [isGeometryEditing, allFeatures]);
 
 	const handleSaveEdit = async () => {
 		try {
@@ -267,36 +288,38 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 					}
 				});
 
-				updateFeatureAttributes(
-					activeLayer,
-					activeFeatureId,
-					processedValues,
-					() => {
-						setFeatureData(prev => ({
-							...prev,
-							...processedValues,
-						}));
-						setIsEditing(false);
-					},
-					error => {
-						console.log(`Ошибка сохранения: ${error.message}`);
-					}
-				);
+				if (isNewFeature) {
+					await addNewFeature(activeLayer, feature);
+					setFeatureData(prev => ({
+						...prev,
+						...processedValues,
+					}));
+					messageApi.success('Объект успешно создан');
+					onClose();
+				} else {
+					updateFeatureAttributes(
+						activeLayer,
+						activeFeatureId,
+						processedValues,
+						() => {
+							setFeatureData(prev => ({
+								...prev,
+								...processedValues,
+							}));
+							messageApi.success('Изменения успешно сохранены');
+						},
+						error => {
+							console.log(`Ошибка сохранения: ${error.message}`);
+							messageApi.error(`Ошибка сохранения: ${error.message}`);
+						}
+					);
+				}
 			}
-
-			setIsEditing(false);
 		} catch (error) {
 			console.error('Error saving feature:', error);
 		} finally {
 			setLoading(false);
 		}
-	};
-
-	const handleCancelEdit = () => {
-		if (featureData) {
-			form.setFieldsValue(featureData);
-		}
-		setIsEditing(false);
 	};
 
 	const handleEditGeometryClick = useCallback(() => {
@@ -313,11 +336,15 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 	}, [feature, handleCancelEditGeometry, isGeometryEditing, activeLayer]);
 
 	const handleClose = useCallback(() => {
+		if (isNewFeature && feature) {
+			const source = activeLayer.getSource();
+			source.removeFeature(feature);
+		}
 		onClose();
 		if (isGeometryEditingRef.current) {
 			handleCancelEditGeometryRef.current();
 		}
-	}, [onClose]);
+	}, [onClose, isNewFeature, feature, activeLayer]);
 
 	const visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(atrib => atrib.visible !== false);
 
@@ -325,7 +352,7 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 		<FloatingWindow
 			title={activeLayer.get ? activeLayer.get('descr') : (activeLayer.descr ?? 'Информация об объекте')}
 			initialPosition={initialPosition}
-			width={550}
+			width={600}
 			windowId={windowId}
 			onClose={handleClose}
 			showControls={true}
@@ -335,8 +362,8 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 			onNext={handleNext}
 			current={currentIndex}
 			total={allFeatures?.length || 1}
-			disablePrevious={currentIndex === 0 || isEditing || isGeometryEditing}
-			disableNext={currentIndex === (allFeatures?.length || 1) - 1 || isEditing || isGeometryEditing}
+			disablePrevious={currentIndex === 0 || isGeometryEditing}
+			disableNext={currentIndex === (allFeatures?.length || 1) - 1 || isGeometryEditing}
 		>
 			<Card
 				styles={{
@@ -356,151 +383,71 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 					cursor: 'default',
 				}}
 				actions={
-					isEditing
+					isGeometryEditing
 						? [
-							<Space key="actions">
-								<Button onClick={handleCancelEdit} icon={<CloseOutlined />}>
+							<Space key="geometry-actions">
+								<Button
+									onClick={handleCancelEditGeometry}
+									icon={<CloseOutlined />}
+								>
 									Отменить
 								</Button>
 								<Button
 									type="primary"
-									onClick={handleSaveEdit}
+									onClick={() => {
+										finishGeometryEdit();
+									}}
 									icon={<CheckOutlined />}
 									loading={loading}
 								>
-									Сохранить
+									Сохранить геометрию
 								</Button>
 							</Space>,
 						]
-						: isGeometryEditing
-							? [
-								<Space key="geometry-actions">
-									<Button
-										onClick={handleCancelEditGeometry}
-										icon={<CloseOutlined />}
-									>
-										Отменить
-									</Button>
-									<Button
-										type="primary"
-										onClick={() => {
-											finishGeometryEdit();
-										}}
-										icon={<CheckOutlined />}
-										loading={loading}
-									>
-										Сохранить геометрию
-									</Button>
-								</Space>,
-							]
-							: null
+						: null
 				}
 			>
-				<Flex vertical gap={5}>
-					<Flex gap={2} justify="flex-end">
-						{isEditing ? null : (
-							<>
-								<Button
-									title="Редактировать геометрию"
-									shape="square"
-									icon={<RadiusSettingOutlined />}
-									onClick={handleEditGeometryClick}
-									styles={{ root: { backgroundColor: isGeometryEditing ? DARK_BLUE : null, color: isGeometryEditing ? WHITE : null } }}
-								/>
-								<Button
-									title="Редактировать атрибуты"
-									shape="square"
-									icon={<EditOutlined />}
-									onClick={handleEditClick}
-									disabled={isGeometryEditing}
-								/>
-								<Button
-									title="Показать на карте"
-									shape="square"
-									icon={<SearchOutlined />}
-									onClick={handleShowOnMap}
-								/>
-								<Button
-									variant="outlined"
-									color="red"
-									title="Удалить объект"
-									shape="square"
-									icon={<DeleteOutlined />}
-									onClick={handleDeleteFeature}
-								/>
-							</>
-						)}
-					</Flex>
-					{isEditing ? (
-						<AttributeEditForm form={form} attributes={visibleAtribs} />
-					) : (
-						(() => {
-							const totalItems = visibleAtribs.length;
-							
-							let columnsCount = 1;
-							if (totalItems > 10) {
-								columnsCount = 3;
-							} else if (totalItems > 4) {
-								columnsCount = 2;
-							}
-							
-							const columns = [];
-							if (columnsCount === 1) {
-								columns.push(visibleAtribs);
-							} else {
-								const itemsPerColumn = Math.ceil(totalItems / columnsCount);
-								for (let i = 0; i < columnsCount; i++) {
-									const start = i * itemsPerColumn;
-									const end = Math.min(start + itemsPerColumn, totalItems);
-									if (start < totalItems) {
-										columns.push(visibleAtribs.slice(start, end));
-									}
-								}
-							}
-							
-							return (
-								<Flex gap={10} wrap="nowrap" style={{ overflowX: 'auto' }}>
-									{columns.map((columnAttribs, columnIndex) => (
-										<div key={columnIndex} style={{ flex: columnsCount > 1 ? '0 0 auto' : '1', minWidth: '300px' }}>
-											<Descriptions
-												column={1}
-												size="small"
-												bordered
-												labelStyle={{
-													width: '140px',
-													background: '#fafcff',
-													fontWeight: 500,
-													color: DARK_BLUE,
-													overflow: 'hidden',
-													textOverflow: 'ellipsis',
-													whiteSpace: 'nowrap',
-													display: 'inline-block',
-												}}
-												contentStyle={{ background: '#fff' }}
-											>
-												{featureData
-													? columnAttribs.map(atrib => (
-														<Descriptions.Item
-															key={atrib.name}
-															label={
-																<span title={atrib.label || atrib.name}>
-																	{atrib.label || atrib.name}
-																</span>
-															}
-														>
-															<Text>
-																{formatValue(atrib, featureData[atrib.name])}
-															</Text>
-														</Descriptions.Item>
-													))
-													: null}
-											</Descriptions>
-										</div>
-									))}
-								</Flex>
-							);
-						})()
+				<Flex vertical gap={14}>
+					{!isNewFeature && (
+						<Flex gap={2} justify="center">
+							<BaseMapButton
+								title="Сохранить"
+								img={saveIcon}
+								onClick={handleSaveEdit}
+							/>
+							<BaseMapButton
+								title="Редактировать геометрию"
+								img={editGeometry}
+								onClick={handleEditGeometryClick}
+								active={isGeometryEditing}
+							/>
+							<BaseMapButton
+								title="Показать на карте"
+								img={showOnMapIcon}
+								onClick={handleShowOnMap}
+							/>
+							<BaseMapButton
+								title="Удалить объект"
+								img={deleteIcon}
+								onClick={handleDeleteFeature}
+							/>
+						</Flex>
 					)}
+					{isNewFeature && (
+						<Flex gap={2} justify="center">
+							<BaseMapButton
+								title="Сохранить"
+								img={saveIcon}
+								onClick={handleSaveEdit}
+							/>
+							<BaseMapButton
+								title="Удалить объект"
+								img={deleteIcon}
+								onClick={handleDeleteFeature}
+							/>
+						</Flex>
+					)}
+					<AttributeEditForm form={form} attributes={visibleAtribs} />
 				</Flex>
 			</Card>
 		</FloatingWindow>

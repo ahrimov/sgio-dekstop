@@ -8,7 +8,7 @@ import ZoomControls from '../Controls/ZoomControls.jsx';
 import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
-import AttributeForm from '../AttributeForm/AttributeForm.jsx';
+import { InfoAttributeView } from '../InfoAttributeView/InfoAttributeView.jsx';
 import { $showOnMapFeature } from '../../store/showOnMap.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 import FullscreenButton from './FullscreenButton.jsx';
@@ -67,11 +67,7 @@ const MapComponent = () => {
 		cancelEditing();
 	};
 
-	const handleSaveFeature = () => {
-		setCurrentFeature(null);
-	};
-
-	const handleCancelCurrentFeature = () => {
+	const handleCloseAttributeView = () => {
 		rejectCurrentFeature();
 		setCurrentFeature(null);
 		cancelEditing();
@@ -106,12 +102,12 @@ const MapComponent = () => {
 					vectorLayers={layers}
 				/>
 
-				{currentFeature && (
-					<AttributeForm
-						feature={currentFeature}
+				{currentFeature && layer && (
+					<InfoAttributeView
+						featureId={currentFeature.get('id') || currentFeature.ol_uid}
 						layer={layer}
-						onSave={handleSaveFeature}
-						onCancel={handleCancelCurrentFeature}
+						onClose={handleCloseAttributeView}
+						initialFeature={currentFeature}
 					/>
 				)}
 				{!isMapReady ? <div className="map-loading">Загрузка карты...</div> : null}

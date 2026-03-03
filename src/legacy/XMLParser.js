@@ -655,7 +655,7 @@ function labelStyleParse(dom, placement = 'point') {
 	const fontSize = labelStyleDom.getElementsByTagName('fontSize')?.item(0)?.textContent || '10';
 	const bold = labelStyleDom.getElementsByTagName('bold')?.item(0)?.textContent === '1';
 	const italic = labelStyleDom.getElementsByTagName('italic')?.item(0)?.textContent === '1';
-	const fontFamily = 'sans-serif';
+	const fontFamily = 'Arial Narrow';
 	const strokeWidth = 3;
 	const strokeColor = '#ffffff';
 	const repeat = 600;
