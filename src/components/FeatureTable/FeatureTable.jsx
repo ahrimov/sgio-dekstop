@@ -13,8 +13,10 @@ import infoIcon from '../../assets/resources/images/assets/info.png';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
 import deleteIcon from '../../assets/resources/images/assets/delete.png';
 import exportIcon from '../../assets/resources/images/assets/exportNAV.png';
-import { showOnMap } from '../../store/showOnMap.js';
+import { showOnMap, showMultipleOnMap } from '../../store/showOnMap.js';
 import { showInfo } from '../../store/featuredInfoEvent.js';
+import { exportSelectedFeaturesToKML } from '../../features/KMLLayer/exportSelectedFeaturesToKML.js';
+import { deleteMultipleFeatures } from '../../features/deleteFeature/deleteMultipleFeatures.js';
 import { useUnit } from 'effector-react';
 import { $tableRefreshTrigger } from '../../store/refreshTable.js';
 import styled from 'styled-components';
@@ -288,20 +290,32 @@ export function FeatureTable({ layer }) {
 	const endRecord = Math.min(pagination.current * pagination.pageSize, pagination.total);
 
 	const handleExportKML = () => {
-		console.log('Export KML for:', selectedRowKeys);
-		// TODO: Implement KML export logic
+		if (selectedRowKeys.length === 0) {
+			return;
+		}
+		exportSelectedFeaturesToKML(layer, selectedRowKeys);
 	};
 
 	const handleShowOnMap = () => {
-		// Показываем все выбранные объекты на карте
-		selectedRowKeys.forEach(featureId => {
-			showOnMap({ layer, featureId });
-		});
+		if (selectedRowKeys.length === 0) return;
+
+		if (selectedRowKeys.length === 1) {
+			// Для одного объекта используем старый event
+			showOnMap({ layer, featureId: selectedRowKeys[0] });
+		} else {
+			// Для нескольких объектов используем новый event
+			showMultipleOnMap({ layer, featureIds: selectedRowKeys });
+		}
 	};
 
 	const handleDelete = () => {
-		console.log('Delete:', selectedRowKeys);
-		// TODO: Implement delete logic
+		if (selectedRowKeys.length === 0) {
+			return;
+		}
+		deleteMultipleFeatures(selectedRowKeys, layer, () => {
+			// После удаления очищаем выбор
+			setSelectedRowKeys([]);
+		});
 	};
 
 	return (
@@ -361,6 +375,7 @@ export function FeatureTable({ layer }) {
 					dataSource={features}
 					loading={loading}
 					rowSelection={rowSelection}
+					rowKey="id"
 					pagination={false}
 					onChange={handleTableChange}
 					size="small"
@@ -395,6 +410,7 @@ const TableButtonsContainer = styled.div`
     padding-left: 2px;
     padding-right: 2px;
 	background-color: #F5FBFD;
+	gap: 3px;
 `;
 
 const TopPaginationWrapper = styled.div`

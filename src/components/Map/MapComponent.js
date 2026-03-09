@@ -9,7 +9,7 @@ import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import { InfoAttributeView } from '../InfoAttributeView/InfoAttributeView.jsx';
-import { $showOnMapFeature } from '../../store/showOnMap.js';
+import { $showOnMapFeature, $showMultipleOnMapFeatures } from '../../store/showOnMap.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 import FullscreenButton from './FullscreenButton.jsx';
 
@@ -30,7 +30,9 @@ const MapComponent = () => {
 	}, [isMapReady, updateMapSize]);
 
 	const showOnMapFeature = useUnit($showOnMapFeature);
+	const showMultipleOnMapFeatures = useUnit($showMultipleOnMapFeatures);
 
+	// Обработка показа одного объекта
 	useEffect(() => {
 		if (showOnMapFeature && map) {
 			const { layer, featureId } = showOnMapFeature;
@@ -55,6 +57,64 @@ const MapComponent = () => {
 			}
 		}
 	}, [showOnMapFeature, map]);
+
+	// Обработка показа нескольких объектов
+	useEffect(() => {
+		if (showMultipleOnMapFeatures && map) {
+			const { layer, featureIds } = showMultipleOnMapFeatures;
+			const source = layer.getSource();
+			const allFeatures = source.getFeatures();
+			
+			// Находим все выбранные объекты
+			const foundFeatures = allFeatures.filter(feature =>
+				featureIds.includes(feature.id)
+			);
+
+			if (foundFeatures.length === 0) return;
+
+			// Фильтруем объекты с геометрией
+			const featuresWithGeometry = foundFeatures.filter(feature => {
+				const geometry = feature.getGeometry();
+				return geometry != null;
+			});
+
+			if (featuresWithGeometry.length === 0) {
+				window.alert('У выбранных объектов нет геометрии');
+				return;
+			}
+
+			// Создаем общий extent для всех объектов
+			let combinedExtent = null;
+			featuresWithGeometry.forEach(feature => {
+				const extent = feature.getGeometry().getExtent();
+				if (combinedExtent === null) {
+					combinedExtent = extent.slice(); // копируем extent
+				} else {
+					// Расширяем extent, чтобы включить текущий объект
+					combinedExtent[0] = Math.min(combinedExtent[0], extent[0]); // minX
+					combinedExtent[1] = Math.min(combinedExtent[1], extent[1]); // minY
+					combinedExtent[2] = Math.max(combinedExtent[2], extent[2]); // maxX
+					combinedExtent[3] = Math.max(combinedExtent[3], extent[3]); // maxY
+				}
+			});
+
+			// Центрируем карту на всех объектах
+			if (combinedExtent) {
+				map.getView().fit(combinedExtent, {
+					duration: 200,
+					maxZoom: 18,
+					padding: [40, 40, 40, 40]
+				});
+
+				if (
+					mapContainerRef?.current &&
+					typeof mapContainerRef.current.scrollIntoView === 'function'
+				) {
+					mapContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				}
+			}
+		}
+	}, [showMultipleOnMapFeatures, map]);
 
 	const {
 		controlButtons,
