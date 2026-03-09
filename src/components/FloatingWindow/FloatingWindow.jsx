@@ -26,6 +26,7 @@ const FloatingWindow = ({
 	total = 0,
 	disablePrevious = false,
 	disableNext = false,
+	compact = false,
 }) => {
 	const {
 		window: windowState,
@@ -199,7 +200,7 @@ const FloatingWindow = ({
 			$isMaximized={isMaximized}
 			onMouseDown={handleMouseDown}
 		>
-			<WindowHeader className="drag-handle">
+			<WindowHeader className="drag-handle" $compact={compact}>
 				{isMultiple ? (
 					<>
 						<ControlButton onClick={onPrevious} disabled={disablePrevious}>
@@ -221,10 +222,10 @@ const FloatingWindow = ({
 						</Text>
 					</>
 				) : null}
-				<WindowTitle title={title} $titleWidth={titleWidth}>
+				<WindowTitle $compact={compact} title={title} $titleWidth={titleWidth}>
 					{title}
 				</WindowTitle>
-				{showControls && <WindowControls windowId={windowId} onClose={handleClose} />}
+				{showControls && <WindowControls windowId={windowId} onClose={handleClose} compact={compact} />}
 			</WindowHeader>
 
 			<WindowContent>{children}</WindowContent>
@@ -252,7 +253,7 @@ const WindowHeader = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 12px 16px;
+	padding: ${props => (props.$compact ? '3px 6px' : '12px 16px')};
 	background: rgb(17, 102, 162);
 	border-radius: ${props => (props.$isMaximized ? '0' : '8px 8px 0 0')};
 	cursor: move;
@@ -261,20 +262,19 @@ const WindowHeader = styled.div`
 
 const WindowTitle = styled.span`
 	color: white;
-	font-weight: 600;
+	font-weight: ${props => (props.$compact ? '500' : '600')}; 
 	max-width: ${props => (props.$titleWidth ? props.$titleWidth : '220px')};
     overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	fontWeight: bold,
-	fontSize: 16px,
+	font-size: ${props => (props.$compact ? '14px' : '16px')};
 	font-family: "Arial Narrow", sans-serif;
 `;
 
 const ControlButton = styled.button`
 	background: none;
-	width: 28px;
-	height: 28px;
+	width: ${props => (props.$compact ? '24px' : '28px' )}; 
+	height: ${props => (props.$compact ? '24px' : '28px' )};
 	border-radius: 4px;
 	display: flex;
 	align-items: center;

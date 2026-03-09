@@ -3,7 +3,7 @@ import { CloseOutlined, ExpandAltOutlined, MinusOutlined, ShrinkOutlined } from 
 import styled from 'styled-components';
 import { useWindowControls } from './useWindowControls';
 
-export function WindowControls({ windowId, onClose, disabled = false }) {
+export function WindowControls({ windowId, onClose, disabled = false, compact }) {
 	const { isMaximized, minimize, maximize, restore, close } = useWindowControls({
 		windowId,
 	});
@@ -24,6 +24,7 @@ export function WindowControls({ windowId, onClose, disabled = false }) {
 				}}
 				title="Свернуть"
 				disabled={disabled}
+				$compact={compact}
 			>
 				<MinusOutlined />
 			</ControlButton>
@@ -35,6 +36,7 @@ export function WindowControls({ windowId, onClose, disabled = false }) {
 					}}
 					title="Восстановить"
 					disabled={disabled}
+					$compact={compact}
 				>
 					<ShrinkOutlined />
 				</ControlButton>
@@ -46,12 +48,13 @@ export function WindowControls({ windowId, onClose, disabled = false }) {
 					}}
 					title="Развернуть"
 					disabled={disabled}
+					$compact={compact}
 				>
 					<ExpandAltOutlined />
 				</ControlButton>
 			)}
 			{onClose && (
-				<ControlButton onClick={handleClose} title="Закрыть" $isClose disabled={disabled} >
+				<ControlButton onClick={handleClose} title="Закрыть" $isClose disabled={disabled} $compact={compact} >
 					<CloseOutlined />
 				</ControlButton>
 			)}
@@ -67,8 +70,8 @@ const ControlsContainer = styled.div`
 
 const ControlButton = styled.button`
 	background: none;
-	width: 28px;
-	height: 28px;
+	width: ${props => (props.$compact ? '24px' : '28px' )}; 
+	height: ${props => (props.$compact ? '24px' : '28px' )};
 	border-radius: 4px;
 	display: flex;
 	align-items: center;
@@ -78,8 +81,13 @@ const ControlButton = styled.button`
 	transition: all 0.2s;
 	border: 1px solid #ffffff;
 
-	&:hover {
+	&:hover:not(:disabled) {
 		color: #000000;
 		background-color: #ffffff;
+	}
+
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
 	}
 `;

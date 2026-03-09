@@ -1,67 +1,142 @@
-import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { Card, Button, Flex, Form, Space } from 'antd';
-import {
-	CheckOutlined,
-	CloseOutlined,
-} from '@ant-design/icons';
-import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
-import { showOnMap } from '../../store/showOnMap.js';
-import { deleteFeature } from '../../features/deleteFeature/deleteFeature.js';
-import { getFeatureAttributes } from '../../features/getDataForFeatures/getFeatureAttribute.js';
-import { WHITE, ORANGE, BLACK } from '../../consts/style.js';
-import { Style, Stroke, Fill, RegularShape } from 'ol/style';
-import { useWindowControls } from '../WindowControls/useWindowControls.js';
-import { AttributeEditForm } from './AttributeEditForm.jsx';
-import editGeometry from '../../assets/resources/images/assets/editGeometry.png';
-import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
-import deleteIcon from '../../assets/resources/images/assets/delete.png';
-import saveIcon from '../../assets/resources/images/assets/save.png';
-import {
-	updateFeatureAttributes,
-	updateFeatureGeometry,
-} from '../../features/saveFeature/updateFeature.js';
-import { addNewFeature } from '../../features/saveFeature/addNewFeature.js';
-import { finishGeometryEdit, startGeometryEdit } from '../../features/draw/store.js';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Card, Flex, Form } from 'antd';
 import { useUnit } from 'effector-react';
-import {
-	$mapInteractionMode,
-	changeInteractionMode,
-	DEFAULT_INTERACTION,
-	GEOMETRY_EDIT_INTERACTION,
-} from '../../store/mapInteractionMode.js';
-import { $infoAttributeState, CANCEL_EDITING, FINISH_EDITING } from './store.js';
+import { toLonLat } from 'ol/proj';
+import { getCenter } from 'ol/extent';
+import { getLength } from 'ol/sphere';
+import { getArea } from 'ol/sphere';
+import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
+import { useWindowControls } from '../WindowControls/useWindowControls.js';
 import { useConfig } from '../../context/ConfigContext.jsx';
-import { filterSystemProperties } from '../../utils/filterSystemProperties.js';
-import { BaseMapButton } from '../MapButtons/BaseMapButton.jsx';
 import { useMessage } from '../../context/MessageContext.jsx';
+import { filterSystemProperties } from '../../utils/filterSystemProperties.js';
+import { $infoAttributeState, CANCEL_EDITING, FINISH_EDITING } from './store.js';
+import { AttributeEditForm } from './AttributeEditForm.jsx';
+import {
+	useFeatureHighlight,
+	useGeometryEditing,
+	useFeatureData,
+	useFeatureNavigation,
+	useFeatureActions,
+} from './hooks/index.js';
+import { InfoAttributeHeader, GeometryEditActions } from './components/index.js';
 
-export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer = null, initialFeature = null }) {
+function decimalToDMS(decimal) {
+	const absolute = Math.abs(decimal);
+	const degrees = Math.floor(absolute);
+	const minutesDecimal = (absolute - degrees) * 60;
+	const minutes = Math.floor(minutesDecimal);
+	const seconds = ((minutesDecimal - minutes) * 60).toFixed(2);
+	
+	return { degrees, minutes, seconds };
+}
+
+function getFeatureCoordinates(feature) {
+	if (!feature) return '';
+	
+	const geometry = feature.getGeometry();
+	if (!geometry) return '';
+	
+	try {
+		const extent = geometry.getExtent();
+		const center = getCenter(extent);
+		const [lon, lat] = toLonLat(center);
+		
+		const latDMS = decimalToDMS(lat);
+		const lonDMS = decimalToDMS(lon);
+		
+		const latDir = lat >= 0 ? 'с.ш.' : 'ю.ш.';
+		const lonDir = lon >= 0 ? 'в.д.' : 'з.д.';
+		
+		return `Шир. ${latDMS.degrees}°${latDMS.minutes}'${latDMS.seconds}" ${latDir} (${lat.toFixed(6)}°); Долг. ${lonDMS.degrees}°${lonDMS.minutes}'${lonDMS.seconds}" ${lonDir} (${lon.toFixed(6)}°)`;
+	} catch (error) {
+		console.error('Error getting feature coordinates:', error);
+		return '';
+	}
+}
+
+/**
+ * Get metric data from feature geometry
+ * @param {Object} feature - OpenLayers feature
+ * @returns {string} Formatted metric data string
+ */
+function getFeatureMetrics(feature) {
+	if (!feature) return '';
+	
+	const geometry = feature.getGeometry();
+	if (!geometry) return '';
+	
+	try {
+		const geometryType = geometry.getType();
+		
+		if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
+			const length = getLength(geometry);
+			const km = Math.floor(length / 1000);
+			const m = Math.round(length % 1000);
+			
+			if (km > 0) {
+				return `${km} км ${m} м`;
+			}
+			return `${Math.round(length)} м`;
+		}
+		
+		if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
+			const area = getArea(geometry);
+			const km2 = Math.floor(area / 1000000);
+			const m2 = Math.round(area % 1000000);
+			
+			if (km2 > 0) {
+				return `${km2} км² ${m2} м²`;
+			}
+			return `${Math.round(area)} м²`;
+		}
+		
+		return '';
+	} catch (error) {
+		console.error('Error getting feature metrics:', error);
+		return '';
+	}
+}
+
+export function InfoAttributeView({ 
+	featureId, 
+	layer, 
+	onClose, 
+	featuresByLayer = null, 
+	initialFeature = null 
+}) {
 	const messageApi = useMessage();
 	const [featureData, setFeatureData] = useState(null);
 	const [feature, setFeature] = useState(initialFeature);
 	const [form] = Form.useForm();
 	const [loading, setLoading] = useState(false);
-	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isNewFeature, setIsNewFeature] = useState(!!initialFeature);
 	
-	const allFeatures = useMemo(() => {
-		if (!featuresByLayer) return null;
-		return featuresByLayer.flatMap(({ layer, features }) =>
-			features.map(feature => ({ feature, layer }))
-		);
-	}, [featuresByLayer]);
-	
-	const currentFeatureData = useMemo(() => {
-		if (allFeatures && allFeatures.length > 0) {
-			return allFeatures[currentIndex];
-		}
-		return { feature: { id: featureId }, layer };
-	}, [allFeatures, currentIndex, featureId, layer]);
-	
+	const { config } = useConfig();
+	const infoAttributeState = useUnit($infoAttributeState);
+
+	const {
+		isGeometryEditing,
+		isGeometryEditingRef,
+		handleCancelEditGeometry,
+		handleCancelEditGeometryRef,
+		handleSaveGeometryEdit,
+		handleEditGeometryClick,
+		finishGeometryEdit,
+	} = useGeometryEditing(feature, layer, featureId, setFeature, setLoading);
+
+	const {
+		currentIndex,
+		allFeatures,
+		currentFeatureData,
+		isMultiple,
+		handlePrevious,
+		handleNext,
+	} = useFeatureNavigation(featuresByLayer, featureId, layer, isGeometryEditing);
+
 	const activeFeatureId = currentFeatureData.feature.id;
 	const activeLayer = currentFeatureData.layer;
-	const isMultiple = allFeatures && allFeatures.length > 1;
-	
+
 	const windowId = useMemo(() => {
 		if (isMultiple) {
 			return 'info-multiple-features';
@@ -70,166 +145,49 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 	}, [isMultiple, activeFeatureId]);
 
 	const { isMaximized } = useWindowControls({ windowId });
-	const isGeometryEditing = useUnit($mapInteractionMode) === GEOMETRY_EDIT_INTERACTION;
-	const infoAttributeState = useUnit($infoAttributeState);
-	const { config } = useConfig();
-	const originalStyleRef = useRef(null);
-	const isGeometryEditingRef = useRef(isGeometryEditing);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
 		const windowWidth = window.innerWidth;
-		const modalWidth = 360;
+		const modalWidth = 650;
 		return {
 			x: Math.max(0, (windowWidth - modalWidth) / 2),
 			y: 100,
 		};
 	}, []);
 
-	const handleCancelEditGeometry = useCallback(() => {
-		changeInteractionMode(DEFAULT_INTERACTION);
-	}, []);
+	useFeatureData(
+		activeLayer,
+		activeFeatureId,
+		form,
+		config,
+		initialFeature,
+		setFeatureData,
+		setFeature,
+		setIsNewFeature
+	);
 
-	const handleCancelEditGeometryRef = useRef(handleCancelEditGeometry);
+	useFeatureHighlight(feature, isGeometryEditing);
 
-	useEffect(() => {
-		isGeometryEditingRef.current = isGeometryEditing;
-		handleCancelEditGeometryRef.current = handleCancelEditGeometry;
-	}, [isGeometryEditing, handleCancelEditGeometry]);
-
-	const handleSaveGeometryEdit = useCallback(() => {
-		try {
-			setLoading(true);
-
-			const features = activeLayer.getSource().getFeatures();
-			const updatedFeature = features.find(f => f.id === activeFeatureId);
-
-			if (updatedFeature) {
-				updateFeatureGeometry(
-					activeLayer,
-					activeFeatureId,
-					updatedFeature.getGeometry(),
-					() => {
-						setFeature(updatedFeature);
-					},
-					error => {
-						console.error(`Ошибка сохранения геометрии: ${error.message}`);
-					}
-				);
-			}
-		} catch (error) {
-			console.error('Error saving geometry:', error);
-		} finally {
-			setLoading(false);
-		}
-	}, [activeLayer, activeFeatureId]);
-
-	useEffect(() => {
-		const fetchFeatureAttributes = async () => {
-			try {
-				if (initialFeature) {
-					const atribs = filterSystemProperties(activeLayer.atribs, config);
-					const data = {};
-					atribs.forEach(atrib => {
-						data[atrib.name] = initialFeature.get(atrib.name) || '';
-					});
-					setFeatureData(data);
-					setFeature(initialFeature);
-					
-					const initialValues = {};
-					atribs.forEach(atrib => {
-						initialValues[atrib.name] = data[atrib.name] || '';
-					});
-					form.setFieldsValue(initialValues);
-					setIsNewFeature(true);
-					return;
-				}
-
-				const data = activeLayer.get('kmlType') ? getFeatureAttributesFromKML(activeLayer, activeFeatureId) : await getFeatureAttributes(activeLayer, activeFeatureId);
-				const atribs = filterSystemProperties(activeLayer.atribs, config);
-				if (data) {
-					setFeatureData(data);
-					const features = activeLayer.getSource().getFeatures();
-					const featureObj = features.find(feature => feature.id === activeFeatureId);
-					setFeature(featureObj);
-
-					const initialValues = {};
-					atribs.forEach(atrib => {
-						initialValues[atrib.name] = data[atrib.name] || '';
-					});
-					form.setFieldsValue(initialValues);
-					setIsNewFeature(false);
-				}
-			} catch (err) {
-				console.error('Error fetching feature attributes:', err);
-			}
-		};
-
-		fetchFeatureAttributes();
-	}, [activeLayer, activeFeatureId, form, config, initialFeature]);
-
-	useEffect(() => {
-		if (!feature) return;
-
-		const applyHighlight = () => {
-			originalStyleRef.current = feature.getStyle();
-
-			const geometry = feature.getGeometry();
-			const geometryType = geometry.getType();
-
-			let highlightStyle;
-			if (geometryType === 'Point' || geometryType === 'MultiPoint') {
-				highlightStyle = new Style({
-					image: new RegularShape({
-						points: 4,
-						radius: 10,
-						angle: Math.PI / 4,
-						fill: new Fill({ color: ORANGE }),
-						stroke: new Stroke({ color: BLACK, width: 2 }),
-					}),
-				});
-			} else if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
-				highlightStyle = [
-					new Style({
-						stroke: new Stroke({ color: BLACK, width: 6 }),
-					}),
-					new Style({
-						stroke: new Stroke({ color: WHITE, width: 4 }),
-					}),
-				];
-			} else {
-				[
-					new Style({
-						stroke: new Stroke({ color: BLACK, width: 6 }),
-					}),
-					new Style({
-						stroke: new Stroke({ color: WHITE, width: 4 }),
-					}),
-				];
-			}
-
-			feature.setStyle(highlightStyle);
-		};
-
-		const removeHighlight = () => {
-			if (originalStyleRef.current !== null) {
-				feature.setStyle(originalStyleRef.current);
-				originalStyleRef.current = null;
-			} else {
-				feature.setStyle(undefined);
-			}
-		};
-
-		if (!isGeometryEditing) {
-			applyHighlight();
-		} else {
-			removeHighlight();
-		}
-
-		return () => {
-			removeHighlight();
-		};
-	}, [feature, isGeometryEditing]);
+	const {
+		handleShowOnMap,
+		handleDeleteFeature,
+		handleSaveEdit,
+		handleExportKML,
+	} = useFeatureActions(
+		activeLayer,
+		activeFeatureId,
+		feature,
+		form,
+		isNewFeature,
+		config,
+		setFeatureData,
+		setLoading,
+		onClose,
+		handleCancelEditGeometry,
+		isGeometryEditing,
+		messageApi
+	);
 
 	useEffect(() => {
 		if (infoAttributeState?.editingType === FINISH_EDITING) {
@@ -239,101 +197,11 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 		}
 	}, [handleCancelEditGeometry, handleSaveGeometryEdit, infoAttributeState]);
 
-	const handleShowOnMap = () => {
-		showOnMap({ featureId: activeFeatureId, layer: activeLayer });
-	};
-
-	const handleDeleteFeature = () => {
-		if (isGeometryEditing) {
-			handleCancelEditGeometry();
+	const handleCancelEdit = useCallback(() => {
+		if (featureData) {
+			form.setFieldsValue(featureData);
 		}
-		
-		if (isNewFeature && feature) {
-			const source = activeLayer.getSource();
-			source.removeFeature(feature);
-			onClose();
-		} else {
-			deleteFeature(activeFeatureId, activeLayer, onClose);
-		}
-	};
-	
-	const handlePrevious = useCallback(() => {
-		if (isGeometryEditing) return;
-		setCurrentIndex(prev => (prev > 0 ? prev - 1 : allFeatures.length - 1));
-	}, [isGeometryEditing, allFeatures]);
-	
-	const handleNext = useCallback(() => {
-		if (isGeometryEditing) return;
-		setCurrentIndex(prev => (prev < allFeatures.length - 1 ? prev + 1 : 0));
-	}, [isGeometryEditing, allFeatures]);
-
-	const handleSaveEdit = async () => {
-		try {
-			setLoading(true);
-			const values = await form.validateFields();
-
-			if (feature) {
-				Object.keys(values).forEach(key => {
-					feature.set(key, values[key]);
-				});
-
-				const processedValues = {};
-				visibleAtribs.forEach(atrib => {
-					const value = values[atrib.name];
-
-					if (atrib.type === 'DATE' && value && value.format) {
-						processedValues[atrib.name] = value.format('YYYY-MM-DD');
-					} else {
-						processedValues[atrib.name] = value;
-					}
-				});
-
-				if (isNewFeature) {
-					await addNewFeature(activeLayer, feature);
-					setFeatureData(prev => ({
-						...prev,
-						...processedValues,
-					}));
-					messageApi.success('Объект успешно создан');
-					onClose();
-				} else {
-					updateFeatureAttributes(
-						activeLayer,
-						activeFeatureId,
-						processedValues,
-						() => {
-							setFeatureData(prev => ({
-								...prev,
-								...processedValues,
-							}));
-							messageApi.success('Изменения успешно сохранены');
-						},
-						error => {
-							console.log(`Ошибка сохранения: ${error.message}`);
-							messageApi.error(`Ошибка сохранения: ${error.message}`);
-						}
-					);
-				}
-			}
-		} catch (error) {
-			console.error('Error saving feature:', error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const handleEditGeometryClick = useCallback(() => {
-		if (isGeometryEditing) {
-			handleCancelEditGeometry();
-			return;
-		}
-		if (!feature) {
-			console.error('Не удалось начать редактирование геометрии');
-			return;
-		}
-
-		startGeometryEdit({ feature, layer: activeLayer });
-	}, [feature, handleCancelEditGeometry, isGeometryEditing, activeLayer]);
+	}, [form, featureData]);
 
 	const handleClose = useCallback(() => {
 		if (isNewFeature && feature) {
@@ -344,34 +212,41 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 		if (isGeometryEditingRef.current) {
 			handleCancelEditGeometryRef.current();
 		}
-	}, [onClose, isNewFeature, feature, activeLayer]);
+	}, [onClose, isNewFeature, feature, activeLayer, isGeometryEditingRef, handleCancelEditGeometryRef]);
 
-	const visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(atrib => atrib.visible !== false);
+	const visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(
+		atrib => atrib.visible !== false
+	);
+
+	const layerName = activeLayer.get ? activeLayer.get('descr') : (activeLayer.descr ?? 'Информация об объекте');
+	const coordinates = useMemo(() => getFeatureCoordinates(feature), [feature]);
+	const metrics = useMemo(() => getFeatureMetrics(feature), [feature]);
+	const windowTitle = coordinates || layerName;
 
 	return featureData ? (
 		<FloatingWindow
-			title={activeLayer.get ? activeLayer.get('descr') : (activeLayer.descr ?? 'Информация об объекте')}
+			title={windowTitle}
 			initialPosition={initialPosition}
-			width={600}
+			width={650}
 			windowId={windowId}
 			onClose={handleClose}
 			showControls={true}
 			titleWidth={'400px'}
-			isMultiple={isMultiple}
-			onPrevious={handlePrevious}
-			onNext={handleNext}
-			current={currentIndex}
-			total={allFeatures?.length || 1}
-			disablePrevious={currentIndex === 0 || isGeometryEditing}
-			disableNext={currentIndex === (allFeatures?.length || 1) - 1 || isGeometryEditing}
+			isMultiple={false}
+			compact={true}
 		>
 			<Card
 				styles={{
-					header: { background: 'rgb(17, 102, 162)', color: 'white' },
+					header: {
+						background: 'rgb(17, 102, 162)',
+						padding: 0,
+						border: 'none',
+					},
 					body: {
 						maxHeight: !isMaximized ? '65vh' : '',
 						overflow: 'auto',
-						paddingTop: '10px',
+						padding: '0',
+						borderRadius: '0',
 					},
 				}}
 				style={{
@@ -381,87 +256,43 @@ export function InfoAttributeView({ featureId, layer, onClose, featuresByLayer =
 					maxHeight: !isMaximized ? '80vh' : '',
 					overflow: 'auto',
 					cursor: 'default',
+					borderRadius: '0',
 				}}
 				actions={
 					isGeometryEditing
 						? [
-							<Space key="geometry-actions">
-								<Button
-									onClick={handleCancelEditGeometry}
-									icon={<CloseOutlined />}
-								>
-									Отменить
-								</Button>
-								<Button
-									type="primary"
-									onClick={() => {
-										finishGeometryEdit();
-									}}
-									icon={<CheckOutlined />}
-									loading={loading}
-								>
-									Сохранить геометрию
-								</Button>
-							</Space>,
+							<GeometryEditActions
+								key="geometry-actions"
+								handleCancelEditGeometry={handleCancelEditGeometry}
+								finishGeometryEdit={finishGeometryEdit}
+								loading={loading}
+							/>,
 						]
 						: null
 				}
 			>
-				<Flex vertical gap={14}>
-					{!isNewFeature && (
-						<Flex gap={2} justify="center">
-							<BaseMapButton
-								title="Сохранить"
-								img={saveIcon}
-								onClick={handleSaveEdit}
-							/>
-							<BaseMapButton
-								title="Редактировать геометрию"
-								img={editGeometry}
-								onClick={handleEditGeometryClick}
-								active={isGeometryEditing}
-							/>
-							<BaseMapButton
-								title="Показать на карте"
-								img={showOnMapIcon}
-								onClick={handleShowOnMap}
-							/>
-							<BaseMapButton
-								title="Удалить объект"
-								img={deleteIcon}
-								onClick={handleDeleteFeature}
-							/>
-						</Flex>
-					)}
-					{isNewFeature && (
-						<Flex gap={2} justify="center">
-							<BaseMapButton
-								title="Сохранить"
-								img={saveIcon}
-								onClick={handleSaveEdit}
-							/>
-							<BaseMapButton
-								title="Удалить объект"
-								img={deleteIcon}
-								onClick={handleDeleteFeature}
-							/>
-						</Flex>
-					)}
+				<InfoAttributeHeader
+					layerName={layerName}
+					metrics={metrics}
+					currentIndex={currentIndex}
+					total={allFeatures?.length || 1}
+					onPrevious={handlePrevious}
+					onNext={handleNext}
+					disablePrevious={currentIndex === 0 || isGeometryEditing}
+					disableNext={currentIndex === (allFeatures?.length || 1) - 1 || isGeometryEditing}
+					isNewFeature={isNewFeature}
+					isGeometryEditing={isGeometryEditing}
+					handleSaveEdit={handleSaveEdit}
+					handleCancelEdit={handleCancelEdit}
+					handleEditGeometryClick={handleEditGeometryClick}
+					handleShowOnMap={handleShowOnMap}
+					handleDeleteFeature={handleDeleteFeature}
+					handleExportKML={handleExportKML}
+				/>
+				<Flex vertical gap={14} style={{ padding: '15px' }}>
 					<AttributeEditForm form={form} attributes={visibleAtribs} />
 				</Flex>
 			</Card>
 		</FloatingWindow>
 	) : null;
-}
-
-function getFeatureAttributesFromKML(layer, featureId) {
-	const features = layer.getSource().getFeatures();
-	const feature = features.find(f =>
-		String(f.get('ID')) === String(featureId)
-	);
-	if (!feature) return null;
-	const props = feature.getProperties();
-	// eslint-disable-next-line no-unused-vars
-	const { geometry, id, lgAttach, ...attrs } = props;
-	return attrs;
 }

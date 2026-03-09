@@ -37,6 +37,7 @@ import {
 	updateKMLImportProgress,
 	finishKMLImport,
 } from './store/kmlImportProgress.js';
+import ModalDialog from './components/ModalDialog/ModalDialog.jsx';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -216,6 +217,8 @@ const AppContent = () => {
 						currentFile={loadingState.currentFile}
 						message={loadingState.message}
 					/>
+					
+					<ModalDialog />
 				</div>
 			</MessageProvider>
 		</ConfigProvider>
