@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card, Flex, Form } from 'antd';
 import { useUnit } from 'effector-react';
 import { toLonLat } from 'ol/proj';
-import { getCenter } from 'ol/extent';
 import { getLength } from 'ol/sphere';
 import { getArea } from 'ol/sphere';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
@@ -31,16 +30,11 @@ function decimalToDMS(decimal) {
 	return { degrees, minutes, seconds };
 }
 
-function getFeatureCoordinates(feature) {
-	if (!feature) return '';
-	
-	const geometry = feature.getGeometry();
-	if (!geometry) return '';
+function getClickCoordinates(clickCoordinate) {
+	if (!clickCoordinate) return '';
 	
 	try {
-		const extent = geometry.getExtent();
-		const center = getCenter(extent);
-		const [lon, lat] = toLonLat(center);
+		const [lon, lat] = toLonLat(clickCoordinate);
 		
 		const latDMS = decimalToDMS(lat);
 		const lonDMS = decimalToDMS(lon);
@@ -50,7 +44,7 @@ function getFeatureCoordinates(feature) {
 		
 		return `Шир. ${latDMS.degrees}°${latDMS.minutes}'${latDMS.seconds}" ${latDir} (${lat.toFixed(6)}°); Долг. ${lonDMS.degrees}°${lonDMS.minutes}'${lonDMS.seconds}" ${lonDir} (${lon.toFixed(6)}°)`;
 	} catch (error) {
-		console.error('Error getting feature coordinates:', error);
+		console.error('Error getting click coordinates:', error);
 		return '';
 	}
 }
@@ -98,12 +92,13 @@ function getFeatureMetrics(feature) {
 	}
 }
 
-export function InfoAttributeView({ 
-	featureId, 
-	layer, 
-	onClose, 
-	featuresByLayer = null, 
-	initialFeature = null 
+export function InfoAttributeView({
+	featureId,
+	layer,
+	onClose,
+	featuresByLayer = null,
+	initialFeature = null,
+	clickCoordinate = null
 }) {
 	const messageApi = useMessage();
 	const [featureData, setFeatureData] = useState(null);
@@ -219,7 +214,7 @@ export function InfoAttributeView({
 	);
 
 	const layerName = activeLayer.get ? activeLayer.get('descr') : (activeLayer.descr ?? 'Информация об объекте');
-	const coordinates = useMemo(() => getFeatureCoordinates(feature), [feature]);
+	const coordinates = useMemo(() => getClickCoordinates(clickCoordinate), [clickCoordinate]);
 	const metrics = useMemo(() => getFeatureMetrics(feature), [feature]);
 	const windowTitle = coordinates || layerName;
 

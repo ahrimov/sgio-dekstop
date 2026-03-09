@@ -179,6 +179,7 @@ const AppContent = () => {
 							featureId={infoFeature.featureId}
 							layer={infoFeature.layer}
 							featuresByLayer={infoFeature.featuresByLayer}
+							clickCoordinate={infoFeature.clickCoordinate}
 							onClose={() => showInfo(null)}
 						/>
 					)}

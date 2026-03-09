@@ -42,12 +42,14 @@ function handleMapClickInfoEvent(map) {
 				// Show InfoAttributeView with multiple features
 				showInfoMultiple({
 					featuresByLayer,
+					clickCoordinate: evt.coordinate,
 				});
 			} else {
 				// Show InfoAttributeView with single feature
 				showInfo({
 					featureId: featuresByLayer[0].features[0].id,
 					layer: featuresByLayer[0].layer,
+					clickCoordinate: evt.coordinate,
 				});
 			}
 		}
