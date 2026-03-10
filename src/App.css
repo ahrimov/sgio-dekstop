@@ -13,13 +13,13 @@
 
 * {
 	scrollbar-width: thin;
-	font-family: "Arial Narrow", Arial, sans-serif;
+	font-family: 'Arial Narrow', Arial, sans-serif;
 }
 
 body {
 	margin: 0;
 	background: #003366;
-	font-family: "Arial Narrow", Arial, sans-serif;
+	font-family: 'Arial Narrow', Arial, sans-serif;
 }
 
 .titlebar {

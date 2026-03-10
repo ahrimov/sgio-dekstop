@@ -150,11 +150,27 @@ export function FeatureTable({ layer }) {
 	const basicColumns = useMemo(() => {
 		const atribs = layer.atribs; //filterSystemProperties(layer.atribs, config);
 		return atribs.map((atrib, i) => {
+			let columnWidth = 150;
+
+			if (i === 0) {
+				columnWidth = 70;
+			} else if (
+				atrib.type === 'INTEGER' ||
+				atrib.type === 'FLOAT' ||
+				atrib.type === 'NUMBER'
+			) {
+				columnWidth = 80;
+			} else if (atrib.type === 'ENUM') {
+				columnWidth = 120;
+			} else if (atrib.type === 'DATE' || atrib.type === 'DATETIME') {
+				columnWidth = 100;
+			}
+
 			const base = {
 				title: i === 0 ? '№' : atrib.label,
 				dataIndex: atrib.name,
 				align: 'center',
-				sorter: true,
+				width: columnWidth,
 				ellipsis: {
 					showTitle: true,
 				},
@@ -198,8 +214,7 @@ export function FeatureTable({ layer }) {
 		title: '',
 		key: 'info',
 		align: 'center',
-		width: 30,
-		fixed: false,
+		width: 32,
 		render: (_, record) => (
 			<Button
 				style={{ fontSize: 12, cursor: 'pointer', padding: 0 }}
@@ -221,7 +236,7 @@ export function FeatureTable({ layer }) {
 		title: '',
 		key: 'showOnMap',
 		align: 'center',
-		width: 30,
+		width: 32,
 		fixed: false,
 		render: (_, record) => (
 			<Button
@@ -267,6 +282,7 @@ export function FeatureTable({ layer }) {
 			setSelectedRowKeys(selectedKeys);
 		},
 		columnWidth: 40,
+		fixed: false,
 	};
 
 	const handlePageSizeChange = value => {
@@ -318,11 +334,37 @@ export function FeatureTable({ layer }) {
 		});
 	};
 
+	useEffect(() => {
+		// Проверяем, появляется ли скролл
+		const checkScroll = () => {
+			const tableBody = document.querySelector('.ant-table-body');
+			if (tableBody) {
+				console.log('Table body scroll width:', tableBody.scrollWidth);
+				console.log('Table body client width:', tableBody.clientWidth);
+				console.log(
+					'Has horizontal scroll:',
+					tableBody.scrollWidth > tableBody.clientWidth
+				);
+			}
+		};
+
+		// Проверяем после загрузки данных
+		setTimeout(checkScroll, 1000);
+	}, [features]);
+
 	return (
 		<TableContainer>
 			<TableButtonsContainer>
-				<BaseMapButton onClick={handleExportKML} title={'Выгрузить в KML'} img={exportIcon} />
-				<BaseMapButton onClick={handleShowOnMap} title={'Показать на карте'} img={showOnMapIcon} />
+				<BaseMapButton
+					onClick={handleExportKML}
+					title={'Выгрузить в KML'}
+					img={exportIcon}
+				/>
+				<BaseMapButton
+					onClick={handleShowOnMap}
+					title={'Показать на карте'}
+					img={showOnMapIcon}
+				/>
 				<BaseMapButton onClick={handleDelete} title={'Удалить'} img={deleteIcon} />
 			</TableButtonsContainer>
 			<TopPaginationWrapper>
@@ -379,7 +421,7 @@ export function FeatureTable({ layer }) {
 					pagination={false}
 					onChange={handleTableChange}
 					size="small"
-					scroll={{ x: 1700, y: 900 }}
+					scroll={{ x: 'max-content', y: 900 }}
 					style={{ headerBorderRadius: '14px' }}
 					bordered={false}
 				></Table>
@@ -407,10 +449,12 @@ const TableButtonsContainer = styled.div`
 	align-items: center;
 	justify-content: flex-start;
 	padding-top: 9px;
-    padding-left: 2px;
-    padding-right: 2px;
-	background-color: #F5FBFD;
+	padding-left: 2px;
+	padding-right: 2px;
+	background-color: #f5fbfd;
 	gap: 3px;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
 `;
 
 const TopPaginationWrapper = styled.div`
@@ -423,18 +467,19 @@ const TopPaginationWrapper = styled.div`
 		z-index: 100;
 		background: #ffffff;
 		padding: 12px 0;
-		border-radius: 8px;
 		box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
 		margin: 0 !important;
 	}
 
 	.ant-table-container {
-		border-radius: 0 0 14px 14px;
+		border-bottom-right-radius: 8px;
 		overflow: hidden;
 	}
 
 	.ant-table {
-		border-radius: 0 0 14px 14px;
+		border-bottom-right-radius: 8px;
+		border-start-start-radius: 0 !important;
+		border-start-end-radius: 0 !important;
 	}
 
 	.ant-table-thead th {
@@ -496,7 +541,7 @@ const TopPaginationWrapper = styled.div`
 		white-space: nowrap !important;
 		overflow: hidden !important;
 		text-overflow: ellipsis !important;
-		max-width: 200px !important;
+		max-width: 150px !important;
 	}
 
 	/* Уменьшение размера иконок в кнопках */
@@ -550,7 +595,7 @@ const CustomPaginationBar = styled.div`
 	gap: 16px;
 	padding: 12px 16px;
 	background: #ffffff;
-	border-radius: 8px;
+	border-top-right-radius: 8px;
 	box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
 	position: sticky;
 	top: 0;
