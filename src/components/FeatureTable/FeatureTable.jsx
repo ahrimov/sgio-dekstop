@@ -422,7 +422,7 @@ export function FeatureTable({ layer }) {
 					onChange={handleTableChange}
 					size="small"
 					scroll={{ x: 'max-content', y: 900 }}
-					style={{ headerBorderRadius: '14px' }}
+					style={{ headerBorderRadius: '14px', minWidth: 0 }}
 					bordered={false}
 				></Table>
 			</TopPaginationWrapper>
@@ -586,6 +586,10 @@ const TopPaginationWrapper = styled.div`
 
 	.ant-table-row-selected > td {
 		background-color: rgb(130, 180, 212) !important;
+	}
+
+	div.ant-table-body > table {
+		min-width: 0 !important;
 	}
 `;
 
