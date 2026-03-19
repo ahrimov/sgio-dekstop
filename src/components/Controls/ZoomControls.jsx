@@ -47,7 +47,7 @@ const ZoomControls = ({ map }) => {
 const ZoomControlsContainer = styled.div`
   position: absolute;
   right: 25px;
-  top: 50%;
+  top: 80%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;

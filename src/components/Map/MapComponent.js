@@ -10,14 +10,17 @@ import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import { InfoAttributeView } from '../InfoAttributeView/InfoAttributeView.jsx';
 import { $showOnMapFeature, $showMultipleOnMapFeatures } from '../../store/showOnMap.js';
+import { $showCrosshair } from '../../store/showCrosshair.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
+import { BottomLeftButtonsContainer } from '../MapButtons/BottomLeftButtonsContainer.jsx';
 import FullscreenButton from './FullscreenButton.jsx';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
-	const { isMapReady, updateMapSize, map } = useMap(mapContainerRef);
+	const { isMapReady, updateMapSize, map, measureControlPanel, areaMeasureControlPanel } = useMap(mapContainerRef);
 	const [currentFeature, setCurrentFeature] = useState(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const showCrosshair = useUnit($showCrosshair);
 
 	useEffect(() => {
 		if (isMapReady) {
@@ -147,7 +150,7 @@ const MapComponent = () => {
 			<div className={`map-wrapper ${isFullscreen ? 'map-fullscreen' : ''}`}>
 				<div ref={mapContainerRef} className="map-container" />
 
-				<img className="crosshair" src={crosshairImage} alt="crosshair" />
+				{showCrosshair && <img className="crosshair" src={crosshairImage} alt="crosshair" />}
 
 				<FullscreenButton isFullscreen={isFullscreen} onToggle={toggleFullscreen} />
 
@@ -155,7 +158,13 @@ const MapComponent = () => {
 
 				<MapButtonsContainer />
 
+				<BottomLeftButtonsContainer />
+
 				{controlButtons}
+
+				{measureControlPanel}
+
+				{areaMeasureControlPanel}
 
 				<LayerSelector
 					onCancel={handleCancelLayerSelector}

@@ -3,6 +3,10 @@ import { Flex } from 'antd';
 import { PanButton } from './PanButton.jsx';
 import { InfoButton } from './InfoButton.jsx';
 import { DrawButton } from './DrawButton.jsx';
+import { ZoomInButton } from './ZoomInButton.jsx';
+import { ZoomOutButton } from './ZoomOutButton.jsx';
+import { MeasureButton } from './MeasureButton.jsx';
+import { AreaMeasureButton } from './AreaMeasureButton.jsx';
 
 export function MapButtonsContainer() {
 	return (
@@ -10,6 +14,10 @@ export function MapButtonsContainer() {
 			<DrawButton />
 			<InfoButton />
 			<PanButton />
+			<ZoomInButton />
+			<ZoomOutButton />
+			<MeasureButton />
+			<AreaMeasureButton />
 		</Flex>
 	);
 }

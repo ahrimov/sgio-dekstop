@@ -1,17 +1,22 @@
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 import OlMap from 'ol/Map.js';
 import View from 'ol/View.js';
 import { defaults as defaultInteractions } from 'ol/interaction.js';
 import { ScaleLine } from 'ol/control.js';
 import { Select } from 'ol/interaction.js';
+import DragBox from 'ol/interaction/DragBox.js';
 import { Style, Stroke, Fill, Circle } from 'ol/style.js';
 import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
 import { layers } from '../../legacy/globals.js';
 import { useUnit } from 'effector-react';
-import { $mapInteractionMode, INFO_INTERACTION } from '../../store/mapInteractionMode.js';
+import { $mapInteractionMode, INFO_INTERACTION, ZOOM_IN_INTERACTION, ZOOM_OUT_INTERACTION, MEASURE_INTERACTION, MEASURE_AREA_INTERACTION } from '../../store/mapInteractionMode.js';
 import { setMapClickInfoEvent, unsetMapClickInfoEvent } from './mapEvents/mapClickInfoEvent.js';
 import { $deletedMapLayer, $newMapLayer } from '../../store/updateMapLayers.js';
+import { useMeasureInteraction } from './useMeasureInteraction.js';
+import { useAreaMeasureInteraction } from './useAreaMeasureInteraction.js';
+import { MeasureControlPanel } from './MeasureControlPanel.jsx';
+import { AreaMeasureControlPanel } from './AreaMeasureControlPanel.jsx';
 
 export const useMap = containerRef => {
 	const mapInstance = useRef(null);
@@ -20,6 +25,9 @@ export const useMap = containerRef => {
 	const mapInteractionMode = useUnit($mapInteractionMode);
 	const newMapLayer = useUnit($newMapLayer);
 	const deletedMapLayer = useUnit($deletedMapLayer);
+
+	const { currentLength } = useMeasureInteraction(mapInstance.current, mapInteractionMode === MEASURE_INTERACTION);
+	const { currentArea } = useAreaMeasureInteraction(mapInstance.current, mapInteractionMode === MEASURE_AREA_INTERACTION);
 
 	const initializeMap = async () => {
 		if (!containerRef.current) {
@@ -107,11 +115,70 @@ export const useMap = containerRef => {
 	}, [isMapReady]);
 
 	useEffect(() => {
+		if (!mapInstance.current) return;
+
 		if (mapInteractionMode === INFO_INTERACTION) {
 			setMapClickInfoEvent(mapInstance.current);
 		} else {
 			unsetMapClickInfoEvent(mapInstance.current);
 		}
+
+		if (mapInteractionMode === ZOOM_IN_INTERACTION) {
+			const dragBox = new DragBox({});
+			let clickHandler = null;
+
+			dragBox.on('boxend', () => {
+				const extent = dragBox.getGeometry().getExtent();
+				mapInstance.current.getView().fit(extent, {
+					duration: 250,
+					padding: [50, 50, 50, 50],
+				});
+			});
+
+			mapInstance.current.addInteraction(dragBox);
+
+			clickHandler = (evt) => {
+				const view = mapInstance.current.getView();
+				const currentZoom = view.getZoom();
+				view.animate({
+					center: evt.coordinate,
+					zoom: currentZoom + 1,
+					duration: 150,
+				});
+			};
+
+			mapInstance.current.on('singleclick', clickHandler);
+
+			return () => {
+				if (mapInstance.current) {
+					mapInstance.current.removeInteraction(dragBox);
+					if (clickHandler) {
+						mapInstance.current.un('singleclick', clickHandler);
+					}
+				}
+			};
+		}
+
+		if (mapInteractionMode === ZOOM_OUT_INTERACTION) {
+			const clickHandler = (evt) => {
+				const view = mapInstance.current.getView();
+				const currentZoom = view.getZoom();
+				view.animate({
+					center: evt.coordinate,
+					zoom: currentZoom - 1,
+					duration: 150,
+				});
+			};
+
+			mapInstance.current.on('singleclick', clickHandler);
+
+			return () => {
+				if (mapInstance.current && clickHandler) {
+					mapInstance.current.un('singleclick', clickHandler);
+				}
+			};
+		}
+
 	}, [mapInteractionMode]);
 
 	useEffect(() => {
@@ -280,6 +347,14 @@ export const useMap = containerRef => {
 		};
 	}, []);
 
+	const measureControlPanel = mapInteractionMode === MEASURE_INTERACTION && (
+		<MeasureControlPanel currentLength={currentLength} />
+	);
+
+	const areaMeasureControlPanel = mapInteractionMode === MEASURE_AREA_INTERACTION && (
+		<AreaMeasureControlPanel currentArea={currentArea} />
+	);
+
 	return {
 		map: mapInstance.current,
 		isMapReady,
@@ -288,5 +363,7 @@ export const useMap = containerRef => {
 		findLayerById,
 		findFeatureById,
 		updateMapSize,
+		measureControlPanel,
+		areaMeasureControlPanel,
 	};
 };
