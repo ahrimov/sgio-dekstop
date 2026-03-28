@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStore } from 'effector-react';
+import { useUnit } from 'effector-react';
 import { $modalDialog, confirmModal, cancelModal } from '../../store/modalDialog';
 import './ModalDialog.css';
 
@@ -8,7 +8,7 @@ import './ModalDialog.css';
  * Can display either alert (OK only) or confirm (OK/Cancel) dialogs
  */
 export default function ModalDialog() {
-	const modalState = useStore($modalDialog);
+	const modalState = useUnit($modalDialog);
 
 	if (!modalState.isOpen) {
 		return null;

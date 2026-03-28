@@ -148,7 +148,7 @@ export function FeatureTable({ layer }) {
 	}
 
 	const basicColumns = useMemo(() => {
-		const atribs = layer.atribs; //filterSystemProperties(layer.atribs, config);
+		const atribs = layer.atribs;
 		return atribs.map((atrib, i) => {
 			let columnWidth = 150;
 
@@ -159,11 +159,11 @@ export function FeatureTable({ layer }) {
 				atrib.type === 'FLOAT' ||
 				atrib.type === 'NUMBER'
 			) {
-				columnWidth = 80;
+				columnWidth = 60;
 			} else if (atrib.type === 'ENUM') {
 				columnWidth = 120;
 			} else if (atrib.type === 'DATE' || atrib.type === 'DATETIME') {
-				columnWidth = 100;
+				columnWidth = 80;
 			}
 
 			const base = {
@@ -261,6 +261,18 @@ export function FeatureTable({ layer }) {
 		return arr;
 	}, [basicColumns]);
 
+	const totalColumnsWidth = useMemo(() => {
+		let total = 0;
+
+		total += 40;
+
+		[...basicColumns, infoColumn, showOnMapColumn].forEach(col => {
+			total += col.width || 150;
+		});
+
+		return total;
+	}, [columns]);
+
 	const handleTableChange = (pagination, filters, sorter) => {
 		setPagination(p => ({
 			...p,
@@ -334,24 +346,6 @@ export function FeatureTable({ layer }) {
 		});
 	};
 
-	useEffect(() => {
-		// Проверяем, появляется ли скролл
-		const checkScroll = () => {
-			const tableBody = document.querySelector('.ant-table-body');
-			if (tableBody) {
-				console.log('Table body scroll width:', tableBody.scrollWidth);
-				console.log('Table body client width:', tableBody.clientWidth);
-				console.log(
-					'Has horizontal scroll:',
-					tableBody.scrollWidth > tableBody.clientWidth
-				);
-			}
-		};
-
-		// Проверяем после загрузки данных
-		setTimeout(checkScroll, 1000);
-	}, [features]);
-
 	return (
 		<TableContainer>
 			<TableButtonsContainer>
@@ -359,15 +353,23 @@ export function FeatureTable({ layer }) {
 					onClick={handleExportKML}
 					title={'Выгрузить в KML'}
 					img={exportIcon}
+					styleImage={{ scale: 1.3 }}
 				/>
 				<BaseMapButton
 					onClick={handleShowOnMap}
 					title={'Показать на карте'}
 					img={showOnMapIcon}
+					styleImage={{ scale: 1.3 }}
+					isDisabled={selectedRowKeys.length === 0}
 				/>
-				<BaseMapButton onClick={handleDelete} title={'Удалить'} img={deleteIcon} />
+				<BaseMapButton
+					onClick={handleDelete}
+					title={'Удалить'}
+					img={deleteIcon}
+					isDisabled={selectedRowKeys.length === 0}
+				/>
 			</TableButtonsContainer>
-			<TopPaginationWrapper>
+			<TableWrapper>
 				<CustomPaginationBar>
 					<PaginationButtons>
 						<Button
@@ -421,11 +423,11 @@ export function FeatureTable({ layer }) {
 					pagination={false}
 					onChange={handleTableChange}
 					size="small"
-					scroll={{ x: 'max-content', y: 900 }}
+					scroll={{ x: totalColumnsWidth, y: 900 }}
 					style={{ headerBorderRadius: '14px', minWidth: 0 }}
 					bordered={false}
-				></Table>
-			</TopPaginationWrapper>
+				/>
+			</TableWrapper>
 		</TableContainer>
 	);
 }
@@ -457,18 +459,12 @@ const TableButtonsContainer = styled.div`
 	border-bottom-left-radius: 8px;
 `;
 
-const TopPaginationWrapper = styled.div`
+const TableWrapper = styled.div`
 	position: relative;
 	width: calc(100% - 36px);
 
-	.ant-table-pagination {
-		position: sticky;
-		top: 0;
-		z-index: 100;
-		background: #ffffff;
-		padding: 12px 0;
-		box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
-		margin: 0 !important;
+	.ant-table-header table {
+		min-width: 0 !important;
 	}
 
 	.ant-table-container {
@@ -524,6 +520,7 @@ const TopPaginationWrapper = styled.div`
 	.ant-table-thead > tr > th .ant-table-column-title {
 		white-space: normal !important;
 		word-wrap: break-word !important;
+		word-break: normal !important;
 	}
 
 	.ant-table-thead > tr > th .ant-table-cell-ellipsis {
@@ -601,9 +598,9 @@ const CustomPaginationBar = styled.div`
 	background: #ffffff;
 	border-top-right-radius: 8px;
 	box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.15);
-	position: sticky;
-	top: 0;
-	z-index: 100;
+	// position: sticky;
+	// top: 0;
+	// z-index: 100;
 `;
 
 const PaginationButtons = styled.div`

@@ -9,11 +9,12 @@ import LayerSelector from '../LayerSelector/LayerSelector.jsx';
 import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import { InfoAttributeView } from '../InfoAttributeView/InfoAttributeView.jsx';
-import { $showOnMapFeature, $showMultipleOnMapFeatures } from '../../store/showOnMap.js';
+import { $showOnMapFeatures, clearShowOnMap } from '../../store/showOnMap.js';
 import { $showCrosshair } from '../../store/showCrosshair.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 import { BottomLeftButtonsContainer } from '../MapButtons/BottomLeftButtonsContainer.jsx';
 import FullscreenButton from './FullscreenButton.jsx';
+import { useShowOnMapHighlight } from './hooks/useShowOnMapHighlight.js';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
@@ -32,25 +33,59 @@ const MapComponent = () => {
 		}
 	}, [isMapReady, updateMapSize]);
 
-	const showOnMapFeature = useUnit($showOnMapFeature);
-	const showMultipleOnMapFeatures = useUnit($showMultipleOnMapFeatures);
+	const showOnMapFeatures = useUnit($showOnMapFeatures);
 
-	// Обработка показа одного объекта
+	// Apply highlight to features shown on map
+	useShowOnMapHighlight(map, showOnMapFeatures);
+
+	// Обработка показа объектов на карте (единая для одного и нескольких)
 	useEffect(() => {
-		if (showOnMapFeature && map) {
-			const { layer, featureId } = showOnMapFeature;
-			const source = layer.getSource();
-			const features = source.getFeatures();
-			const foundFeature = features.find(feature => feature.id === featureId);
-			if (!foundFeature) return;
+		if (!showOnMapFeatures || !map) return;
 
-			const geometry = foundFeature.getGeometry();
-			if (!geometry) {
-				window.alert('У выбранного объекта нет геометрии');
-				return;
+		const { layer, featureIds } = showOnMapFeatures;
+		const source = layer.getSource();
+		const allFeatures = source.getFeatures();
+		
+		// Находим все выбранные объекты
+		const foundFeatures = allFeatures.filter(feature =>
+			featureIds.includes(feature.id)
+		);
+
+		if (foundFeatures.length === 0) return;
+
+		// Фильтруем объекты с геометрией
+		const featuresWithGeometry = foundFeatures.filter(feature => {
+			const geometry = feature.getGeometry();
+			return geometry != null;
+		});
+
+		if (featuresWithGeometry.length === 0) {
+			window.alert('У выбранных объектов нет геометрии');
+			return;
+		}
+
+		// Создаем общий extent для всех объектов
+		let combinedExtent = null;
+		featuresWithGeometry.forEach(feature => {
+			const extent = feature.getGeometry().getExtent();
+			if (combinedExtent === null) {
+				combinedExtent = extent.slice(); // копируем extent
+			} else {
+				// Расширяем extent, чтобы включить текущий объект
+				combinedExtent[0] = Math.min(combinedExtent[0], extent[0]); // minX
+				combinedExtent[1] = Math.min(combinedExtent[1], extent[1]); // minY
+				combinedExtent[2] = Math.max(combinedExtent[2], extent[2]); // maxX
+				combinedExtent[3] = Math.max(combinedExtent[3], extent[3]); // maxY
 			}
-			const extent = foundFeature.getGeometry().getExtent();
-			map.getView().fit(extent, { duration: 200, maxZoom: 18, padding: [40, 40, 40, 40] });
+		});
+
+		// Центрируем карту на всех объектах
+		if (combinedExtent) {
+			map.getView().fit(combinedExtent, {
+				duration: 200,
+				maxZoom: 18,
+				padding: [40, 40, 40, 40]
+			});
 
 			if (
 				mapContainerRef?.current &&
@@ -59,65 +94,25 @@ const MapComponent = () => {
 				mapContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
 			}
 		}
-	}, [showOnMapFeature, map]);
+	}, [showOnMapFeatures, map]);
 
-	// Обработка показа нескольких объектов
+	// Обработчик клика на карту для сброса подсветки showOnMap
 	useEffect(() => {
-		if (showMultipleOnMapFeatures && map) {
-			const { layer, featureIds } = showMultipleOnMapFeatures;
-			const source = layer.getSource();
-			const allFeatures = source.getFeatures();
-			
-			// Находим все выбранные объекты
-			const foundFeatures = allFeatures.filter(feature =>
-				featureIds.includes(feature.id)
-			);
+		if (!map) return;
 
-			if (foundFeatures.length === 0) return;
-
-			// Фильтруем объекты с геометрией
-			const featuresWithGeometry = foundFeatures.filter(feature => {
-				const geometry = feature.getGeometry();
-				return geometry != null;
-			});
-
-			if (featuresWithGeometry.length === 0) {
-				window.alert('У выбранных объектов нет геометрии');
-				return;
+		const handleMapClick = () => {
+			// Сбрасываем подсветку при любом клике на карту
+			if (showOnMapFeatures) {
+				clearShowOnMap();
 			}
+		};
 
-			// Создаем общий extent для всех объектов
-			let combinedExtent = null;
-			featuresWithGeometry.forEach(feature => {
-				const extent = feature.getGeometry().getExtent();
-				if (combinedExtent === null) {
-					combinedExtent = extent.slice(); // копируем extent
-				} else {
-					// Расширяем extent, чтобы включить текущий объект
-					combinedExtent[0] = Math.min(combinedExtent[0], extent[0]); // minX
-					combinedExtent[1] = Math.min(combinedExtent[1], extent[1]); // minY
-					combinedExtent[2] = Math.max(combinedExtent[2], extent[2]); // maxX
-					combinedExtent[3] = Math.max(combinedExtent[3], extent[3]); // maxY
-				}
-			});
+		map.on('click', handleMapClick);
 
-			// Центрируем карту на всех объектах
-			if (combinedExtent) {
-				map.getView().fit(combinedExtent, {
-					duration: 200,
-					maxZoom: 18,
-					padding: [40, 40, 40, 40]
-				});
-
-				if (
-					mapContainerRef?.current &&
-					typeof mapContainerRef.current.scrollIntoView === 'function'
-				) {
-					mapContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-				}
-			}
-		}
-	}, [showMultipleOnMapFeatures, map]);
+		return () => {
+			map.un('click', handleMapClick);
+		};
+	}, [map, showOnMapFeatures]);
 
 	const {
 		controlButtons,

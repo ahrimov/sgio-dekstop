@@ -24,28 +24,28 @@ export function useFeatureHighlight(feature, isGeometryEditing) {
 				highlightStyle = new Style({
 					image: new RegularShape({
 						points: 4,
-						radius: 10,
+						radius: 6,
 						angle: Math.PI / 4,
 						fill: new Fill({ color: ORANGE }),
-						stroke: new Stroke({ color: BLACK, width: 2 }),
+						stroke: new Stroke({ color: BLACK, width: 1 }),
 					}),
 				});
 			} else if (geometryType === 'LineString' || geometryType === 'MultiLineString') {
 				highlightStyle = [
 					new Style({
-						stroke: new Stroke({ color: BLACK, width: 6 }),
+						stroke: new Stroke({ color: BLACK, width: 3 }),
 					}),
 					new Style({
-						stroke: new Stroke({ color: WHITE, width: 4 }),
+						stroke: new Stroke({ color: WHITE, width: 2 }),
 					}),
 				];
 			} else {
 				highlightStyle = [
 					new Style({
-						stroke: new Stroke({ color: BLACK, width: 6 }),
+						stroke: new Stroke({ color: BLACK, width: 3 }),
 					}),
 					new Style({
-						stroke: new Stroke({ color: WHITE, width: 4 }),
+						stroke: new Stroke({ color: WHITE, width: 2 }),
 					}),
 				];
 			}
