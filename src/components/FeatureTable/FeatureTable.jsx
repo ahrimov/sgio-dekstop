@@ -149,16 +149,21 @@ export function FeatureTable({ layer }) {
 
 	const basicColumns = useMemo(() => {
 		const atribs = layer.atribs;
-		return atribs.map((atrib, i) => {
+
+		const rowNumberColumn = {
+			title: '№',
+			key: 'rowNumber',
+			align: 'center',
+			width: 50,
+			render: (_, __, index) => {
+				return (pagination.current - 1) * pagination.pageSize + index + 1;
+			},
+		};
+
+		const attributeColumns = atribs.slice(1).map(atrib => {
 			let columnWidth = 150;
 
-			if (i === 0) {
-				columnWidth = 70;
-			} else if (
-				atrib.type === 'INTEGER' ||
-				atrib.type === 'FLOAT' ||
-				atrib.type === 'NUMBER'
-			) {
+			if (atrib.type === 'INTEGER' || atrib.type === 'FLOAT' || atrib.type === 'NUMBER') {
 				columnWidth = 60;
 			} else if (atrib.type === 'ENUM') {
 				columnWidth = 120;
@@ -167,7 +172,7 @@ export function FeatureTable({ layer }) {
 			}
 
 			const base = {
-				title: i === 0 ? '№' : atrib.label,
+				title: atrib.label,
 				dataIndex: atrib.name,
 				align: 'center',
 				width: columnWidth,
@@ -208,6 +213,9 @@ export function FeatureTable({ layer }) {
 					return base;
 			}
 		});
+
+		// Возвращаем массив с колонкой номера строки в начале
+		return [rowNumberColumn, ...attributeColumns];
 	}, [layer, pagination.current, pagination.pageSize]);
 
 	const infoColumn = {
@@ -276,8 +284,8 @@ export function FeatureTable({ layer }) {
 	const handleTableChange = (pagination, filters, sorter) => {
 		setPagination(p => ({
 			...p,
-			current: pagination.current,
-			pageSize: pagination.pageSize,
+			current: pagination.current ?? p.current,
+			pageSize: pagination.pageSize ?? p.pageSize,
 		}));
 
 		setAntdFilters(filters);
@@ -513,7 +521,8 @@ const TableWrapper = styled.div`
 	/* Серый фон для заголовков */
 	.ant-table-thead > tr > th {
 		background-color: rgb(232, 232, 232) !important;
-		padding: 4px 8px !important;
+		padding: 2px 4px !important;
+		text-align: left !important;
 	}
 
 	/* Перенос текста в заголовках */
@@ -539,6 +548,7 @@ const TableWrapper = styled.div`
 		overflow: hidden !important;
 		text-overflow: ellipsis !important;
 		max-width: 150px !important;
+		text-align: left !important;
 	}
 
 	/* Уменьшение размера иконок в кнопках */
