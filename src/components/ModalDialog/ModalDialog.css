@@ -88,12 +88,8 @@
 }
 
 .modal-dialog-button:hover {
-  transform: translateY(-1px);
+  background-color: #FFAF30;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.modal-dialog-button:active {
-  transform: translateY(0);
 }
 
 .modal-dialog-button-cancel {
