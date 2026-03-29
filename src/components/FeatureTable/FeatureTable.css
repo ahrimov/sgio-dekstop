@@ -1,3 +1,105 @@
 .ant-select-item-option-content {
 	color: rgb(0, 51, 102) !important;
 }
+
+/* Стили для фильтров в таблице */
+.ant-table-filter-dropdown {
+	background: #ffffff;
+	border-radius: 4px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu {
+	background: #ffffff;
+	border-radius: 4px;
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu-item {
+	color: rgb(0, 51, 102);
+	transition: all 0.2s ease-in-out;
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu-item:hover {
+	background: rgba(0, 93, 152, 0.1);
+	color: #005d98;
+}
+
+.ant-table-filter-dropdown .ant-dropdown-menu-item-selected {
+	background: rgba(0, 93, 152, 0.15);
+	color: #005d98;
+	font-weight: 500;
+}
+
+/* Кнопки фильтра в dropdown для ENUM */
+.ant-table-filter-dropdown-btns {
+	display: flex;
+	justify-content: space-between;
+	padding: 8px;
+	border-top: 1px solid rgb(205, 205, 205);
+	background: #f5f5f5;
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-primary {
+	background: #005d98 !important;
+	border-color: #005d98 !important;
+	color: #ffffff !important;
+	font-weight: 500;
+	transition: all 0.2s ease-in-out;
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-primary:hover:not(:disabled) {
+	background: #FFAF30 !important;
+	box-shadow: 0 2px 4px rgba(0, 93, 152, 0.3);
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-primary:hover:not(:disabled) {
+	background: #FFAF30 !important;
+	box-shadow: 0 2px 4px rgba(0, 93, 152, 0.3);
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-link {
+	color: rgb(0, 51, 102) !important;
+	font-weight: 500;
+	transition: all 0.2s ease-in-out;
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-link:disabled {
+	opacity: 0.5;
+}
+
+/* Иконка фильтра */
+.ant-table-filter-trigger {
+	color: rgba(0, 51, 102, 0.5);
+	transition: all 0.2s ease-in-out;
+}
+
+.ant-table-filter-trigger:hover {
+	color: #005d98;
+}
+
+.ant-table-filter-trigger-container-open .ant-table-filter-trigger,
+.ant-table-filter-trigger.active {
+	color: #005d98;
+}
+
+/* Чекбоксы в фильтре */
+.ant-table-filter-dropdown .ant-checkbox-wrapper {
+	color: rgb(0, 51, 102);
+}
+
+.ant-table-filter-dropdown .ant-checkbox-checked .ant-checkbox-inner {
+	background-color: #005d98;
+	border-color: #005d98;
+}
+
+.ant-table-filter-dropdown .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+	border-color: #005d98;
+}
+
+.ant-table-filter-dropdown .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+	background-color: #005d98;
+}
+
+.ant-dropdown-menu-title-content span {
+	color: rgb(0, 51, 102) !important;
+}
