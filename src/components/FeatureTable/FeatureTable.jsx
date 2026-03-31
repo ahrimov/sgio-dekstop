@@ -9,6 +9,7 @@ import {
 	StepBackwardOutlined,
 } from '@ant-design/icons';
 import { ColumnSearch } from './ColumnSearch.jsx';
+import { ColumnNumberSearch } from './ColumnNumberSearch.jsx';
 import infoIcon from '../../assets/resources/images/assets/info.png';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
 import deleteIcon from '../../assets/resources/images/assets/delete.png';
@@ -83,9 +84,18 @@ export function FeatureTable({ layer }) {
 			featuresArr = featuresArr.filter(f => {
 				return Object.entries(antdFilters).every(([key, val]) => {
 					const featureVal = f.get(key);
+
+					// Для массива значений (ENUM фильтры)
 					if (Array.isArray(val)) {
 						return val.includes(featureVal);
 					}
+
+					// Для числовых значений - точное совпадение
+					if (typeof val === 'number') {
+						return Number(featureVal) === val;
+					}
+
+					// Для строковых значений - поиск подстроки
 					return String(featureVal ?? '')
 						.toLowerCase()
 						.includes(String(val ?? '').toLowerCase());
@@ -184,6 +194,10 @@ export function FeatureTable({ layer }) {
 				case 'STRING':
 					return {
 						...base,
+						filteredValue:
+							antdFilters[atrib.name] !== undefined
+								? [antdFilters[atrib.name]]
+								: null,
 						filterDropdown: ({
 							setSelectedKeys,
 							selectedKeys,
@@ -199,15 +213,75 @@ export function FeatureTable({ layer }) {
 								inputWidth={188}
 							/>
 						),
-						filterIcon: filtered => (
-							<SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+						filterIcon: () => {
+							const isActive = antdFilters[atrib.name] !== undefined;
+							return (
+								<SearchOutlined
+									style={{
+										color: isActive ? '#1890ff' : undefined,
+										fontWeight: isActive ? 'bold' : 'normal',
+									}}
+								/>
+							);
+						},
+					};
+				case 'INTEGER':
+				case 'FLOAT':
+				case 'NUMBER':
+				case 'DOUBLE':
+					return {
+						...base,
+						filteredValue:
+							antdFilters[atrib.name] !== undefined
+								? [antdFilters[atrib.name]]
+								: null,
+						filterDropdown: ({
+							setSelectedKeys,
+							selectedKeys,
+							confirm,
+							clearFilters,
+						}) => (
+							<ColumnNumberSearch
+								setSelectedKeys={setSelectedKeys}
+								selectedKeys={selectedKeys}
+								confirm={confirm}
+								clearFilters={clearFilters}
+								placeholder={atrib.label}
+								inputWidth={188}
+							/>
 						),
+						filterIcon: () => {
+							const isActive = antdFilters[atrib.name] !== undefined;
+							return (
+								<SearchOutlined
+									style={{
+										color: isActive ? '#1890ff' : undefined,
+										fontWeight: isActive ? 'bold' : 'normal',
+									}}
+								/>
+							);
+						},
 					};
 				case 'ENUM':
 					return {
 						...base,
 						filters: enumOptionsToFilters(atrib.options),
 						filterMultiple: true,
+						filteredValue: antdFilters[atrib.name] || null,
+						filterIcon: () => {
+							const isActive =
+								antdFilters[atrib.name] !== undefined &&
+								Array.isArray(antdFilters[atrib.name]) &&
+								antdFilters[atrib.name].length > 0;
+							return (
+								<SearchOutlined
+									style={{
+										color: isActive ? '#1890ff' : undefined,
+										fontWeight: isActive ? 'bold' : 'normal',
+									}}
+								/>
+							);
+						},
 					};
 				default:
 					return base;
@@ -216,7 +290,7 @@ export function FeatureTable({ layer }) {
 
 		// Возвращаем массив с колонкой номера строки в начале
 		return [rowNumberColumn, ...attributeColumns];
-	}, [layer, pagination.current, pagination.pageSize]);
+	}, [antdFilters, layer.atribs, pagination]);
 
 	const infoColumn = {
 		title: '',
@@ -288,7 +362,34 @@ export function FeatureTable({ layer }) {
 			pageSize: pagination.pageSize ?? p.pageSize,
 		}));
 
-		setAntdFilters(filters);
+		// Преобразуем фильтры: для числовых полей извлекаем значение из массива
+		const processedFilters = {};
+		Object.entries(filters).forEach(([key, value]) => {
+			if (value === null || value === undefined) {
+				return;
+			}
+
+			// Находим тип поля
+			const atrib = layer.atribs.find(a => a.name === key);
+			const isNumeric =
+				atrib &&
+				(atrib.type === 'INTEGER' ||
+					atrib.type === 'FLOAT' ||
+					atrib.type === 'NUMBER' ||
+					atrib.type === 'DOUBLE');
+
+			// Для числовых полей: если массив с одним элементом, извлекаем число
+			if (isNumeric && Array.isArray(value) && value.length === 1) {
+				processedFilters[key] = value[0];
+			} else if (Array.isArray(value) && value.length === 0) {
+				// Пустой массив игнорируем
+				return;
+			} else {
+				processedFilters[key] = value;
+			}
+		});
+
+		setAntdFilters(processedFilters);
 
 		setSorter({
 			field: sorter.field,
@@ -475,15 +576,17 @@ const TableWrapper = styled.div`
 		min-width: 0 !important;
 	}
 
-	.ant-table-container {
-		border-bottom-right-radius: 8px;
-		overflow: hidden;
+	.ant-table-filter-trigger {
+		transition: all 0.2s ease-in-out;
 	}
 
-	.ant-table {
-		border-bottom-right-radius: 8px;
-		border-start-start-radius: 0 !important;
-		border-start-end-radius: 0 !important;
+	.ant-table-filter-trigger:hover {
+		background: rgb(0 0 0 / 0%) !important;
+	}
+
+	.ant-table-filter-trigger-container-open .ant-table-filter-trigger,
+	.ant-table-filter-trigger.active {
+		background: rgb(0 0 0 / 0%) !important;
 	}
 
 	.ant-table-thead th {
@@ -523,6 +626,23 @@ const TableWrapper = styled.div`
 		background-color: rgb(232, 232, 232) !important;
 		padding: 2px 4px !important;
 		text-align: left !important;
+		transition: background-color 0.2s ease-in-out;
+	}
+
+	/* Подсветка заголовка колонки с активным фильтром */
+	.ant-table-thead > tr > th.ant-table-column-has-sorters.ant-table-filter-column {
+		position: relative;
+	}
+
+	.ant-table-thead > tr > th.ant-table-filter-column::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background-color: transparent;
+		transition: background-color 0.2s ease-in-out;
 	}
 
 	/* Перенос текста в заголовках */

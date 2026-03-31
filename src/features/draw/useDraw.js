@@ -213,7 +213,7 @@ const ControlPanel = styled.div`
 	width: 325px;
 	color: rgb(17, 102, 162);
 	border: 2px solid rgb(17, 102, 162);
-	background-color: rgb(219 251 255 / 85%);
+	background-color: rgb(219 251 255);
 `;
 
 const ControlButton = styled(Button)`

@@ -41,19 +41,17 @@
 
 .ant-table-filter-dropdown-btns .ant-btn-primary {
 	background: #005d98 !important;
-	border-color: #005d98 !important;
 	color: #ffffff !important;
 	font-weight: 500;
 	transition: all 0.2s ease-in-out;
 }
 
 .ant-table-filter-dropdown-btns .ant-btn-primary:hover:not(:disabled) {
-	background: #FFAF30 !important;
-	box-shadow: 0 2px 4px rgba(0, 93, 152, 0.3);
+	background: #ffaf30 !important;
 }
 
 .ant-table-filter-dropdown-btns .ant-btn-primary:hover:not(:disabled) {
-	background: #FFAF30 !important;
+	background: #ffaf30 !important;
 	box-shadow: 0 2px 4px rgba(0, 93, 152, 0.3);
 }
 
@@ -102,4 +100,8 @@
 
 .ant-dropdown-menu-title-content span {
 	color: rgb(0, 51, 102) !important;
+}
+
+.ant-dropdown {
+	z-index: 100000 !important;
 }
