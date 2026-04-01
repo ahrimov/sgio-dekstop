@@ -572,6 +572,11 @@ const TableWrapper = styled.div`
 	position: relative;
 	width: calc(100% - 36px);
 
+	.ant-table-cell-scrollbar {
+		width: 10px;
+		box-shadow: 0 var(--ant-line-width) 0 var(--ant-line-width) #ffffff00 !important;
+	}
+
 	.ant-table-header table {
 		min-width: 0 !important;
 	}
