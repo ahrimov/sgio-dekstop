@@ -17,41 +17,58 @@ export function unsetMapClickInfoEvent(map) {
 function handleMapClickInfoEvent(map) {
 	return evt => {
 		if (!map.modify) {
-			const layersMap = new Map();
+			// First pass: count features quickly without collecting them
+			let totalFeatures = 0;
+			const layerSet = new Set();
+			
 			map.forEachFeatureAtPixel(
 				evt.pixel,
 				(feature, layer) => {
-					if (!layersMap.has(layer)) layersMap.set(layer, []);
-					layersMap.get(layer).push(feature);
+					layerSet.add(layer);
+					totalFeatures++;
 				},
 				{ hitTolerance: 5 }
 			);
-			const numberOfFeatures = layersMap.size;
-			if (numberOfFeatures === 0) {
+			
+			if (totalFeatures === 0) {
 				return;
 			}
-			const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({
-				layer,
-				features,
-			}));
 			
-			// Calculate total number of features across all layers
-			const totalFeatures = featuresByLayer.reduce((sum, item) => sum + item.features.length, 0);
-			
-			if (totalFeatures > 1) {
-				// Show InfoAttributeView with multiple features
-				showInfoMultiple({
-					featuresByLayer,
-					clickCoordinate: evt.coordinate,
-				});
-			} else {
-				// Show InfoAttributeView with single feature
-				showInfo({
-					featureId: featuresByLayer[0].features[0].id,
-					layer: featuresByLayer[0].layer,
-					clickCoordinate: evt.coordinate,
-				});
-			}
+			// Second pass: collect features in parallel (async operation)
+			// This allows UI to respond immediately with the count
+			Promise.resolve().then(() => {
+				const layersMap = new Map();
+				
+				map.forEachFeatureAtPixel(
+					evt.pixel,
+					(feature, layer) => {
+						if (!layersMap.has(layer)) layersMap.set(layer, []);
+						layersMap.get(layer).push(feature);
+					},
+					{ hitTolerance: 5 }
+				);
+				
+				const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({
+					layer,
+					features,
+				}));
+				
+				if (totalFeatures > 1) {
+					// Show InfoAttributeView with multiple features
+					showInfoMultiple({
+						featuresByLayer,
+						clickCoordinate: evt.coordinate,
+					});
+				} else {
+					// Show InfoAttributeView with single feature
+					showInfo({
+						featureId: featuresByLayer[0].features[0].id,
+						layer: featuresByLayer[0].layer,
+						clickCoordinate: evt.coordinate,
+					});
+				}
+			});
 		}
 	};
 }
+
