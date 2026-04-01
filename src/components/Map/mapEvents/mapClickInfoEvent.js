@@ -14,60 +14,84 @@ export function unsetMapClickInfoEvent(map) {
 	map.un('click', map._clickInfoEvent);
 }
 
-function handleMapClickInfoEvent(map) {
-	return evt => {
-		if (!map.modify) {
-			// First pass: count features quickly without collecting them
+/**
+ * Schedules a callback to run asynchronously using the most appropriate method
+ * @param {Function} callback - Function to execute asynchronously
+ */
+function scheduleAsync(callback) {
+	if (typeof requestIdleCallback !== 'undefined') {
+		// Use requestIdleCallback for better performance when available
+		requestIdleCallback(callback, { timeout: 50 });
+	} else {
+		// Fallback to setTimeout for immediate async execution
+		setTimeout(callback, 0);
+	}
+}
+
+/**
+ * Collects features at the clicked pixel asynchronously
+ * @param {Object} map - OpenLayers map instance
+ * @param {Array} pixel - Click pixel coordinates
+ * @param {Array} coordinate - Click map coordinates
+ * @returns {Promise<void>}
+ */
+async function collectAndShowFeatures(map, pixel, coordinate) {
+	return new Promise(resolve => {
+		scheduleAsync(() => {
+			const layersMap = new Map();
 			let totalFeatures = 0;
-			const layerSet = new Set();
 			
+			// Single pass: collect features efficiently
 			map.forEachFeatureAtPixel(
-				evt.pixel,
+				pixel,
 				(feature, layer) => {
-					layerSet.add(layer);
+					if (!layersMap.has(layer)) {
+						layersMap.set(layer, []);
+					}
+					layersMap.get(layer).push(feature);
 					totalFeatures++;
 				},
 				{ hitTolerance: 5 }
 			);
 			
+			// No features found
 			if (totalFeatures === 0) {
+				resolve();
 				return;
 			}
 			
-			// Second pass: collect features in parallel (async operation)
-			// This allows UI to respond immediately with the count
-			Promise.resolve().then(() => {
-				const layersMap = new Map();
-				
-				map.forEachFeatureAtPixel(
-					evt.pixel,
-					(feature, layer) => {
-						if (!layersMap.has(layer)) layersMap.set(layer, []);
-						layersMap.get(layer).push(feature);
-					},
-					{ hitTolerance: 5 }
-				);
-				
-				const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({
-					layer,
-					features,
-				}));
-				
-				if (totalFeatures > 1) {
-					// Show InfoAttributeView with multiple features
-					showInfoMultiple({
-						featuresByLayer,
-						clickCoordinate: evt.coordinate,
-					});
-				} else {
-					// Show InfoAttributeView with single feature
-					showInfo({
-						featureId: featuresByLayer[0].features[0].id,
-						layer: featuresByLayer[0].layer,
-						clickCoordinate: evt.coordinate,
-					});
-				}
-			});
+			// Convert Map to array format
+			const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({
+				layer,
+				features,
+			}));
+			
+			// Dispatch appropriate event based on feature count
+			if (totalFeatures > 1) {
+				showInfoMultiple({
+					featuresByLayer,
+					clickCoordinate: coordinate,
+				});
+			} else {
+				showInfo({
+					featureId: featuresByLayer[0].features[0].id,
+					layer: featuresByLayer[0].layer,
+					clickCoordinate: coordinate,
+				});
+			}
+			
+			resolve();
+		});
+	});
+}
+
+function handleMapClickInfoEvent(map) {
+	return evt => {
+		// Only process clicks when not in modify mode
+		if (!map.modify) {
+			// Asynchronously collect and display feature information
+			// This prevents blocking the UI thread during feature collection
+			collectAndShowFeatures(map, evt.pixel, evt.coordinate);
 		}
 	};
 }
