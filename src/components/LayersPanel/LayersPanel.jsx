@@ -58,7 +58,6 @@ const VectorLayersList = ({
 		setVisibleVectorLayers(layerList);
 	}, [layerList]);
 
-
 	return (
 		<ReactSortable
 			list={visibleVectorLayers}
@@ -73,7 +72,7 @@ const VectorLayersList = ({
 				}
 			}}
 		>
-			{layerList.map((layer, idx) => {
+			{visibleVectorLayers.map((layer, idx) => {
 				return (
 					<DraggableVectorLayer
 						key={layer.id}
@@ -149,7 +148,7 @@ const DraggableVectorLayer = ({
 				<LayerMoreActionsPopup
 					layer={layer}
 					onProps={handleFeaturesClick}
-					onExport={() => { }}
+					onExport={() => {}}
 					parentScrollRef={parentScrollRef}
 				/>
 			</div>
@@ -259,7 +258,6 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }
 
 	return (
 		<LayersPanelContainer>
-
 			<PanelContent ref={scrollRef}>
 				<Collapse
 					style={{
@@ -386,24 +384,9 @@ const LayersPanelContainer = styled.div`
 	flex-direction: column;
 `;
 
-const Header = styled.div`
-	height: 32px;
-	display: flex;
-	align-items: center;
-	background-color: rgb(76 147 194 / 70%);
-	border-top-left-radius: 7px;
-	border-top-right-radius: 7px;
-	color: white;
-	padding: 0 10px;
-	justify-content: center;
-	font-weight: 500;
-	font-size: 14px;
-`;
-
 const AddLayerButtonContainer = styled.div`
 	padding: 8px;
 	background: white;
-
 `;
 
 const PanelContent = styled.div`
