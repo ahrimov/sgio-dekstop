@@ -19,13 +19,25 @@ export function useShowOnMapHighlight(map, showOnMapFeatures) {
 				} else {
 					feature.setStyle(undefined);
 				}
+				// Clean up the stored original style property
+				delete feature._originalStyleBeforeHighlight;
 			}
 		});
 		highlightedFeaturesRef.current = [];
 	};
 
 	const applyHighlightToFeature = (feature) => {
-		const originalStyle = feature.getStyle();
+		// Check if feature already has a saved original style to prevent overwriting
+		let originalStyle;
+		if (feature._originalStyleBeforeHighlight !== undefined) {
+			// Feature is already highlighted, use the saved original style
+			originalStyle = feature._originalStyleBeforeHighlight;
+		} else {
+			// First time highlighting, save the current style
+			originalStyle = feature.getStyle();
+			feature._originalStyleBeforeHighlight = originalStyle;
+		}
+		
 		const geometry = feature.getGeometry();
 		const geometryType = geometry.getType();
 
@@ -66,7 +78,13 @@ export function useShowOnMapHighlight(map, showOnMapFeatures) {
 
 	// Handle features highlight (both single and multiple)
 	useEffect(() => {
-		if (!showOnMapFeatures || !map) return;
+		if (!map) return;
+
+		// If showOnMapFeatures is null, clear highlights and return
+		if (!showOnMapFeatures) {
+			clearHighlights();
+			return;
+		}
 
 		// Clear previous highlights
 		clearHighlights();

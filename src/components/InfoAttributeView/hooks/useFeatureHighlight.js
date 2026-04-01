@@ -14,7 +14,15 @@ export function useFeatureHighlight(feature, isGeometryEditing) {
 		if (!feature) return;
 
 		const applyHighlight = () => {
-			originalStyleRef.current = feature.getStyle();
+			// Check if feature already has a saved original style to prevent overwriting
+			if (feature._originalStyleBeforeHighlight !== undefined) {
+				// Feature is already highlighted, use the saved original style
+				originalStyleRef.current = feature._originalStyleBeforeHighlight;
+			} else {
+				// First time highlighting, save the current style
+				originalStyleRef.current = feature.getStyle();
+				feature._originalStyleBeforeHighlight = originalStyleRef.current;
+			}
 
 			const geometry = feature.getGeometry();
 			const geometryType = geometry.getType();
@@ -60,6 +68,8 @@ export function useFeatureHighlight(feature, isGeometryEditing) {
 			} else {
 				feature.setStyle(undefined);
 			}
+			// Clean up the stored original style property
+			delete feature._originalStyleBeforeHighlight;
 		};
 
 		if (!isGeometryEditing) {
