@@ -51,7 +51,7 @@
 
 .ol-tooltip {
 	position: relative;
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(255, 255, 255, 0.5);
 	border-radius: 4px;
 	color: white;
 	padding: 4px 8px;
@@ -96,6 +96,9 @@
 	left: 50px;
 	padding: 4px 8px;
 	border-radius: 4px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	background-color: rgba(255, 255, 255, 0.5);
 }
 
 .ol-scale-line-inner {
@@ -108,4 +111,8 @@
 	margin: 1px;
 	will-change: contents, width;
 	transition: all 0.25s;
+	text-shadow: rgba(128, 128, 128, 0.5) 1px 1px 1px;
+	color: #005d98;
+	font-size: 12px;
+	font-weight: 500;
 }

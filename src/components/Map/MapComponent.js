@@ -15,6 +15,7 @@ import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 import { BottomLeftButtonsContainer } from '../MapButtons/BottomLeftButtonsContainer.jsx';
 import FullscreenButton from './FullscreenButton.jsx';
 import { useShowOnMapHighlight } from './hooks/useShowOnMapHighlight.js';
+import { ScaleText } from './ScaleText.jsx';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
@@ -154,6 +155,8 @@ const MapComponent = () => {
 				<MapButtonsContainer />
 
 				<BottomLeftButtonsContainer />
+	
+					<ScaleText map={map} />
 
 				{controlButtons}
 
