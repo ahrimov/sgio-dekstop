@@ -12,7 +12,7 @@ import { PrintMapButton } from './PrintMapButton.jsx';
 
 export function MapButtonsContainer() {
 	return (
-		<Flex gap={0} style={{ position: 'absolute', top: '20px', right: '100px' }}>
+		<Flex gap={0} style={{ position: 'absolute', top: '20px', right: '60px' }}>
 			<DrawButton />
 			<InfoButton />
 			<PanButton />

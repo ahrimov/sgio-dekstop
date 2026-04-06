@@ -5,6 +5,7 @@ import { useWindowControls } from '../WindowControls/useWindowControls.js';
 import { MEDIUM_BLUE, MEDIUM_DARK_BLUE, ORANGE } from '../../consts/style.js';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
 import { Button } from 'antd';
+import { SearchByWGSCoordinatesForm } from '../CoordinateSearch/SearchByWGSCoordinatesForm.jsx';
 
 export function CoordinateSearchButton() {
 	const windowId = useMemo(() => 'coordinate-search', []);
@@ -12,6 +13,7 @@ export function CoordinateSearchButton() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [latitude, setLatitude] = useState('');
 	const [longitude, setLongitude] = useState('');
+	const [zoom, setZoom] = useState(13);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -19,8 +21,8 @@ export function CoordinateSearchButton() {
 		const windowWidth = window.innerWidth;
 		const windowHeight = window.innerHeight;
 
-		const modalWidth = 400;
-		const modalHeight = 300;
+		const modalWidth = 460;
+		const modalHeight = 350;
 
 		return {
 			x: Math.max(0, (windowWidth - modalWidth) / 2),
@@ -30,48 +32,36 @@ export function CoordinateSearchButton() {
 
 	const handleClick = () => {
 		setIsDialogOpen(true);
-		setLatitude('');
-		setLongitude('');
+		if (!latitude) setLatitude('55.751244');
+		if (!longitude) setLongitude('37.618423');
 	};
 
-	const handleConfirm = () => {
-		// Простая валидация без отображения ошибок
-		if (!latitude.trim() || !longitude.trim()) {
-			return;
-		}
-
+	const handleConfirm = useCallback(() => {
 		const lat = parseFloat(latitude);
 		const lon = parseFloat(longitude);
 
-		// Проверяем корректность координат
+		// Validate coordinates
 		if (isNaN(lat) || lat < -90 || lat > 90 || isNaN(lon) || lon < -180 || lon > 180) {
 			return;
 		}
 
-		// Преобразуем координаты из WGS84 в Web Mercator (EPSG:3857)
-		const x = lon * 20037508.34 / 180;
-		const y = Math.log(Math.tan((90 + lat) * Math.PI / 360)) / (Math.PI / 180);
-		const yMercator = y * 20037508.34 / 180;
+		// Convert WGS84 to Web Mercator (EPSG:3857)
+		const x = (lon * 20037508.34) / 180;
+		const y = Math.log(Math.tan(((90 + lat) * Math.PI) / 360)) / (Math.PI / 180);
+		const yMercator = (y * 20037508.34) / 180;
 
 		if (window.map) {
 			window.map.getView().animate({
 				center: [x, yMercator],
-				duration: 300
+				zoom: zoom,
+				duration: 300,
 			});
 		}
-	};
+	}, [latitude, longitude, zoom]);
 
 	const handleClose = useCallback(() => {
 		setIsDialogOpen(false);
-		setLatitude('');
-		setLongitude('');
 	}, []);
-
-	const handleKeyPress = (e) => {
-		if (e.key === 'Enter') {
-			handleConfirm();
-		}
-	};
 
 	return (
 		<>
@@ -85,51 +75,27 @@ export function CoordinateSearchButton() {
 
 			{isDialogOpen && (
 				<FloatingWindow
-					title="Поиск по координатам"
+					title="Переход по WGS-координатам"
 					initialPosition={initialPosition}
-					width={300}
+					width={460}
 					windowId={windowId}
 					onClose={handleClose}
 					showControls={true}
 				>
 					<WindowContainer>
 						<WindowContent isMaximized={isMaximized}>
-							<FormGroup>
-								<FormRow>
-									<Label>Широта:</Label>
-									<InputWrapper>
-										<Input
-											type="text"
-											value={latitude}
-											onChange={(e) => setLatitude(e.target.value)}
-											onKeyPress={handleKeyPress}
-											autoFocus
-										/>
-									</InputWrapper>
-								</FormRow>
-							</FormGroup>
-
-							<FormGroup>
-								<FormRow>
-									<Label>Долгота:</Label>
-									<InputWrapper>
-										<Input
-											type="text"
-											value={longitude}
-											onChange={(e) => setLongitude(e.target.value)}
-											onKeyPress={handleKeyPress}
-										/>
-									</InputWrapper>
-								</FormRow>
-							</FormGroup>
+							<SearchByWGSCoordinatesForm
+								latitude={latitude}
+								longitude={longitude}
+								zoom={zoom}
+								onLatitudeChange={setLatitude}
+								onLongitudeChange={setLongitude}
+								onZoomChange={setZoom}
+							/>
 
 							<ButtonGroup>
-								<ButtonStyle onClick={handleConfirm}>
-									Перейти
-								</ButtonStyle>
-								<ButtonStyle onClick={handleClose}>
-									Отмена
-								</ButtonStyle>
+								<ButtonStyle onClick={handleConfirm}>Перейти</ButtonStyle>
+								<ButtonStyle onClick={handleClose}>Отмена</ButtonStyle>
 							</ButtonGroup>
 						</WindowContent>
 					</WindowContainer>
@@ -168,60 +134,17 @@ const WindowContainer = styled.div`
 `;
 
 const WindowContent = styled.div`
-	padding: 20px;
-	max-height: ${props => (props.isMaximized ? 'calc(100vh - 100px)' : '400px')};
+	padding: 12px 16px;
+	max-height: ${props => (props.isMaximized ? 'calc(100vh - 100px)' : '500px')};
 	overflow-y: auto;
-`;
-
-const FormGroup = styled.div`
-	margin-bottom: 20px;
-
-	&:last-of-type {
-		margin-bottom: 24px;
-	}
-`;
-
-const FormRow = styled.div`
-	display: flex;
-	align-items: flex-start;
-	gap: 12px;
-`;
-
-const Label = styled.label`
-	padding-top: 8px;
-	font-size: 14px;
-	font-weight: 500;
-	color: ${MEDIUM_BLUE};
-	white-space: nowrap;
-`;
-
-const InputWrapper = styled.div`
-	flex: 1;
-`;
-
-const Input = styled.input`
-	padding: 8px 12px;
-	border: 1px solid #d9d9d9;
-	border-radius: 4px;
-	font-size: 14px;
-	color: #333;
-	transition: border-color 0.2s;
-
-	&:focus {
-		outline: none;
-		border-color: ${MEDIUM_BLUE};
-		box-shadow: 0 0 0 2px rgba(76, 147, 194, 0.1);
-	}
-
-	&::placeholder {
-		color: #bfbfbf;
-	}
 `;
 
 const ButtonGroup = styled.div`
 	display: flex;
 	justify-content: center;
 	gap: 8px;
+	margin-top: 12px;
+	padding-bottom: 4px;
 `;
 
 const ButtonStyle = styled.button`
@@ -240,5 +163,4 @@ const ButtonStyle = styled.button`
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 		background: ${ORANGE};
 	}
-
 `;
