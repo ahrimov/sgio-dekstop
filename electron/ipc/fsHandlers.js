@@ -79,4 +79,19 @@ export function registerFsIpc() {
 			});
 		});
 	});
+
+	ipcMain.handle('fs-writeFileBinary', async (event, filePath, base64Data) => {
+		return new Promise((resolve, reject) => {
+			const dir = path.dirname(filePath);
+			if (!fs.existsSync(dir)) {
+				fs.mkdirSync(dir, { recursive: true });
+			}
+
+			const buffer = Buffer.from(base64Data, 'base64');
+			fs.writeFile(filePath, buffer, err => {
+				if (err) reject(err);
+				else resolve();
+			});
+		});
+	});
 }

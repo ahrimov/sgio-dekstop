@@ -3,7 +3,13 @@ import { CloseOutlined, ExpandAltOutlined, MinusOutlined, ShrinkOutlined } from 
 import styled from 'styled-components';
 import { useWindowControls } from './useWindowControls';
 
-export function WindowControls({ windowId, onClose, disabled = false, compact }) {
+export function WindowControls({
+	windowId,
+	onClose,
+	disabled = false,
+	compact,
+	showMinMax = true,
+}) {
 	const { isMaximized, minimize, maximize, restore, close } = useWindowControls({
 		windowId,
 	});
@@ -17,44 +23,53 @@ export function WindowControls({ windowId, onClose, disabled = false, compact })
 
 	return (
 		<ControlsContainer>
-			<ControlButton
-				onClick={e => {
-					e.stopPropagation();
-					minimize(windowId);
-				}}
-				title="Свернуть"
-				disabled={disabled}
-				$compact={compact}
-			>
-				<MinusOutlined />
-			</ControlButton>
-			{isMaximized ? (
+			{showMinMax && (
 				<ControlButton
 					onClick={e => {
 						e.stopPropagation();
-						restore(windowId);
+						minimize(windowId);
 					}}
-					title="Восстановить"
+					title="Свернуть"
 					disabled={disabled}
 					$compact={compact}
 				>
-					<ShrinkOutlined />
-				</ControlButton>
-			) : (
-				<ControlButton
-					onClick={e => {
-						e.stopPropagation();
-						maximize(windowId);
-					}}
-					title="Развернуть"
-					disabled={disabled}
-					$compact={compact}
-				>
-					<ExpandAltOutlined />
+					<MinusOutlined />
 				</ControlButton>
 			)}
+			{showMinMax &&
+				(isMaximized ? (
+					<ControlButton
+						onClick={e => {
+							e.stopPropagation();
+							restore(windowId);
+						}}
+						title="Восстановить"
+						disabled={disabled}
+						$compact={compact}
+					>
+						<ShrinkOutlined />
+					</ControlButton>
+				) : (
+					<ControlButton
+						onClick={e => {
+							e.stopPropagation();
+							maximize(windowId);
+						}}
+						title="Развернуть"
+						disabled={disabled}
+						$compact={compact}
+					>
+						<ExpandAltOutlined />
+					</ControlButton>
+				))}
 			{onClose && (
-				<ControlButton onClick={handleClose} title="Закрыть" $isClose disabled={disabled} $compact={compact} >
+				<ControlButton
+					onClick={handleClose}
+					title="Закрыть"
+					$isClose
+					disabled={disabled}
+					$compact={compact}
+				>
 					<CloseOutlined />
 				</ControlButton>
 			)}
@@ -70,8 +85,8 @@ const ControlsContainer = styled.div`
 
 const ControlButton = styled.button`
 	background: none;
-	width: ${props => (props.$compact ? '24px' : '28px' )}; 
-	height: ${props => (props.$compact ? '24px' : '28px' )};
+	width: ${props => (props.$compact ? '24px' : '28px')};
+	height: ${props => (props.$compact ? '24px' : '28px')};
 	border-radius: 4px;
 	display: flex;
 	align-items: center;

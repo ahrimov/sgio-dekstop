@@ -19,6 +19,7 @@ const FloatingWindow = ({
 	onClose,
 	windowId,
 	showControls = true,
+	showMinMax = true,
 	isMultiple = false,
 	onPrevious,
 	onNext,
@@ -225,7 +226,14 @@ const FloatingWindow = ({
 				<WindowTitle $compact={compact} title={title} $titleWidth={titleWidth}>
 					{title}
 				</WindowTitle>
-				{showControls && <WindowControls windowId={windowId} onClose={handleClose} compact={compact} />}
+				{showControls && (
+					<WindowControls
+						windowId={windowId}
+						onClose={handleClose}
+						compact={compact}
+						showMinMax={showMinMax}
+					/>
+				)}
 			</WindowHeader>
 
 			<WindowContent>{children}</WindowContent>
@@ -262,19 +270,19 @@ const WindowHeader = styled.div`
 
 const WindowTitle = styled.span`
 	color: white;
-	font-weight: ${props => (props.$compact ? '500' : '600')}; 
+	font-weight: ${props => (props.$compact ? '500' : '600')};
 	max-width: ${props => (props.$titleWidth ? props.$titleWidth : '220px')};
-    overflow: hidden;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-size: ${props => (props.$compact ? '14px' : '16px')};
-	font-family: "Arial Narrow", sans-serif;
+	font-family: 'Arial Narrow', sans-serif;
 `;
 
 const ControlButton = styled.button`
 	background: none;
-	width: ${props => (props.$compact ? '24px' : '28px' )}; 
-	height: ${props => (props.$compact ? '24px' : '28px' )};
+	width: ${props => (props.$compact ? '24px' : '28px')};
+	height: ${props => (props.$compact ? '24px' : '28px')};
 	border-radius: 4px;
 	display: flex;
 	align-items: center;

@@ -7,6 +7,8 @@ import { ZoomInButton } from './ZoomInButton.jsx';
 import { ZoomOutButton } from './ZoomOutButton.jsx';
 import { MeasureButton } from './MeasureButton.jsx';
 import { AreaMeasureButton } from './AreaMeasureButton.jsx';
+import { SaveMapImageButton } from './SaveMapImageButton.jsx';
+import { PrintMapButton } from './PrintMapButton.jsx';
 
 export function MapButtonsContainer() {
 	return (
@@ -18,6 +20,8 @@ export function MapButtonsContainer() {
 			<ZoomOutButton />
 			<MeasureButton />
 			<AreaMeasureButton />
+			<PrintMapButton />
+			<SaveMapImageButton />
 		</Flex>
 	);
 }

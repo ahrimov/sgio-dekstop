@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
 	readFile: filePath => ipcRenderer.invoke('fs-readFile', filePath),
 	writeFile: (filePath, data) => ipcRenderer.invoke('fs-writeFile', filePath, data),
+	writeFileBinary: (filePath, base64Data) => ipcRenderer.invoke('fs-writeFileBinary', filePath, base64Data),
 	mkdir: dirPath => ipcRenderer.invoke('fs-mkdir', dirPath),
 	exists: filePath => ipcRenderer.invoke('fs-exists', filePath),
 	copyFile: (src, dest) => ipcRenderer.invoke('fs-copyFile', src, dest),
