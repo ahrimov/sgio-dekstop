@@ -17,7 +17,7 @@ export function MeasureButton() {
 		changeInteractionMode(MEASURE_INTERACTION);
 	};
 
-	const titleText = '';
+	const titleText = 'Линейка';
 	return (
 		<MeasureButtonStyle
 			$active={mapInteractionMode === MEASURE_INTERACTION}

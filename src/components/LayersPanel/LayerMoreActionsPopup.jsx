@@ -39,7 +39,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 					}, 20);
 				}}
 			>
-				Объекты
+				Показать списком
 			</Button>
 			<Button
 				type="text"
@@ -49,7 +49,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 					startDrawing(layer);
 				}}
 			>
-				Добавить объект
+				Создать объект
 			</Button>
 			{!kmlType && (
 				<>

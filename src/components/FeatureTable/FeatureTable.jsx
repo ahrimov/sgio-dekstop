@@ -300,7 +300,7 @@ export function FeatureTable({ layer }) {
 		render: (_, record) => (
 			<Button
 				style={{ fontSize: 12, cursor: 'pointer', padding: 0 }}
-				title="Свойства"
+				title="Показать информацию по объекту"
 				onClick={e => {
 					e.stopPropagation();
 					showInfo({ featureId: record.id, layer });
@@ -460,7 +460,7 @@ export function FeatureTable({ layer }) {
 			<TableButtonsContainer>
 				<BaseMapButton
 					onClick={handleExportKML}
-					title={'Выгрузить в KML'}
+					title={'Экспорт KML'}
 					img={exportIcon}
 					styleImage={{ scale: 1.3 }}
 				/>

@@ -15,7 +15,7 @@ export function InfoButton() {
 		changeInteractionMode(INFO_INTERACTION);
 	};
 
-	const titleText = 'Режим получения информации';
+	const titleText = 'Режим получения информации по объектам карты';
 	return (
 		<BaseMapButton
 			active={mapInteractionMode === INFO_INTERACTION}

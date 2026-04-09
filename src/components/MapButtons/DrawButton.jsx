@@ -17,7 +17,7 @@ export function DrawButton() {
 		openLayerSelector();
 	};
 
-	const titleText = 'Режим рисования';
+	const titleText = 'Создать объект';
 	return (
 		<BaseMapButton
 			active={mapInteractionMode === DRAW_INTERACTION}

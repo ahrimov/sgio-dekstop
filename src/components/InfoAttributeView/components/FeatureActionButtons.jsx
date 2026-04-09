@@ -22,11 +22,7 @@ export function FeatureActionButtons({
 		return (
 			<Flex gap={2} justify="center" style={{ width: '100%' }}>
 				<BaseMapButton title="Сохранить" img={saveIcon} onClick={handleSaveEdit} />
-				<BaseMapButton
-					title="Удалить объект"
-					img={deleteIcon}
-					onClick={handleDeleteFeature}
-				/>
+				<BaseMapButton title="Удалить" img={deleteIcon} onClick={handleDeleteFeature} />
 			</Flex>
 		);
 	}
@@ -41,7 +37,7 @@ export function FeatureActionButtons({
 				onClick={handleEditGeometryClick}
 				active={isGeometryEditing}
 			/>
-			<BaseMapButton title="Удалить объект" img={deleteIcon} onClick={handleDeleteFeature} />
+			<BaseMapButton title="Удалить" img={deleteIcon} onClick={handleDeleteFeature} />
 			<BaseMapButton title="Экспорт в KML" img={exportIcon} onClick={handleExportKML} />
 			<BaseMapButton
 				title="Показать на карте"

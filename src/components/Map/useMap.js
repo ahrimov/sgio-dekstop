@@ -6,6 +6,7 @@ import { defaults as defaultInteractions } from 'ol/interaction.js';
 import { ScaleLine } from 'ol/control.js';
 import { Select } from 'ol/interaction.js';
 import DragBox from 'ol/interaction/DragBox.js';
+import { getCenter } from 'ol/extent.js';
 import { Style, Stroke, Fill, Circle } from 'ol/style.js';
 import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
 import { layers } from '../../legacy/globals.js';
@@ -160,6 +161,38 @@ export const useMap = containerRef => {
 		}
 
 		if (mapInteractionMode === ZOOM_OUT_INTERACTION) {
+			const dragBox = new DragBox({});
+
+			dragBox.on('boxend', () => {
+				const view = mapInstance.current.getView();
+				const boxExtent = dragBox.getGeometry().getExtent();
+				const mapSize = mapInstance.current.getSize();
+				const viewExtent = view.calculateExtent(mapSize);
+
+				const boxCenter = getCenter(boxExtent);
+
+				const boxWidth = boxExtent[2] - boxExtent[0];
+				const boxHeight = boxExtent[3] - boxExtent[1];
+				const viewWidth = viewExtent[2] - viewExtent[0];
+				const viewHeight = viewExtent[3] - viewExtent[1];
+
+				const ratioW = viewWidth / boxWidth;
+				const ratioH = viewHeight / boxHeight;
+				const ratio = Math.min(ratioW, ratioH);
+
+				const currentZoom = view.getZoom();
+				const zoomDelta = Math.log2(ratio);
+				const newZoom = Math.max(view.getMinZoom(), currentZoom - zoomDelta);
+
+				view.animate({
+					center: boxCenter,
+					zoom: newZoom,
+					duration: 250,
+				});
+			});
+
+			mapInstance.current.addInteraction(dragBox);
+
 			const clickHandler = (evt) => {
 				const view = mapInstance.current.getView();
 				const currentZoom = view.getZoom();
@@ -173,8 +206,11 @@ export const useMap = containerRef => {
 			mapInstance.current.on('singleclick', clickHandler);
 
 			return () => {
-				if (mapInstance.current && clickHandler) {
-					mapInstance.current.un('singleclick', clickHandler);
+				if (mapInstance.current) {
+					mapInstance.current.removeInteraction(dragBox);
+					if (clickHandler) {
+						mapInstance.current.un('singleclick', clickHandler);
+					}
 				}
 			};
 		}
