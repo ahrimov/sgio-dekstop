@@ -9,6 +9,7 @@ import { exportKMLFromDB } from '../../features/KMLLayer/exportKMLFromDB';
 import { clearLayer } from '../../features/clear/clearLayer';
 import { selectKMLFile, readKMLForComparison } from '../../features/KMLImport/compareAttributes';
 import { openKMLImportDialog } from '../../store/kmlImportDialog';
+import { showConfirm } from '../../store/modalDialog';
 
 const { Text } = Typography;
 
@@ -119,9 +120,10 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 				<Button
 					type="text"
 					size="small"
-					onClick={() => {
+					onClick={async () => {
 						setVisible(false);
-						const confirmed = window.confirm(
+						const confirmed = await showConfirm(
+							'Подтверждение удаления',
 							`Вы уверены, что хотите удалить слой "${layer.get('descr') || layer.id}"?`
 						);
 						if (!confirmed) return;

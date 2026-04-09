@@ -8,9 +8,11 @@ import { app_device_directory } from '../../legacy/initial';
 import { generateColor } from '../../utils/colorGenerator';
 import { saveFile } from '../../legacy/FileManage';
 import { addLayerToMap } from '../../store/updateMapLayers';
+import { showConfirm } from '../../store/modalDialog';
 
 export async function addNewLayer(fullPath) {
-	const answer = window.confirm(
+	const answer = await showConfirm(
+		'Внимание',
 		'Если Вы будете вносить изменения в добавляемый слой, то, для получения измененного файла, необходимо использовать функцию "Экспорт kml".',
 	);
 	if (!answer) return;

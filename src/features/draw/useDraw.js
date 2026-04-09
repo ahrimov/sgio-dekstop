@@ -13,6 +13,7 @@ import {
 import { useUnit } from 'effector-react';
 import { $drawingState, DRAWING_TYPE, EDITING_TYPE } from './store.js';
 import { cancelEditingGeometry } from '../../components/InfoAttributeView/store.js';
+import { showConfirm } from '../../store/modalDialog.js';
 
 const { Text } = Typography;
 
@@ -38,9 +39,9 @@ export function useDraw({ map, setCurrentFeature }) {
 
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
-	const closeControlPanel = () => {
+	const closeControlPanel = async () => {
 		if (isDrawing || isModifying) {
-			const answer = window.confirm("На карте есть несохраненный объект. Если вы продолжите, то он будет потерян. Продолжить?");
+			const answer = await showConfirm('Подтверждение', 'На карте есть несохраненный объект. Если вы продолжите, то он будет потерян. Продолжить?');
 			if (!answer) {
 				return;
 			}

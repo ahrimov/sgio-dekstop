@@ -4,6 +4,7 @@ import Polygon, { circular } from 'ol/geom/Polygon';
 import { LineString, Point } from 'ol/geom';
 import { add } from 'ol/coordinate';
 import { layers } from './globals.js';
+import { showConfirm } from '../store/modalDialog.js';
 
 export async function importKML(
 	layerID,
@@ -79,7 +80,7 @@ export async function importKML(
 
 		if (intersection == 1) {
 			if (permissionToUpdateFeatures === -1) {
-				const userAnswer = window.confirm(permissionToUpdateFeaturesMessage);
+				const userAnswer = await showConfirm('Подтверждение', permissionToUpdateFeaturesMessage);
 				if (userAnswer) {
 					permissionToUpdateFeatures = 1;
 					await updateFeaturesFromKML();

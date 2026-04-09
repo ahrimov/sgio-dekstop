@@ -1,9 +1,11 @@
 import { requestToDB } from "../../legacy/DBManage";
 import { refreshFeatureTable } from "../../store/refreshTable";
 import { syncChangesWithKML } from "../KMLLayer/syncChangesWithKML";
+import { showConfirm } from "../../store/modalDialog";
 
-export function clearLayer(layer) {
-	const confirmed = window.confirm(
+export async function clearLayer(layer) {
+	const confirmed = await showConfirm(
+		'Подтверждение очистки',
 		`Вы уверены, что хотите очистить слой "${layer.get('descr') || layer.id}"?`
 	);
 
