@@ -25,18 +25,15 @@ export async function deleteMultipleFeatures(featureIds, layer, callback) {
 	if (kmlType) {
 		// Для KML слоев помечаем объекты как удаленные
 		const features = layer.getSource().getFeatures();
-		let deletedCount = 0;
 		
 		featureIds.forEach(featureId => {
 			const feature = features.find(f => f.id === featureId);
 			if (feature) {
 				feature.deleted = true;
-				deletedCount++;
 			}
 		});
 		
 		await syncChangesWithKML(layer.id);
-		await showAlert('Успех', `Удалено объектов: ${deletedCount}`);
 		
 		if (callback) callback();
 		return;
@@ -55,20 +52,16 @@ export async function deleteMultipleFeatures(featureIds, layer, callback) {
 			// Удаляем объекты с карты
 			const source = layer.getSource();
 			const features = source.getFeatures();
-			let deletedCount = 0;
 			
 			featureIds.forEach(featureId => {
 				const feature = features.find(f => f.id === featureId);
 				if (feature) {
 					source.removeFeature(feature);
-					deletedCount++;
 				}
 			});
 			
 			source.changed();
 			setTimeout(() => refreshFeatureTable(), 100);
-			
-			await showAlert('Успех', `Удалено объектов: ${deletedCount}`);
 			
 			if (callback) callback();
 		},
