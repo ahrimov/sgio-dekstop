@@ -208,6 +208,7 @@ const AppContent = () => {
 							onClose={closeKMLImportDialog}
 							layerAttributes={kmlImportDialogData.layerAttributes || []}
 							kmlProperties={kmlImportDialogData.properties || []}
+							features={kmlImportDialogData.features || []}
 							onAccept={handleAcceptKMLImport}
 						/>
 					)}

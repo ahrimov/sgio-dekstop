@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Select, Table, Button, Typography } from 'antd';
+import { Modal, Select, Table, Typography } from 'antd';
 import styled from 'styled-components';
-import { DARK_BLUE } from '../../consts/style';
+import { DARK_BLUE, MEDIUM_DARK_BLUE, MEDIUM_BLUE, ORANGE } from '../../consts/style';
 import { CloseOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
@@ -12,6 +12,7 @@ export function AttributeComparisonDialog({
 	layerAttributes,
 	kmlProperties,
 	onAccept,
+	features,
 }) {
 	const [mappings, setMappings] = useState({});
 
@@ -92,14 +93,23 @@ export function AttributeComparisonDialog({
 			onCancel={onClose}
 			width={700}
 			closable={false}
-			footer={[
-				<Button key="cancel" onClick={onClose}>
-					Отмена
-				</Button>,
-				<Button key="accept" type="primary" onClick={handleAccept}>
-					Применить
-				</Button>,
-			]}
+			footer={
+				<div className="modal-dialog-footer">
+					<button
+						className="modal-dialog-button modal-dialog-button-confirm"
+						onClick={handleAccept}
+						autoFocus
+					>
+						Применить
+					</button>
+					<button
+						className="modal-dialog-button modal-dialog-button-cancel"
+						onClick={onClose}
+					>
+						Отмена
+					</button>
+				</div>
+			}
 		>
 			<CustomHeader>
 				<HeaderTitle>Сопоставление атрибутов</HeaderTitle>
@@ -107,6 +117,9 @@ export function AttributeComparisonDialog({
 					<CloseOutlined />
 				</ControlButton>
 			</CustomHeader>
+			<WarningText>
+				Внимание! Число экспортируемых объектов: {features?.length || 0}.
+			</WarningText>
 			<Description>
 				Соотнесите служебные имена характеристик в левой части (атрибуты из панели свойств)
 				и имена характеристик в правой (полученные из импортируемого Вами файла)
@@ -180,12 +193,46 @@ const ControlButton = styled.button`
 	}
 `;
 
+const WarningText = styled.p`
+	margin: 8px 24px 0 24px;
+	color: ${MEDIUM_DARK_BLUE};
+	font-size: 14px;
+	font-weight: 500;
+`;
+
 const Description = styled.p`
 	margin: 16px 24px;
-	color:;
+	color: ${MEDIUM_DARK_BLUE};
 	font-size: 14px;
 `;
 
 const TableWrapper = styled.div`
 	padding: 0 24px 16px 24px;
+`;
+
+const FooterContainer = styled.div`
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+`;
+
+const StyledButton = styled.button`
+	padding: 6px 16px;
+	border-radius: 20px;
+	border: 1px solid ${MEDIUM_DARK_BLUE};
+	background-color: ${props => (props.$primary ? ORANGE : MEDIUM_BLUE)};
+	color: white;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s;
+	min-width: 80px;
+
+	&:hover {
+		background-color: ${props => (props.$primary ? '#ff9900' : ORANGE)};
+	}
+
+	&:active {
+		transform: scale(0.98);
+	}
 `;
