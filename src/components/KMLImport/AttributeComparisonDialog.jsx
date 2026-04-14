@@ -103,7 +103,7 @@ export function AttributeComparisonDialog({
 		>
 			<CustomHeader>
 				<HeaderTitle>Сопоставление атрибутов</HeaderTitle>
-				<ControlButton onClick={onClose} title="Закрыть" $isClose >
+				<ControlButton onClick={onClose} title="Закрыть" $isClose>
 					<CloseOutlined />
 				</ControlButton>
 			</CustomHeader>
@@ -182,7 +182,7 @@ const ControlButton = styled.button`
 
 const Description = styled.p`
 	margin: 16px 24px;
-	color: rgba(0, 0, 0, 0.65);
+	color:;
 	font-size: 14px;
 `;
 

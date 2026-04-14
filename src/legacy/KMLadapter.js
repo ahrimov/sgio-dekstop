@@ -25,24 +25,50 @@ export async function importKML(
 					feature.getGeometry() &&
 					feature.getGeometry().getCoordinates()
 				);
-			} catch (_) {
+			} catch {
 				return false;
 			}
 		});
 
 		let acceptedNumberOfFeatures = 0;
-
+	
 		let textFinishingLoading = 'Импорт KML завершён.';
-
+	
 		startLoading(features.length, 'Импорт KML');
-
-		// Check if there are no valid features after filtering
+	
 		if (features.length === 0) {
 			finishLoading();
-			window.alert(
+			showAlert(
 				'Предупреждение',
 				'В KML файле не найдено объектов с корректной геометрией.'
 			);
+			return;
+		}
+	
+		const incompatibleFeatures = [];
+		for (let i = 0; i < features.length; i++) {
+			const feature = features[i];
+			const featureGeomType = feature.getGeometry().getType();
+			
+			if (compareGeometryTypes(layer.geometryType, featureGeomType) == 0) {
+				if (!isGeometryConversionPossible(layer.geometryType, featureGeomType)) {
+					const featureId = feature.getId() || `#${i + 1}`;
+					incompatibleFeatures.push({
+						id: featureId,
+						sourceType: featureGeomType,
+						targetType: layer.geometryType
+					});
+				}
+			}
+		}
+	
+		if (incompatibleFeatures.length > 0) {
+			finishLoading();
+			
+			let errorMessage = `Импорт отменён. Обнаружено ${incompatibleFeatures.length} объект(ов) с несовместимой геометрией.\n\n`;
+			errorMessage += `Слой "${layer.label}" требует геометрию типа ${layer.geometryType}.\n\n`;
+			
+			showAlert('Ошибка импорта', errorMessage);
 			return;
 		}
 
@@ -52,7 +78,10 @@ export async function importKML(
 
 		for (let i = 0; i < features.length; i++) {
 			let feature = features[i];
-			if (compareGeometryTypes(layer.geometryType, feature.getGeometry().getType()) == 0) {
+			const featureGeomType = feature.getGeometry().getType();
+			
+			// Convert geometry if types don't match (validation already done above)
+			if (compareGeometryTypes(layer.geometryType, featureGeomType) == 0) {
 				convertFeatureToLayerGeometry(feature, layer);
 			}
 
@@ -197,13 +226,13 @@ export async function importKML(
 		}
 
 		finishLoading();
-
+	
 		if (sourceNumberOfFeatures !== acceptedNumberOfFeatures) {
 			textFinishingLoading += ` Не все объекты были загружены. Загружено объектов ${acceptedNumberOfFeatures} из ${sourceNumberOfFeatures}.`;
 		}
-
+	
 		setTimeout(() => refreshFeatureTable(), 50);
-		showAlert(textFinishingLoading);
+		showAlert('Внимание', textFinishingLoading);
 	} catch (error) {
 		console.error('Error during KML import:', error);
 		finishLoading();
@@ -231,6 +260,29 @@ function compareGeometryTypes(first, second) {
 	second = second.replace('multi', '');
 	if (first == second) return 1;
 	return 0;
+}
+
+function isGeometryConversionPossible(targetType, sourceType) {
+	const target = targetType.toLowerCase().replace('multi', '');
+	const source = sourceType.toLowerCase().replace('multi', '');
+	
+	if (target === source) {
+		return true;
+	}
+	
+	if (source === 'point') {
+		return true;
+	}
+	
+	if (source === 'linestring' && target === 'polygon') {
+		return true;
+	}
+	
+	if (source === 'polygon' && target === 'linestring') {
+		return true;
+	}
+	
+	return false;
 }
 
 function convertFeatureToLayerGeometry(feature, layer) {
