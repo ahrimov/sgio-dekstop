@@ -4,7 +4,8 @@ import Polygon, { circular } from 'ol/geom/Polygon';
 import { LineString, Point } from 'ol/geom';
 import { add } from 'ol/coordinate';
 import { layers } from './globals.js';
-import { showConfirm } from '../store/modalDialog.js';
+import { showAlert, showConfirm } from '../store/modalDialog.js';
+import { refreshFeatureTable } from '../store/refreshTable.js';
 
 export async function importKML(
 	layerID,
@@ -12,181 +13,202 @@ export async function importKML(
 	features,
 	{ startLoading, updateProgress, finishLoading }
 ) {
-	let layer = layers.find(layer => layerID === layer.id);
+	try {
+		let layer = layers.find(layer => layerID === layer.id);
 
-	const sourceNumberOfFeatures = features.length;
+		const sourceNumberOfFeatures = features.length;
 
-	features = features.filter(feature => {
-		try {
-			return (
-				typeof feature.getGeometry() !== 'undefined' &&
-				feature.getGeometry() &&
-				feature.getGeometry().getCoordinates()
-			);
-		} catch (_) {
-			return false;
-		}
-	});
-
-	let acceptedNumberOfFeatures = 0;
-
-	let textFinishingLoading = 'Импорт KML завершён.';
-
-	startLoading(features.length, 'Импорт KML');
-
-	let featureMaxID;
-
-	let permissionToUpdateFeatures = -1;
-
-	for (let i = 0; i < features.length; i++) {
-		let feature = features[i];
-		if (compareGeometryTypes(layer.geometryType, feature.getGeometry().getType()) == 0) {
-			convertFeatureToLayerGeometry(feature, layer);
-		}
-
-		let props;
-		props = filterProperties(feature.getProperties(), dict, layer);
-
-		let feature_id = Number(props[dict[layer.atribs[0].name]]);
-
-		if (typeof feature_id == 'undefined') {
-			if (typeof featureMaxID == 'undefined') {
-				featureMaxID = await autonumericID(layer.atribs[0].name, layer);
-				feature_id = featureMaxID;
-			} else {
-				featureMaxID++;
-				feature_id = featureMaxID;
+		features = features.filter(feature => {
+			try {
+				return (
+					typeof feature.getGeometry() !== 'undefined' &&
+					feature.getGeometry() &&
+					feature.getGeometry().getCoordinates()
+				);
+			} catch (_) {
+				return false;
 			}
-			props['id'] = feature_id;
-			dict['id'] = 'id';
-		}
-
-		let query = `SELECT COUNT(1) as bool FROM ${layer.id} WHERE ${layer.atribs[0].name} = ${feature_id};`;
-		const intersection = await new Promise((resolve, reject) => {
-			requestToDB(
-				query,
-				data => {
-					resolve(data.rows.item(0).bool);
-				},
-				er => {
-					reject(er);
-					window.alert({
-						title: 'Ошибка',
-						message: 'Нет доступа к базе данных.',
-					});
-				}
-			);
 		});
 
-		if (intersection == 1) {
-			if (permissionToUpdateFeatures === -1) {
-				const userAnswer = await showConfirm('Подтверждение', permissionToUpdateFeaturesMessage);
-				if (userAnswer) {
-					permissionToUpdateFeatures = 1;
+		let acceptedNumberOfFeatures = 0;
+
+		let textFinishingLoading = 'Импорт KML завершён.';
+
+		startLoading(features.length, 'Импорт KML');
+
+		// Check if there are no valid features after filtering
+		if (features.length === 0) {
+			finishLoading();
+			window.alert(
+				'Предупреждение',
+				'В KML файле не найдено объектов с корректной геометрией.'
+			);
+			return;
+		}
+
+		let featureMaxID;
+
+		let permissionToUpdateFeatures = -1;
+
+		for (let i = 0; i < features.length; i++) {
+			let feature = features[i];
+			if (compareGeometryTypes(layer.geometryType, feature.getGeometry().getType()) == 0) {
+				convertFeatureToLayerGeometry(feature, layer);
+			}
+
+			let props;
+			props = filterProperties(feature.getProperties(), dict, layer);
+
+			let feature_id = Number(props[dict[layer.atribs[0].name]]);
+
+			if (typeof feature_id == 'undefined') {
+				if (typeof featureMaxID == 'undefined') {
+					featureMaxID = await autonumericID(layer.atribs[0].name, layer);
+					feature_id = featureMaxID;
+				} else {
+					featureMaxID++;
+					feature_id = featureMaxID;
+				}
+				props['id'] = feature_id;
+				dict['id'] = 'id';
+			}
+
+			let query = `SELECT COUNT(1) as bool FROM ${layer.id} WHERE ${layer.atribs[0].name} = ${feature_id};`;
+			const intersection = await new Promise((resolve, reject) => {
+				requestToDB(
+					query,
+					data => {
+						resolve(data.rows.item(0).bool);
+					},
+					er => {
+						reject(er);
+						window.alert({
+							title: 'Ошибка',
+							message: 'Нет доступа к базе данных.',
+						});
+					}
+				);
+			});
+
+			if (intersection == 1) {
+				if (permissionToUpdateFeatures === -1) {
+					const userAnswer = await showConfirm(
+						'Подтверждение',
+						permissionToUpdateFeaturesMessage
+					);
+					if (userAnswer) {
+						permissionToUpdateFeatures = 1;
+						await updateFeaturesFromKML();
+					} else {
+						permissionToUpdateFeatures = 0;
+						updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
+						continue;
+					}
+				} else if (permissionToUpdateFeatures) {
 					await updateFeaturesFromKML();
 				} else {
-					permissionToUpdateFeatures = 0;
 					updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
 					continue;
 				}
-			} else if (permissionToUpdateFeatures) {
-				await updateFeaturesFromKML();
-			} else {
-				updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
-				continue;
-			}
 
-			async function updateFeaturesFromKML() {
-				let updates = [];
-				const atribNames = [];
+				async function updateFeaturesFromKML() {
+					let updates = [];
+					const atribNames = [];
+					const values = [];
+					for (let key in dict) {
+						if (
+							typeof dict[key] == 'undefined' ||
+							dict[key] == '' ||
+							typeof props[dict[key]] == 'undefined' ||
+							key == 'ID'
+						)
+							continue;
+						updates.push(`${key} = '${props[dict[key]]}'`);
+						atribNames.push(key);
+						values.push(props[dict[key]]);
+					}
+
+					let geom = feature.getGeometry();
+					geom.transform('EPSG:4326', 'EPSG:3857');
+
+					const format = new WKT();
+					let feautureString = format.writeFeature(feature);
+					feautureString = convertToGeometryType(feautureString, layer.geometryType);
+					updates.push(`Geometry = GeomFromText('${feautureString}', 3857)`);
+					query = `UPDATE ${layer.id} SET ${updates.join(', ')} WHERE ${layer.atribs[0].name} = ${feature_id} `;
+					await requestToDBPromise(query);
+					for (let old_feature of layer.getSource().getFeatures()) {
+						if (old_feature.id == feature_id) {
+							old_feature.setGeometry(feature.getGeometry());
+
+							const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
+							if (typeIndex >= 0) old_feature.type = values[typeIndex];
+
+							const labelIndex = atribNames.indexOf(layer.labelColumn);
+							if (labelIndex >= 0) old_feature.label = values[labelIndex];
+
+							acceptedNumberOfFeatures += 1;
+							updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
+							break;
+						}
+					}
+				}
+			} else {
+				let atribNames = [];
+				let atribValues = [];
 				const values = [];
 				for (let key in dict) {
 					if (
 						typeof dict[key] == 'undefined' ||
-						dict[key] == '' ||
-						typeof props[dict[key]] == 'undefined' ||
-						key == 'ID'
+						dict[key] === '' ||
+						typeof props[dict[key]] == 'undefined'
 					)
 						continue;
-					updates.push(`${key} = '${props[dict[key]]}'`);
 					atribNames.push(key);
+					atribValues.push(`'${props[dict[key]]}'`);
 					values.push(props[dict[key]]);
 				}
 
 				let geom = feature.getGeometry();
 				geom.transform('EPSG:4326', 'EPSG:3857');
-
 				const format = new WKT();
 				let feautureString = format.writeFeature(feature);
 				feautureString = convertToGeometryType(feautureString, layer.geometryType);
-				updates.push(`Geometry = GeomFromText('${feautureString}', 3857)`);
-				query = `UPDATE ${layer.id} SET ${updates.join(', ')} WHERE ${layer.atribs[0].name} = ${feature_id} `;
-				await requestToDBPromise(query);
-				for (let old_feature of layer.getSource().getFeatures()) {
-					if (old_feature.id == feature_id) {
-						old_feature.setGeometry(feature.getGeometry());
-
-						const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
-						if (typeIndex >= 0) old_feature.type = values[typeIndex];
-
-						const labelIndex = atribNames.indexOf(layer.labelColumn);
-						if (labelIndex >= 0) old_feature.label = values[labelIndex];
-
-						acceptedNumberOfFeatures += 1;
-						updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
-						break;
-					}
-				}
-			}
-		} else {
-			let atribNames = [];
-			let atribValues = [];
-			const values = [];
-			for (let key in dict) {
-				if (
-					typeof dict[key] == 'undefined' ||
-					dict[key] === '' ||
-					typeof props[dict[key]] == 'undefined'
-				)
-					continue;
-				atribNames.push(key);
-				atribValues.push(`'${props[dict[key]]}'`);
-				values.push(props[dict[key]]);
-			}
-
-			let geom = feature.getGeometry();
-			geom.transform('EPSG:4326', 'EPSG:3857');
-			const format = new WKT();
-			let feautureString = format.writeFeature(feature);
-			feautureString = convertToGeometryType(feautureString, layer.geometryType);
-			let query = `
+				let query = `
                 INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
                 VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
             ;`;
-			await requestToDBPromise(query);
+				await requestToDBPromise(query);
 
-			feature.id = feature_id;
-			feature.layerID = layer.id;
+				feature.id = feature_id;
+				feature.layerID = layer.id;
 
-			const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
-			if (typeIndex >= 0) feature.type = values[typeIndex];
-			else feature.type = 'default';
-			const labelIndex = atribNames.indexOf(layer.labelColumn);
-			if (labelIndex >= 0) feature.label = values[labelIndex];
+				const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
+				if (typeIndex >= 0) feature.type = values[typeIndex];
+				else feature.type = 'default';
+				const labelIndex = atribNames.indexOf(layer.labelColumn);
+				if (labelIndex >= 0) feature.label = values[labelIndex];
 
-			feature.setStyle(layer.getStyle());
-			layer.getSource().addFeature(feature);
-			acceptedNumberOfFeatures += 1;
-			updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
+				feature.setStyle(layer.getStyle());
+				layer.getSource().addFeature(feature);
+				acceptedNumberOfFeatures += 1;
+				updateProgress(i + 1, features[i]?.getId ? features[i].getId() : '');
+			}
 		}
-	}
 
-	finishLoading();
+		finishLoading();
 
-	if (sourceNumberOfFeatures !== acceptedNumberOfFeatures) {
-		textFinishingLoading += ` Не все объекты были загружены. Загружено объектов ${acceptedNumberOfFeatures} из ${sourceNumberOfFeatures}.`;
+		if (sourceNumberOfFeatures !== acceptedNumberOfFeatures) {
+			textFinishingLoading += ` Не все объекты были загружены. Загружено объектов ${acceptedNumberOfFeatures} из ${sourceNumberOfFeatures}.`;
+		}
+
+		setTimeout(() => refreshFeatureTable(), 50);
+		showAlert(textFinishingLoading);
+	} catch (error) {
+		console.error('Error during KML import:', error);
+		finishLoading();
+		showAlert('Ошибка импорта KML', error.message || 'Произошла ошибка при импорте KML файла');
 	}
-	window.alert(textFinishingLoading);
 
 	function convertToGeometryType(inp_string, type) {
 		let l_brackets = '((';

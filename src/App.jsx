@@ -104,7 +104,7 @@ const AppContent = () => {
 		setActiveLayer(layer);
 	};
 
-	const handleAcceptKMLImport = dict => {
+	const handleAcceptKMLImport = async dict => {
 		if (!kmlImportDialogData) return;
 
 		const { layerId, features } = kmlImportDialogData;
@@ -115,8 +115,9 @@ const AppContent = () => {
 			finishLoading: () => finishKMLImport(),
 		};
 
-		importKML(layerId, dict, features, loadingCallbacks);
 		acceptKMLImport();
+
+		await importKML(layerId, dict, features, loadingCallbacks);
 	};
 
 	return (
@@ -218,7 +219,7 @@ const AppContent = () => {
 						currentFile={loadingState.currentFile}
 						message={loadingState.message}
 					/>
-					
+
 					<ModalDialog />
 				</div>
 			</MessageProvider>
