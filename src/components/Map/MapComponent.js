@@ -16,6 +16,7 @@ import { BottomLeftButtonsContainer } from '../MapButtons/BottomLeftButtonsConta
 import FullscreenButton from './FullscreenButton.jsx';
 import { useShowOnMapHighlight } from './hooks/useShowOnMapHighlight.js';
 import { ScaleText } from './ScaleText.jsx';
+import { showAlert } from '../../store/modalDialog.js';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
@@ -61,7 +62,7 @@ const MapComponent = () => {
 		});
 
 		if (featuresWithGeometry.length === 0) {
-			window.alert('У выбранных объектов нет геометрии');
+			showAlert('Внимание', 'У выбранных объектов нет геометрии');
 			return;
 		}
 

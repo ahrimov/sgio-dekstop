@@ -1,5 +1,6 @@
 import { deleteLayerFromList, layers } from "../../legacy/globals";
 import { root_directory } from "../../legacy/initial";
+import { showAlert } from "../../store/modalDialog";
 import { refreshFeatureTable } from "../../store/refreshTable";
 import { deleteLayerFromMap } from "../../store/updateMapLayers";
 
@@ -17,7 +18,7 @@ export function deleteLayer(layerID) {
         refreshFeatureTable();
     }).catch(error => {
         console.log('Не удалось удалить файл: ' + layerID + ' ошибка: ' + error);
-        window.alert('Не удалось удалить файл: ' + layerID);
+        showAlert('Ошибка', 'Не удалось удалить файл: ' + layerID);
     })
 }
 

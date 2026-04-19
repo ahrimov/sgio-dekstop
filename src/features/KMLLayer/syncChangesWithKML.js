@@ -2,6 +2,7 @@ import { toLonLat } from 'ol/proj';
 import { saveFile } from '../../legacy/FileManage';
 import { layers } from '../../legacy/globals';
 import { pathToTempKMlStorage } from '../../legacy/initial';
+import { showAlert } from '../../store/modalDialog';
 
 export async function syncChangesWithKML(layerId, succes, onError) {
 	const layer = layers.find(layer => layer.get('id') === layerId);
@@ -111,7 +112,7 @@ export async function syncChangesWithKML(layerId, succes, onError) {
 			if (succes) succes();
 		},
 		error => {
-			window.alert('Произошла ошибка при сохранение данных.');
+			showAlert('Ошибка', 'Произошла ошибка при сохранение данных: ' + fileName);
 			if (onError) onError(error);
 		}
 	);

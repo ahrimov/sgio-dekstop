@@ -8,7 +8,7 @@ import { app_device_directory } from '../../legacy/initial';
 import { generateColor } from '../../utils/colorGenerator';
 import { saveFile } from '../../legacy/FileManage';
 import { addLayerToMap } from '../../store/updateMapLayers';
-import { showConfirm } from '../../store/modalDialog';
+import { showAlert, showConfirm } from '../../store/modalDialog';
 
 export async function addNewLayer(fullPath) {
 	const answer = await showConfirm(
@@ -24,7 +24,7 @@ export async function addNewLayer(fullPath) {
 		featureProjection: mapProjection,
 	});
 	if (!features || !features.length) {
-		window.alert('Не найдено объектов в файле.');
+		showAlert('Ошибка', 'Не найдено объектов в файле.');
 		return;
 	}
 
@@ -93,7 +93,8 @@ export async function addNewLayer(fullPath) {
 	for (let i = 0; i < features.length; i++) {
 		if (features[i]?.getGeometry().getType() !== geometryType) {
 			const topology = convertGeomtetryTypeName(geometryType);
-			window.alert(
+			showAlert(
+				'Внимание',
 				`В загружаемых данных имеются объекты различных типов геометрии (топологии). Для объектов ${topology} топологии стиль будет предложено изменить вручную. Для остальных топологий будут использованы автоматически созданные стили.`
 			);
 			break;
@@ -168,7 +169,7 @@ export async function addNewLayer(fullPath) {
 	addKMLLayerFileToConfig(innerLayerId);
 
 	function onError() {
-		window.alert('Произошла ошибка при чтении файла.');
+		showAlert('Ошибка', 'Произошла ошибка при чтении файла.');
 	}
 }
 

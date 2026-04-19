@@ -72,10 +72,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 									properties,
 								});
 							} catch (error) {
-								window.alert(
-									'Ошибка',
-									error.message || 'Ошибка при чтении KML файла'
-								);
+								console.error('Ошибка при чтении KML файла: ', error.message);
 							}
 						}}
 					>

@@ -115,10 +115,7 @@ export async function importKML(
 					},
 					er => {
 						reject(er);
-						window.alert({
-							title: 'Ошибка',
-							message: 'Нет доступа к базе данных.',
-						});
+						showAlert('Ошибка', 'Нет доступа к базе данных.');
 					}
 				);
 			});
@@ -211,6 +208,7 @@ export async function importKML(
                 INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
                 VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
             ;`;
+				console.log('kml insert: ', query);
 				await requestToDBPromise(query);
 
 				feature.id = feature_id;
@@ -243,18 +241,34 @@ export async function importKML(
 		showAlert('Ошибка импорта KML', error.message || 'Произошла ошибка при импорте KML файла');
 	}
 
-	function convertToGeometryType(inp_string, type) {
-		let l_brackets = '((';
-		let r_brackets = '))';
-		if (type === 'MULTIPOLYGON') {
-			l_brackets = '(((';
-			r_brackets = ')))';
+	function convertToGeometryType(wkt, type) {
+		if (type === 'MULTILINESTRING') {
+			if (wkt.startsWith('LINESTRING')) {
+				let coords = wkt.match(/\((.*)\)/)[1];
+				return `MULTILINESTRING Z((${coords}))`;
+			}
+			const matches = wkt.match(/^MULTILINESTRING\s*\(\(([^()]+)\)\)$/);
+			if (!matches) {
+				let coordsArray = [];
+				const lines = wkt.match(/\(([^()]+)\)/g);
+				if (lines) {
+					coordsArray = lines.map(s => s.replace(/[()]/g, ''));
+					return `MULTILINESTRING Z(${coordsArray.map(c => '('+c+')').join(',')})`;
+				}
+			}
 		}
-		inp_string = inp_string.replace(/\(+/g, l_brackets);
-		inp_string = inp_string.replace(/\)+/g, r_brackets);
-		if (inp_string.search('MULTI') == -1) return insert(inp_string, 'MULTI');
-		return inp_string;
+		if (type === 'MULTIPOLYGON') {
+			if (wkt.startsWith('POLYGON')) {
+				let coords = wkt.match(/\(\((.*)\)\)/)[1];
+				return `MULTIPOLYGON Z(((${coords})))`;
+			}
+		}
+		if (type.startsWith('MULTI') && wkt.indexOf('MULTI') === -1) {
+			return `${type} Z(${wkt.match(/\(.*\)/)[0]})`;
+		}
+		return wkt;
 	}
+
 }
 
 function compareGeometryTypes(first, second) {
@@ -376,11 +390,8 @@ function filterProperties(values, dict, layer) {
 		}
 	}
 	if (is_error_in_kml) {
-		window.alert({
-			title: 'Внимание',
-			message: `Ошибка в импортируемом KML.
-                 Возможно неккоректное отображение данных`,
-		});
+		showAlert('Внимание', `Ошибка в импортируемом KML.
+						Возможно неккоректное отображение данных`);
 	}
 	return result;
 }
@@ -397,16 +408,6 @@ function autonumericID(idName, layer) {
 			'Ошибка генерации id'
 		);
 	});
-}
-
-function insert(main_string, ins_string, pos) {
-	if (typeof pos == 'undefined') {
-		pos = 0;
-	}
-	if (typeof ins_string == 'undefined') {
-		ins_string = '';
-	}
-	return main_string.slice(0, pos) + ins_string + main_string.slice(pos);
 }
 
 function getAtribByName(atribs, atribName) {

@@ -28,6 +28,7 @@ export async function addNewFeature(layer, feature) {
                 INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
                 VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
                 ;`;
+			console.log('draw insert: ', query);
 			await requestToDBPromise(query);
 		}
 
