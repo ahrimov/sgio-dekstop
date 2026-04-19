@@ -90,7 +90,7 @@ export async function importKML(
 
 			let feature_id = Number(props[dict[layer.atribs[0].name]]);
 
-			if (typeof feature_id == 'undefined') {
+			if (typeof feature_id == 'undefined' || isNaN(feature_id)) {
 				if (typeof featureMaxID == 'undefined') {
 					featureMaxID = await autonumericID(layer.atribs[0].name, layer);
 					feature_id = featureMaxID;
@@ -101,6 +101,10 @@ export async function importKML(
 				props['id'] = feature_id;
 				dict['id'] = 'id';
 			}
+
+			console.log('dict:', dict);
+			console.log('props:', props);
+			console.log('layer atribs:', layer.atribs[0].name);
 
 			let query = `SELECT COUNT(1) as bool FROM ${layer.id} WHERE ${layer.atribs[0].name} = ${feature_id};`;
 			const intersection = await new Promise((resolve, reject) => {
@@ -275,11 +279,11 @@ function isGeometryConversionPossible(targetType, sourceType) {
 	}
 	
 	if (source === 'linestring' && target === 'polygon') {
-		return true;
+		return false;
 	}
 	
 	if (source === 'polygon' && target === 'linestring') {
-		return true;
+		return false;
 	}
 	
 	return false;
