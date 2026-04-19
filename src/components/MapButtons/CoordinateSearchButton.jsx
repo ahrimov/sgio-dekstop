@@ -31,9 +31,29 @@ export function CoordinateSearchButton() {
 	}, []);
 
 	const handleClick = () => {
+		// Always get current map center coordinates when opening the panel
+		if (window.map) {
+			const view = window.map.getView();
+			const center = view.getCenter();
+			const currentZoom = view.getZoom();
+
+			if (center) {
+				// Convert from Web Mercator (EPSG:3857) to WGS84
+				const lon = (center[0] * 180) / 20037508.34;
+				const lat =
+					(Math.atan(Math.exp((center[1] * Math.PI) / 20037508.34)) * 360) / Math.PI - 90;
+
+				setLatitude(lat.toFixed(6));
+				setLongitude(lon.toFixed(6));
+			}
+
+			// Set current zoom level
+			if (currentZoom) {
+				setZoom(Math.round(currentZoom));
+			}
+		}
+
 		setIsDialogOpen(true);
-		if (!latitude) setLatitude('55.751244');
-		if (!longitude) setLongitude('37.618423');
 	};
 
 	const handleConfirm = useCallback(() => {

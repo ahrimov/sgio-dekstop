@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Select, Table, Typography } from 'antd';
 import styled from 'styled-components';
-import { DARK_BLUE, MEDIUM_DARK_BLUE, MEDIUM_BLUE, ORANGE } from '../../consts/style';
+import { DARK_BLUE, MEDIUM_DARK_BLUE } from '../../consts/style';
 import { CloseOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
@@ -208,31 +208,4 @@ const Description = styled.p`
 
 const TableWrapper = styled.div`
 	padding: 0 24px 16px 24px;
-`;
-
-const FooterContainer = styled.div`
-	display: flex;
-	gap: 8px;
-	justify-content: flex-end;
-`;
-
-const StyledButton = styled.button`
-	padding: 6px 16px;
-	border-radius: 20px;
-	border: 1px solid ${MEDIUM_DARK_BLUE};
-	background-color: ${props => (props.$primary ? ORANGE : MEDIUM_BLUE)};
-	color: white;
-	font-size: 14px;
-	font-weight: 500;
-	cursor: pointer;
-	transition: all 0.2s;
-	min-width: 80px;
-
-	&:hover {
-		background-color: ${props => (props.$primary ? '#ff9900' : ORANGE)};
-	}
-
-	&:active {
-		transform: scale(0.98);
-	}
 `;
