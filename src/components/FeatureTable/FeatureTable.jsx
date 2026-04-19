@@ -173,8 +173,13 @@ export function FeatureTable({ layer }) {
 		const attributeColumns = atribs.slice(1).map(atrib => {
 			let columnWidth = 150;
 
-			if (atrib.type === 'INTEGER' || atrib.type === 'FLOAT' || atrib.type === 'NUMBER') {
-				columnWidth = 60;
+			if (
+				atrib.type === 'INTEGER' ||
+				atrib.type === 'FLOAT' ||
+				atrib.type === 'NUMBER' ||
+				atrib.type === 'DOUBLE'
+			) {
+				columnWidth = 70;
 			} else if (atrib.type === 'ENUM') {
 				columnWidth = 120;
 			} else if (atrib.type === 'DATE' || atrib.type === 'DATETIME') {
