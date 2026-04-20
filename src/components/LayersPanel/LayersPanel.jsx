@@ -4,7 +4,7 @@ import './LayersPanel.css';
 import styled from 'styled-components';
 import { icons } from '../../icons';
 import { LayerMoreActionsPopup } from './LayerMoreActionsPopup.jsx';
-import { Button, Collapse, Typography } from 'antd';
+import { Button, Collapse, Typography, Checkbox } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
 import { MEDIUM_BLUE } from '../../consts/style.js';
 import { addNewLayer } from '../../features/KMLLayer/addNewLayer.js';
@@ -93,11 +93,17 @@ const VectorLayersList = ({
 };
 
 const DraggableRasterLayer = ({ layer, toggleVisibility }) => {
+	const isVisible = layer.getVisible();
+
 	return (
-		<RasterLayerElementContainer active={layer.getVisible()} showTitle={true}>
+		<RasterLayerElementContainer active={isVisible} showTitle={true}>
 			<DragHandle className="layer-drag-handle">
 				<MenuOutlined />
 			</DragHandle>
+			<Checkbox
+				checked={isVisible}
+				onChange={() => toggleVisibility(layer.get('id'), true)}
+			/>
 			<IconWrapper onClick={() => toggleVisibility(layer.get('id'), true)}>
 				<img
 					src={icons[layer.get('icon')]}
@@ -107,7 +113,7 @@ const DraggableRasterLayer = ({ layer, toggleVisibility }) => {
 				/>
 			</IconWrapper>
 			<Text
-				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'default' }}
+				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'pointer' }}
 				onClick={() => toggleVisibility(layer.get('id'), true)}
 				title={layer.get('descr')}
 				ellipsis
@@ -126,18 +132,21 @@ const DraggableVectorLayer = ({
 	handleFeaturesClick,
 	parentScrollRef,
 }) => {
+	const isVisible = layer.getVisible();
+
 	return (
 		<VectorLayerElementContainer
 			isActive={true}
-			selected={layer.getVisible()}
+			selected={isVisible}
 			showTitle={true}
 			className={currentElementWithActions === id ? 'show-actions' : ''}
 		>
 			<DragHandle className="layer-drag-handle">
 				<MenuOutlined />
 			</DragHandle>
+			<Checkbox checked={isVisible} onChange={() => toggleVisibility(layer.id, false)} />
 			<Text
-				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'default' }}
+				style={{ color: 'rgb(0, 94, 154)', fontSize: '12px', cursor: 'pointer' }}
 				onClick={() => toggleVisibility(layer.id, false)}
 				title={layer.label}
 				ellipsis
@@ -325,7 +334,7 @@ const RasterLayerElementContainer = styled.div.withConfig({
 	shouldForwardProp: prop => prop !== 'active' && prop !== 'showTitle' && prop !== 'isDragging',
 })`
 	display: grid;
-	grid-template-columns: 30px 40px 1fr 20px; /* Добавляем столбец для DragHandle */
+	grid-template-columns: 30px 30px 40px 1fr; /* DragHandle + Checkbox + Icon + Text */
 	align-content: center;
 	border-top: 1px solid ${MEDIUM_BLUE};
 	padding: 2px;
@@ -338,7 +347,7 @@ const VectorLayerElementContainer = styled.div.withConfig({
 	shouldForwardProp: prop => prop !== 'isActive' && prop !== 'showTitle' && prop !== 'isDragging',
 })`
 	display: grid;
-	grid-template-columns: 30px 1fr 10px;
+	grid-template-columns: 30px 30px 1fr 10px; /* DragHandle + Checkbox + Text + Actions */
 	align-content: center;
 	line-height: 24px;
 	font-size: 12px;

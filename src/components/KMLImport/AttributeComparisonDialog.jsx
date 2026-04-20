@@ -54,7 +54,7 @@ export function AttributeComparisonDialog({
 			dataIndex: 'layerAttr',
 			key: 'layerAttr',
 			width: '40%',
-			render: text => <Text strong>{text}</Text>,
+			render: text => <Text style={{ color: MEDIUM_DARK_BLUE }}>{text}</Text>,
 		},
 		{
 			title: 'Свойство из KML',
@@ -63,7 +63,7 @@ export function AttributeComparisonDialog({
 			width: '60%',
 			render: (_, record) => (
 				<Select
-					style={{ width: '100%' }}
+					style={{ width: '100%', color: MEDIUM_DARK_BLUE }}
 					placeholder="Нет соответствия"
 					value={mappings[record.attrName]}
 					onChange={value => handleMappingChange(record.attrName, value)}
@@ -131,6 +131,7 @@ export function AttributeComparisonDialog({
 					pagination={false}
 					size="small"
 					scroll={{ y: 400 }}
+					showHeader={false}
 				/>
 			</TableWrapper>
 		</StyledModal>
@@ -208,4 +209,8 @@ const Description = styled.p`
 
 const TableWrapper = styled.div`
 	padding: 0 24px 16px 24px;
+
+	.ant-table-tbody > tr:hover > td {
+		background: transparent !important;
+	}
 `;
