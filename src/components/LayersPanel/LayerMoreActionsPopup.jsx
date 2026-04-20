@@ -10,6 +10,7 @@ import { clearLayer } from '../../features/clear/clearLayer';
 import { selectKMLFile, readKMLForComparison } from '../../features/KMLImport/compareAttributes';
 import { openKMLImportDialog } from '../../store/kmlImportDialog';
 import { showConfirm } from '../../store/modalDialog';
+import { MEDIUM_DARK_BLUE } from '../../consts/style';
 
 const { Text } = Typography;
 
@@ -26,6 +27,8 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 		return () => elem.removeEventListener('scroll', close);
 	}, [visible, parentScrollRef]);
 
+	const buttonStyle = { color: MEDIUM_DARK_BLUE, textAlign: 'left', display: 'inline' };
+
 	const kmlType = layer.get('kmlType');
 	const content = (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -38,6 +41,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 						onProps?.(layer);
 					}, 20);
 				}}
+				style={buttonStyle}
 			>
 				Показать списком
 			</Button>
@@ -48,6 +52,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 					setVisible(false);
 					startDrawing(layer);
 				}}
+				style={buttonStyle}
 			>
 				Создать объект
 			</Button>
@@ -75,6 +80,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 								console.error('Ошибка при чтении KML файла: ', error.message);
 							}
 						}}
+						style={buttonStyle}
 					>
 						Импорт KML
 					</Button>
@@ -85,6 +91,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 							setVisible(false);
 							exportKMLFromDB(layer.id);
 						}}
+						style={buttonStyle}
 					>
 						Экспорт KML
 					</Button>
@@ -98,6 +105,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 						setVisible(false);
 						saveKMLToFile(layer.id);
 					}}
+					style={buttonStyle}
 				>
 					Экспорт KML
 				</Button>
@@ -109,8 +117,8 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 					setVisible(false);
 					clearLayer(layer);
 				}}
+				style={buttonStyle}
 			>
-				<ClearOutlined style={{ color: 'red' }} />
 				Очистить слой
 			</Button>
 			{kmlType && (
@@ -127,8 +135,8 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 
 						deleteLayer(layer.id);
 					}}
+					style={buttonStyle}
 				>
-					<DeleteOutlined style={{ color: 'red' }} />
 					<Text style={{ color: 'red' }}>Удалить слой</Text>
 				</Button>
 			)}
@@ -150,6 +158,8 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 				},
 				container: {
 					padding: 4,
+					color: MEDIUM_DARK_BLUE,
+					textAlign: 'left',
 				},
 			}}
 		>
