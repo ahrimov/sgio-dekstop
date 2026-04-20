@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { InputNumber, Button, Space } from 'antd';
+import { Input, Button, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
@@ -12,26 +12,41 @@ export function ColumnNumberSearch({
 	inputWidth = 188,
 }) {
 	const searchInput = useRef(null);
-	const [localValue, setLocalValue] = useState(selectedKeys[0]);
+	const [localValue, setLocalValue] = useState(selectedKeys[0] ?? '');
 
 	const handleConfirm = () => {
-		setSelectedKeys(localValue !== null && localValue !== undefined ? [localValue] : []);
+		const numValue = localValue === '' ? null : Number(localValue);
+		setSelectedKeys(numValue !== null && !isNaN(numValue) ? [numValue] : []);
 		confirm();
 	};
 
 	const handleReset = () => {
-		setLocalValue(null);
+		setLocalValue('');
 		clearFilters();
 		confirm({ closeDropdown: false });
 	};
 
+	const handleKeyPress = e => {
+		const allowedChars = /[0-9.,-]/;
+		if (!allowedChars.test(e.key)) {
+			e.preventDefault();
+		}
+	};
+
+	const handleChange = e => {
+		const value = e.target.value;
+		const normalized = value.replace(',', '.');
+		setLocalValue(normalized);
+	};
+
 	return (
 		<FilterContainer>
-			<StyledInputNumber
+			<StyledInput
 				ref={searchInput}
 				placeholder={placeholder}
 				value={localValue}
-				onChange={value => setLocalValue(value)}
+				onChange={handleChange}
+				onKeyPress={handleKeyPress}
 				onPressEnter={handleConfirm}
 				style={{ width: inputWidth }}
 			/>
@@ -52,7 +67,7 @@ const FilterContainer = styled.div`
 	background: #ffffff;
 `;
 
-const StyledInputNumber = styled(InputNumber)`
+const StyledInput = styled(Input)`
 	margin-bottom: 8px;
 	display: block;
 	border: 1px solid rgb(205, 205, 205);
