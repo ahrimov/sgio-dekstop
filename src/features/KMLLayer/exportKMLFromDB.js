@@ -2,16 +2,13 @@ import KML from "ol/format/KML";
 import { layers, map } from "../../legacy/globals";
 import { Feature } from "ol";
 import { requestToDBPromise } from "../../legacy/DBManage";
+import { showAlert, showConfirm } from "../../store/modalDialog";
 
 export async function exportKMLFromDB(layerId) {
     const layer = layers.find(l => l.id === layerId);
     
     if (!layer) {
-        await electronAPI.showMessageBox({
-            type: 'error',
-            title: 'Ошибка',
-            message: `Слой не найден: ${layerId}`
-        });
+        showAlert('Ошибка', `Слой не найден: ${layerId}`);
         return;
     }
 
@@ -26,16 +23,9 @@ export async function exportKMLFromDB(layerId) {
         const data = await requestToDBPromise(query);
 
         if (!data.rows || data.rows.length === 0) {
-            const { response } = await electronAPI.showMessageBox({
-                type: 'question',
-                buttons: ['Да', 'Нет'],
-                title: 'Экспорт в KML',
-                message: 'Экспортируемый слой не содержит объектов(узлов). Все равно сформировать KML-файл?',
-                defaultId: 0,
-                cancelId: 1
-            });
+            const response = await showConfirm('Экспорт в KML', 'Экспортируемый слой не содержит объектов(узлов). Все равно сформировать KML-файл?', 'Да', 'Нет');
 
-            if (response !== 0) return;
+            if (!response) return;
         }
 
         const exportedFeatures = [];
@@ -103,20 +93,11 @@ export async function exportKMLFromDB(layerId) {
         if (canceled || !filePath) return;
 
         await electronAPI.writeFile(filePath, kml);
-        
-        await electronAPI.showMessageBox({
-            type: 'info',
-            title: 'Успех',
-            message: `Файл успешно сохранён: ${filePath}`
-        });
-        
+
+        showAlert('Успех', `Файл успешно сохранён: ${filePath}`);
     } catch (e) {
         console.error('Export error:', e);
-        await electronAPI.showMessageBox({
-            type: 'error',
-            title: 'Ошибка',
-            message: `Не удалось сохранить слой: ${layerId}\n${String(e)}`
-        });
+        showAlert('Ошибка', `Не удалось сохранить слой: ${layerId}\n${String(e)}`);
     }
 }
 

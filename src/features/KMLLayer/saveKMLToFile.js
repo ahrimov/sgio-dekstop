@@ -1,5 +1,6 @@
 import KML from "ol/format/KML";
 import { layers } from "../../legacy/globals";
+import { showAlert } from "../../store/modalDialog";
 
 export async function saveKMLToFile(layerId) {
     const layer = layers.find(layer => layer.id === layerId);
@@ -39,16 +40,8 @@ export async function saveKMLToFile(layerId) {
         }
 
         await electronAPI.writeFile(filePath, kmlContent);
-        await electronAPI.showMessageBox({
-            type: 'info',
-            title: 'Успех',
-            message: `Файл успешно сохранен: ${filePath}`
-        });
+        showAlert('Успех', `Файл успешно сохранен: ${filePath}`);
     } catch (e) {
-        await electronAPI.showMessageBox({
-            type: 'error',
-            title: 'Ошибка',
-            message: `Не удалось сохранить слой: ${layerId}\n${String(e)}`
-        });
+        showAlert('Ошибка', `Не удалось сохранить слой: ${layerId}\n${String(e)}`);
     }
 }

@@ -4,7 +4,7 @@ import { deleteFeature } from '../../../features/deleteFeature/deleteFeature.js'
 import { updateFeatureAttributes } from '../../../features/saveFeature/updateFeature.js';
 import { addNewFeature } from '../../../features/saveFeature/addNewFeature.js';
 import { filterSystemProperties } from '../../../utils/filterSystemProperties.js';
-import { showConfirm } from '../../../store/modalDialog.js';
+import { showAlert, showConfirm } from '../../../store/modalDialog.js';
 import KML from 'ol/format/KML';
 import { map } from '../../../legacy/globals.js';
 
@@ -190,12 +190,7 @@ export function useFeatureActions(
 			messageApi.success('Объект успешно экспортирован в KML');
 		} catch (error) {
 			console.error('Error exporting feature to KML:', error);
-			await electronAPI.showMessageBox({
-				type: 'error',
-				title: 'Ошибка',
-				message: `Не удалось экспортировать объект в KML: ${error.message}`,
-			});
-			messageApi.error(`Ошибка экспорта: ${error.message}`);
+			showAlert('Ошибка', `Не удалось экспортировать объект в KML: ${error.message}`);
 		}
 	}, [feature, messageApi]);
 
