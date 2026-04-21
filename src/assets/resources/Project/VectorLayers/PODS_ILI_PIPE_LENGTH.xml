@@ -20,30 +20,30 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		  <attribute type="STRING">
+        <attribute type="DOUBLE">
+          <id>station</id>
+          <label>Км. устан.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>		
+        <attribute type="STRING">
           <id>weld_number</id>
           <label>Номер нач. стыка</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		  <attribute type="DOUBLE">
-          <id>nominal_wall_thickness</id>
-          <label>Ном толщина стенки мм</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		  <attribute type="DOUBLE">
+        <attribute type="DOUBLE">
           <id>seam_orientation_deg</id>
           <label>Ориент. прод. шва час</label>
           <required>0</required>
           <editable>0</editable>
-        </attribute>
-		  <attribute type="DOUBLE">
+        </attribute>		
+        <attribute type="DOUBLE">
           <id>start_odometer</id>
           <label>Одом. дистанция м</label>
           <required>0</required>
           <editable>0</editable>
-        </attribute>
+        </attribute>		
 		  <attribute type="DOUBLE">
           <id>sequence_number</id>
           <label>Номер трубы</label>
@@ -55,13 +55,8 @@
           <label>Описание</label>
           <required>0</required>
           <editable>0</editable>
-        </attribute>       
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
+        </attribute>   		
+
       </attributes>
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>

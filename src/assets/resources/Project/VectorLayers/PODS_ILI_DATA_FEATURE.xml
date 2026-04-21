@@ -9,7 +9,7 @@
       <geometry>MULTIPOINT</geometry>
       <attributes>
          <attribute type="DOUBLE">
-          <id>id</id>
+          <id>ili_data_id</id>
           <label>Идентификатор</label>
           <required>0</required>
           <editable>0</editable>
@@ -23,6 +23,12 @@
 		 <attribute type="STRING">
           <id>weld_number</id>
           <label>Номер шва</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>station</id>
+          <label>Км. устан.</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
@@ -48,51 +54,27 @@
 		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
 		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |ANOMALY_EXT_001#Коррозионный дефект|ANOMALY_EXT_002#Металлургический дефект|ANOMALY_EXT_003#Дефект геометрии трубы|ANOMALY_EXT_004#Прочие|ANOMALY_EXT_005#Стресс-коррозионный дефект|ANOMALY_EXT_006#Дефект сварного шва|ANOMALY_EXT_007#Технологические дефекты|ANOMALY_EXT_008#Недопустимые конструктивные элементы|ANOMALY_EXT_009#Механические повреждения</options>
         </attribute>
-		 <attribute type="DOUBLE">
-          <id>length</id>
-          <label>Длина м</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>width</id>
-          <label>Ширина м</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>average_depth</id>
-          <label>Глубина %</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>orientation_deg</id>
-          <label>Ориен- тация час</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>nominal_wall_thickness</id>
-          <label>Ном. толщ. стенки мм</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
 		 <attribute type="STRING">
           <id>description</id>
           <label>Описание</label>
           <required>0</required>
           <editable>0</editable>
-        </attribute>
+        </attribute>		
 		 <attribute type="STRING">
           <id>feature_description</id>
           <label>Идентификация</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
+		<attribute type="DOUBLE">
+          <id>y_coord</id>
+          <label>Координата X (широта)</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>x_coord</id>
+          <label>Координата Y (долгота)</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>

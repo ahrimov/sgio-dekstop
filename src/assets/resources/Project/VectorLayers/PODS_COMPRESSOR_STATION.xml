@@ -8,7 +8,6 @@
       <crs>3857</crs>
       <geometry>MULTIPOINT</geometry>
       <attributes>
- 
         <attribute type="DOUBLE">
           <id>id</id>
           <label>Идентификатор</label>
@@ -18,50 +17,6 @@
 		<attribute type="STRING">
           <id>station_name</id>
           <label>Наименование</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="STRING">
-          <id>station_number</id>
-          <label>Номер КС</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>total_horsepower</id>
-          <label>Макс. сумм. мощность КВт</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="ENUM">
-          <id>primary_function_cl</id>
-          <label>Тип объекта</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-		  <options>UNKNOWN#Неизвестно                                                                                                                                                            </options>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>number_of_engines</id>
-          <label>Кол-во перекач. порш. двигателей</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>number_of_motors</id>
-          <label>Кол-во перекач. электро- двигателей</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>number_of_turbines</id>
-          <label>Кол-во газовых турбин</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute> 
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>

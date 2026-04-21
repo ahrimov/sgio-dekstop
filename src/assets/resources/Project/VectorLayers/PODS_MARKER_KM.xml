@@ -14,43 +14,9 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		  <attribute type="ENUM">
-          <id>marker_type_gcl</id>
-          <label>Тип объекта</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |MARKER_TYPE_01#Знак сигнальный постоянный|MARKER_TYPE_02#Знак сигнальный временный|MARKER_TYPE_03#Маркер для пространственной привязки результатов внутритрубной дефектоскопии (искусственный механический)|MARKER_TYPE_04#Маркер для пространственной привязки результатов внутритрубной дефектоскопии (искусственный электронный)|MARKER_TYPE_05#Километровый столб|MARKER_TYPE_06#Указатель газопровода</options>
-        </attribute>
-		  <attribute type="STRING">
-          <id>description</id>
-          <label>Описание</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		  <attribute type="DOUBLE">
-          <id>marker_number</id>
-          <label>Номер маркера</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		  <attribute type="ENUM">
-          <id>sign_type_cl</id>
-          <label>Тип надписи</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |MILEPOST#Километр|WARNING#Внимание</options>
-        </attribute>
-		  <attribute type="DATE">
-          <id>date_installed</id>
-          <label>Дата установки</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>    
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
+		<attribute type="DOUBLE">
+          <id>station</id>
+          <label>Км.устан.</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>

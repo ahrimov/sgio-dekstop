@@ -8,15 +8,27 @@
       <crs>3857</crs>
       <geometry>MULTIPOINT</geometry>
       <attributes>
-        <attribute type="DOUBLE">
-          <id>id</id>
+         <attribute type="DOUBLE">
+          <id>ili_data_id</id>
           <label>Идентификатор</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
 		 <attribute type="STRING">
+          <id>ili_inspection_id</id>
+          <label>Обследование</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>station</id>
+          <label>Км. устан.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		 <attribute type="STRING">
           <id>weld_number</id>
-          <label>Номер шваНомер шва</label>
+          <label>Номер шва</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
@@ -60,36 +72,7 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		 <attribute type="DOUBLE">
-          <id>bpr_pig</id>
-          <label>КБД</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>rpr_calculated</id>
-          <label>Безоп. P, МПа</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>bpr_calculated</id>
-          <label>Факт. коэф. зап. проч.</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>bpr_variance</id>
-          <label>Разруш. P, МПа</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		 <attribute type="DOUBLE">
-          <id>rpr_variance</id>
-          <label>Норм. коэф. зап. проч.</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
+
 		 <attribute type="DOUBLE">
           <id>orientation_deg</id>
           <label>Ориен. час</label>
@@ -111,6 +94,18 @@
 		 <attribute type="STRING">
           <id>feature_description</id>
           <label>Идентификация</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>y_coord</id>
+          <label>Координата X (широта)</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
+		<attribute type="DOUBLE">
+          <id>x_coord</id>
+          <label>Координата Y (долгота)</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>

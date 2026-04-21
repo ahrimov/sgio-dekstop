@@ -29,32 +29,7 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		  <attribute type="STRING">
-          <id>amp_rating</id>
-          <label>I, А</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		  <attribute type="ENUM">
-          <id>manufacturer_cl</id>
-          <label>Изготовитель</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-		  <options>UNKNOWN#Неизвестно                                                                                                                                                            |RECT_TYPE_01#Станция(установка),трансформатор катодной защиты|RECT_TYPE_02#Блок совместной защиты|RECT_TYPE_03#Станция дренажной защиты|RECT_TYPE_04#Установка протекторной защиты</options>
-        </attribute>
-		  <attribute type="DATE">
-          <id>date_installed</id>
-          <label>Дата установки</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>       
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
+
       </attributes>
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>

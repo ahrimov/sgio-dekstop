@@ -24,7 +24,7 @@
         </attribute>
         <attribute type="STRING">
           <id>description</id>
-          <label>Описание</label>
+          <label>Описание111</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
@@ -40,20 +40,7 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>	
-        <attribute type="ENUM">
-          <id>operating_status_gcl</id>
-          <label>Операц. статус</label>
-          <required>0</required>
-          <editable>0</editable>
-          <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-          <options>UNKNOWN#Неизвестно                                                                                                                                                            |ABANDONED#Выведен из эксплуатации|ACTIVE#Эксплуатируемый|CONSTRUCTION#Строящийся|IDLE#Готовый к эксплуатации|INACTIVE#Эксплуатируемый, не под давлением|PROPOSED#Проектируемый|REMOVED#Демонтирован|SOLD#Продан|TRANSFERRED#Демонтирован и перенесен</options>
-        </attribute>		
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
+
       </attributes>
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>

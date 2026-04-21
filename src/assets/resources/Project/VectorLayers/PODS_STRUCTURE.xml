@@ -28,18 +28,7 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		<attribute type="DOUBLE">
-          <id>occupant_count</id>
-          <label>Кол-во людей</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>       
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
+
       </attributes>
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>

@@ -28,66 +28,7 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		<attribute type="STRING">
-          <id>model</id>
-          <label>Модель</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="ENUM">
-          <id>material_cl</id>
-          <label>Материал</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-	      <options>UNKNOWN#Неизвестно                                                                                                                                                            |ANODE_MAT_01#Сплав на основе стали|ANODE_MAT_02#Сплав на основе алюминия|ANODE_MAT_03#Сплав на основе магния|ANODE_MAT_04#Сплав на основе цинка|ANODE_MAT_05#Стальная труба</options>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>anode_diameter</id>
-          <label>Диаметр мм</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>anode_length</id>
-          <label>Длина мм</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="DOUBLE">
-          <id>depth_of_cover</id>
-          <label>Глубина залож. м</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-		<attribute type="ENUM">
-          <id>back_fill_material_gcl</id>
-          <label>Материал засыпки</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-	      <options>UNKNOWN#Неизвестно                                                                                                                                                            |BACK_FILL_MAT_01#Кокс|BACK_FILL_MAT_02#Грунт</options>
-        </attribute>
-		<attribute type="ENUM">
-          <id>manufacturer_cl</id>
-          <label>Изготовитель</label>
-          <required>0</required>
-          <editable>0</editable>
-		  <default>UNKNOWN#Неизвестно                                                                                                                                                            </default>
-	      <options>UNKNOWN#Неизвестно                                                                                                                                                            </options>
-        </attribute>
-		<attribute type="DATE">
-          <id>date_installed</id>
-          <label>Дата установки</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>       
-        <attribute type="STRING">
-          <id>lg_attach</id>
-          <label>lg_attach</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
+
       </attributes>
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
