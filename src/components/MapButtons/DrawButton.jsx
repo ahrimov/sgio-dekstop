@@ -8,12 +8,14 @@ import {
 } from '../../store/mapInteractionMode.js';
 import { useUnit } from 'effector-react';
 import { openLayerSelector } from '../LayerSelector/layerSelectorState.js';
+import { closeEditGeometryPanel } from '../EditGeometryPanel/store.js';
 
 export function DrawButton({ style }) {
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
 	const handleClick = () => {
 		changeInteractionMode(DRAW_INTERACTION);
+		closeEditGeometryPanel();
 		openLayerSelector();
 	};
 

@@ -1,21 +1,10 @@
-import {
-	selectFeatureForGeometryEdit,
-	showInfo,
-	showInfoMultiple,
-} from '../../../store/featuredInfoEvent';
+import { showInfo, showInfoMultiple } from '../../../store/featuredInfoEvent';
 import {
 	$isEditGeometryFeatureSelectionMode,
-	setSelectedEditGeometryFeature,
+	clearSelectedEditGeometryFeature,
+	setEditGeometryFeatureSelectionMode,
 } from '../../EditGeometryPanel/store.js';
-import { sample } from 'effector';
-
-sample({
-	clock: selectFeatureForGeometryEdit,
-	source: $isEditGeometryFeatureSelectionMode,
-	filter: isSelectionMode => isSelectionMode,
-	fn: (_, payload) => payload,
-	target: setSelectedEditGeometryFeature,
-});
+import { startGeometryEdit } from '../../../features/draw/store.js';
 
 export function setMapClickInfoEvent(map) {
 	if (!map) return;
@@ -93,10 +82,6 @@ async function collectAndShowFeatures(map, pixel, coordinate) {
 					clickCoordinate: coordinate,
 				});
 			} else {
-				selectFeatureForGeometryEdit({
-					feature: firstFeature,
-					layer: firstLayer,
-				});
 				showInfo({
 					featureId: firstFeature.id,
 					layer: firstLayer,
@@ -118,4 +103,53 @@ function handleMapClickInfoEvent(map) {
 			collectAndShowFeatures(map, evt.pixel, evt.coordinate);
 		}
 	};
+}
+
+function handleMapClickEditEvent(map) {
+	return evt => {
+		if (!map.modify) {
+			const layersMap = new Map();
+
+			map.forEachFeatureAtPixel(
+				evt.pixel,
+				(feature, layer) => {
+					if (!layersMap.has(layer)) {
+						layersMap.set(layer, []);
+					}
+					layersMap.get(layer).push(feature);
+				},
+				{ hitTolerance: 5 }
+			);
+
+			const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({
+				layer,
+				features,
+			}));
+
+			const firstFeature = featuresByLayer[0].features[0];
+			const firstLayer = featuresByLayer[0].layer;
+
+			clearSelectedEditGeometryFeature();
+			startGeometryEdit({
+				feature: firstFeature,
+				layer: firstLayer,
+			});
+			return;
+		}
+	};
+}
+
+export function setMapClickEditEvent(map) {
+	if (!map) return;
+	console.log('setMapClickEditEvent');
+
+	const handler = handleMapClickEditEvent(map);
+	map._clickEditEvent = handler;
+	map.on('click', handler);
+}
+
+export function unsetMapClickEditEvent(map) {
+	if (!map || !map._clickEditEvent) return;
+
+	map.un('click', map._clickEditEvent);
 }

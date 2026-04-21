@@ -11,8 +11,21 @@ import { Style, Stroke, Fill, Circle } from 'ol/style.js';
 import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
 import { layers } from '../../legacy/globals.js';
 import { useUnit } from 'effector-react';
-import { $mapInteractionMode, INFO_INTERACTION, ZOOM_IN_INTERACTION, ZOOM_OUT_INTERACTION, MEASURE_INTERACTION, MEASURE_AREA_INTERACTION } from '../../store/mapInteractionMode.js';
-import { setMapClickInfoEvent, unsetMapClickInfoEvent } from './mapEvents/mapClickInfoEvent.js';
+import {
+	$mapInteractionMode,
+	INFO_INTERACTION,
+	ZOOM_IN_INTERACTION,
+	ZOOM_OUT_INTERACTION,
+	MEASURE_INTERACTION,
+	MEASURE_AREA_INTERACTION,
+	CHOOSE_GEOMETRY_EDIT_INTERACTION,
+} from '../../store/mapInteractionMode.js';
+import {
+	setMapClickEditEvent,
+	setMapClickInfoEvent,
+	unsetMapClickEditEvent,
+	unsetMapClickInfoEvent,
+} from './mapEvents/mapClickInfoEvent.js';
 import { $deletedMapLayer, $newMapLayer } from '../../store/updateMapLayers.js';
 import { useMeasureInteraction } from './useMeasureInteraction.js';
 import { useAreaMeasureInteraction } from './useAreaMeasureInteraction.js';
@@ -27,8 +40,14 @@ export const useMap = containerRef => {
 	const newMapLayer = useUnit($newMapLayer);
 	const deletedMapLayer = useUnit($deletedMapLayer);
 
-	const { currentLength } = useMeasureInteraction(mapInstance.current, mapInteractionMode === MEASURE_INTERACTION);
-	const { currentArea } = useAreaMeasureInteraction(mapInstance.current, mapInteractionMode === MEASURE_AREA_INTERACTION);
+	const { currentLength } = useMeasureInteraction(
+		mapInstance.current,
+		mapInteractionMode === MEASURE_INTERACTION
+	);
+	const { currentArea } = useAreaMeasureInteraction(
+		mapInstance.current,
+		mapInteractionMode === MEASURE_AREA_INTERACTION
+	);
 
 	const initializeMap = async () => {
 		if (!containerRef.current) {
@@ -138,7 +157,7 @@ export const useMap = containerRef => {
 
 			mapInstance.current.addInteraction(dragBox);
 
-			clickHandler = (evt) => {
+			clickHandler = evt => {
 				const view = mapInstance.current.getView();
 				const currentZoom = view.getZoom();
 				view.animate({
@@ -193,7 +212,7 @@ export const useMap = containerRef => {
 
 			mapInstance.current.addInteraction(dragBox);
 
-			const clickHandler = (evt) => {
+			const clickHandler = evt => {
 				const view = mapInstance.current.getView();
 				const currentZoom = view.getZoom();
 				view.animate({
@@ -215,13 +234,18 @@ export const useMap = containerRef => {
 			};
 		}
 
+		if (mapInteractionMode === CHOOSE_GEOMETRY_EDIT_INTERACTION) {
+			setMapClickEditEvent(mapInstance.current);
+		} else {
+			unsetMapClickEditEvent(mapInstance.current);
+		}
 	}, [mapInteractionMode]);
 
 	useEffect(() => {
 		if (newMapLayer && mapInstance.current) {
 			mapInstance.current.addLayer(newMapLayer);
 		}
-	}, [newMapLayer])
+	}, [newMapLayer]);
 
 	useEffect(() => {
 		if (deletedMapLayer && mapInstance.current) {

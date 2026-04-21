@@ -8,36 +8,23 @@ import editGeometryImage from '../../assets/resources/images/assets/editGeometry
 import { BaseMapButton } from '../MapButtons/BaseMapButton.jsx';
 import {
 	$isEditGeometryFeatureSelectionMode,
-	$selectedEditGeometryFeature,
 	clearSelectedEditGeometryFeature,
 	closeEditGeometryPanel,
 	setEditGeometryFeatureSelectionMode,
 } from './store.js';
-import { startGeometryEdit } from '../../features/draw/store.js';
+import {
+	changeInteractionMode,
+	CHOOSE_GEOMETRY_EDIT_INTERACTION,
+} from '../../store/mapInteractionMode.js';
 
 export function EditGeometryPanel({ handleCloseButton }) {
 	const isFeatureSelectionMode = useUnit($isEditGeometryFeatureSelectionMode);
-	const selectedFeatureData = useUnit($selectedEditGeometryFeature);
 
 	const textHeader = 'Редактирование';
-	const editGeometryButtonTitle = selectedFeatureData
-		? 'Редактировать выбранную геометрию'
-		: 'Выберите объект на карте';
+	const editGeometryButtonTitle = 'Выберите объект на карте';
 
 	const handleSelectFeatureClick = () => {
-		setEditGeometryFeatureSelectionMode(!isFeatureSelectionMode);
-	};
-
-	const handleEditGeometryClick = () => {
-		if (!selectedFeatureData?.feature || !selectedFeatureData?.layer) {
-			return;
-		}
-
-		startGeometryEdit({
-			feature: selectedFeatureData.feature,
-			layer: selectedFeatureData.layer,
-		});
-		setEditGeometryFeatureSelectionMode(false);
+		changeInteractionMode(CHOOSE_GEOMETRY_EDIT_INTERACTION);
 		closeEditGeometryPanel();
 	};
 
@@ -56,14 +43,15 @@ export function EditGeometryPanel({ handleCloseButton }) {
 				<CloseOutlined />
 			</CloseButton>
 			<PanelContainer>
-				<DrawButton />
+				<DrawButton
+					style={{ borderRadius: '6px', width: '28px', height: '28px', padding: '0' }}
+				/>
 				<SelectFeatureButton
-					active={isFeatureSelectionMode || !!selectedFeatureData}
+					active={isFeatureSelectionMode}
 					title={editGeometryButtonTitle}
-					onClick={
-						selectedFeatureData ? handleEditGeometryClick : handleSelectFeatureClick
-					}
+					onClick={handleSelectFeatureClick}
 					img={editGeometryImage}
+					style={{ borderRadius: '6px', width: '28px', height: '28px', padding: '0' }}
 				/>
 			</PanelContainer>
 		</EditGeometryPanelContainer>
@@ -74,7 +62,7 @@ const EditGeometryPanelContainer = styled.div`
 	position: absolute;
 	top: 90px;
 	right: 356px;
-	width: 120px;
+	width: 170px;
 	height: 65px;
 	border-radius: 5px;
 	background-color: ${DARK_BLUE};
@@ -95,6 +83,7 @@ const HeaderLabel = styled.span`
 const PanelContainer = styled.div`
 	display: flex;
 	justify-content: center;
+	gap: 1px;
 	background-color: ${DARK_BLUE};
 	margin-top: 7px;
 `;

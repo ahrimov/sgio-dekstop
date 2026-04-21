@@ -1,16 +1,13 @@
 import React, { useMemo } from 'react';
 import FloatingWindow from '../FloatingWindow/FloatingWindow.jsx';
 import styled from 'styled-components';
-import { selectFeatureForGeometryEdit, showInfo } from '../../store/featuredInfoEvent.js';
-import { $isEditGeometryFeatureSelectionMode } from '../EditGeometryPanel/store.js';
-import { useUnit } from 'effector-react';
+import { showInfo } from '../../store/featuredInfoEvent.js';
 import { LIGHT_BLUE, MEDIUM_BLUE } from '../../consts/style.js';
 import { useWindowControls } from '../WindowControls/useWindowControls.js';
 
 export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 	const windowId = 'feature-selector';
 	const { isMaximized } = useWindowControls({ windowId });
-	const isGeometrySelectionMode = useUnit($isEditGeometryFeatureSelectionMode);
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
 
@@ -50,14 +47,7 @@ export function FeaturesSelector({ featuresByLayer = [], onClose }) {
 										<FeatureItem
 											key={feature.id || i}
 											onClick={() => {
-												if (isGeometrySelectionMode) {
-													selectFeatureForGeometryEdit({
-														feature,
-														layer,
-													});
-												} else {
-													showInfo({ featureId: feature.id, layer });
-												}
+												showInfo({ featureId: feature.id, layer });
 												onClose();
 											}}
 										>
