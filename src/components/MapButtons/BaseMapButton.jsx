@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import styled from 'styled-components';
 import { MEDIUM_BLUE, MEDIUM_DARK_BLUE, ORANGE } from '../../consts/style';
 
-export function BaseMapButton({ active, img, title, onClick, isDisabled, styleImage }) {
+export function BaseMapButton({ active, img, title, onClick, isDisabled, style, styleImage }) {
 	return (
 		<BaseMapButtonStyle
 			$active={active}
@@ -11,6 +11,7 @@ export function BaseMapButton({ active, img, title, onClick, isDisabled, styleIm
 			title={title}
 			disabled={isDisabled}
 			$isDisabled={isDisabled}
+			style={style}
 		>
 			<img src={img} style={styleImage} />
 		</BaseMapButtonStyle>

@@ -38,6 +38,11 @@ import {
 	finishKMLImport,
 } from './store/kmlImportProgress.js';
 import ModalDialog from './components/ModalDialog/ModalDialog.jsx';
+import { EditGeometryPanel } from './components/EditGeometryPanel/EditgeometryPanel.jsx';
+import {
+	$editGeometryPanelVisible,
+	closeEditGeometryPanel,
+} from './components/EditGeometryPanel/store.js';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -49,6 +54,7 @@ const AppContent = () => {
 	const numberOfLayers = useUnit($numberOfLayers);
 	const kmlImportDialogData = useUnit($kmlImportDialogData);
 	const kmlImportProgress = useUnit($kmlImportProgress);
+	const isEditGeometryPanelVisible = useUnit($editGeometryPanelVisible);
 
 	useEffect(() => {
 		setProgressCallbacks({
@@ -190,6 +196,10 @@ const AppContent = () => {
 							featuresByLayer={featureSelectorData}
 							onClose={() => openFeatureSelector(null)}
 						/>
+					)}
+
+					{isEditGeometryPanelVisible && (
+						<EditGeometryPanel handleCloseButton={closeEditGeometryPanel} />
 					)}
 
 					<Taskbar />

@@ -1,26 +1,32 @@
 import React from 'react';
 import { BaseMapButton } from '../MapButtons/BaseMapButton.jsx';
 import editGeometryImage from '../../assets/resources/images/assets/editGeometry.png';
-import {
-	$mapInteractionMode,
-	changeInteractionMode,
-	DRAW_INTERACTION,
-} from '../../store/mapInteractionMode';
 import { useUnit } from 'effector-react';
+import {
+	$editGeometryPanelVisible,
+	closeEditGeometryPanel,
+	openEditGeometryPanel,
+	setEditGeometryFeatureSelectionMode,
+} from './store.js';
 
-const show_panel_editing_geometry_tooltip = 'Показать/скрыть панель редактирования';
+const show_panel_editing_geometry_tooltip = 'Редактирование геометрии';
 
 export function ShowEditingGeometryPanelControl({ onClick }) {
-	const mapInteractionMode = useUnit($mapInteractionMode);
+	const isPanelVisible = useUnit($editGeometryPanelVisible);
 
 	const handleClick = () => {
-		changeInteractionMode(DRAW_INTERACTION);
+		if (isPanelVisible) {
+			setEditGeometryFeatureSelectionMode(false);
+			closeEditGeometryPanel();
+		} else {
+			openEditGeometryPanel();
+		}
 		onClick?.();
 	};
 
 	return (
 		<BaseMapButton
-			active={mapInteractionMode === DRAW_INTERACTION}
+			active={isPanelVisible}
 			title={show_panel_editing_geometry_tooltip}
 			onClick={handleClick}
 			img={editGeometryImage}

@@ -1,4 +1,21 @@
-import { showInfo, showInfoMultiple } from '../../../store/featuredInfoEvent';
+import {
+	selectFeatureForGeometryEdit,
+	showInfo,
+	showInfoMultiple,
+} from '../../../store/featuredInfoEvent';
+import {
+	$isEditGeometryFeatureSelectionMode,
+	setSelectedEditGeometryFeature,
+} from '../../EditGeometryPanel/store.js';
+import { sample } from 'effector';
+
+sample({
+	clock: selectFeatureForGeometryEdit,
+	source: $isEditGeometryFeatureSelectionMode,
+	filter: isSelectionMode => isSelectionMode,
+	fn: (_, payload) => payload,
+	target: setSelectedEditGeometryFeature,
+});
 
 export function setMapClickInfoEvent(map) {
 	if (!map) return;
@@ -40,7 +57,7 @@ async function collectAndShowFeatures(map, pixel, coordinate) {
 		scheduleAsync(() => {
 			const layersMap = new Map();
 			let totalFeatures = 0;
-			
+
 			// Single pass: collect features efficiently
 			map.forEachFeatureAtPixel(
 				pixel,
@@ -53,19 +70,22 @@ async function collectAndShowFeatures(map, pixel, coordinate) {
 				},
 				{ hitTolerance: 5 }
 			);
-			
+
 			// No features found
 			if (totalFeatures === 0) {
 				resolve();
 				return;
 			}
-			
+
 			// Convert Map to array format
 			const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({
 				layer,
 				features,
 			}));
-			
+
+			const firstFeature = featuresByLayer[0].features[0];
+			const firstLayer = featuresByLayer[0].layer;
+
 			// Dispatch appropriate event based on feature count
 			if (totalFeatures > 1) {
 				showInfoMultiple({
@@ -73,13 +93,17 @@ async function collectAndShowFeatures(map, pixel, coordinate) {
 					clickCoordinate: coordinate,
 				});
 			} else {
+				selectFeatureForGeometryEdit({
+					feature: firstFeature,
+					layer: firstLayer,
+				});
 				showInfo({
-					featureId: featuresByLayer[0].features[0].id,
-					layer: featuresByLayer[0].layer,
+					featureId: firstFeature.id,
+					layer: firstLayer,
 					clickCoordinate: coordinate,
 				});
 			}
-			
+
 			resolve();
 		});
 	});
@@ -95,4 +119,3 @@ function handleMapClickInfoEvent(map) {
 		}
 	};
 }
-

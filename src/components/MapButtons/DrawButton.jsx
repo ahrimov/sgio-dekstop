@@ -1,6 +1,6 @@
 import React from 'react';
 import { BaseMapButton } from './BaseMapButton.jsx';
-import editGeometry from '../../assets/resources/images/assets/editGeometry.png';
+import addObject from '../../assets/resources/images/assets/addObject.png';
 import {
 	$mapInteractionMode,
 	changeInteractionMode,
@@ -9,7 +9,7 @@ import {
 import { useUnit } from 'effector-react';
 import { openLayerSelector } from '../LayerSelector/layerSelectorState.js';
 
-export function DrawButton() {
+export function DrawButton({ style }) {
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
 	const handleClick = () => {
@@ -21,9 +21,10 @@ export function DrawButton() {
 	return (
 		<BaseMapButton
 			active={mapInteractionMode === DRAW_INTERACTION}
-			img={editGeometry}
+			img={addObject}
 			title={titleText}
 			onClick={handleClick}
+			style={style}
 		/>
 	);
 }
