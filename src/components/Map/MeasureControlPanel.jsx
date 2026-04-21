@@ -35,8 +35,7 @@ export const MeasureControlPanel = ({ currentLength }) => {
 const ControlPanel = styled.div`
 	position: absolute;
 	top: 13px;
-	right: 210px;
-	transform: translateX(-50%);
+	right: 50%;
 	display: flex;
 	gap: 8px;
 	background: white;

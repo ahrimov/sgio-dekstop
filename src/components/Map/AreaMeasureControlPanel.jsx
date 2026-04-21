@@ -35,8 +35,7 @@ export const AreaMeasureControlPanel = ({ currentArea }) => {
 const ControlPanel = styled.div`
 	position: absolute;
 	top: 13px;
-	right: 210px;
-	transform: translateX(-50%);
+	right: 50%;
 	display: flex;
 	gap: 8px;
 	background: white;
@@ -45,7 +44,7 @@ const ControlPanel = styled.div`
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	z-index: 1000;
 	height: 50px;
-    width: 250px;
+	width: 250px;
 	color: rgb(17, 102, 162);
 	border: 2px solid rgb(17, 102, 162);
 	background-color: rgb(219 251 255 / 85%);

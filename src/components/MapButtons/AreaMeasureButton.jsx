@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 import { MEDIUM_BLUE, MEDIUM_DARK_BLUE, ORANGE } from '../../consts/style';
-import measureIcon from '../../assets/resources/images/assets/polygon.png';
+import measureIcon from '../../assets/resources/images/assets/square.png';
 import {
 	$mapInteractionMode,
 	changeInteractionMode,
