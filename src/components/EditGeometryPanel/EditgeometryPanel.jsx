@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CloseButton } from '../../../Buttons/CloseButton';
-import { AddObjectControl } from './AddObjectControl';
 import { EditGeometryControl } from './EditGeometryControl';
-import { DARK_BLUE, WHITE } from '../../consts/style';
+import { DARK_BLUE, WHITE } from '../../consts/style.js';
+import { DrawButton } from '../MapButtons/DrawButton.jsx';
 
 export function EditGeometryPanel({
 	mapId,
@@ -27,17 +27,8 @@ export function EditGeometryPanel({
 			</Header>
 			<CloseButton onClick={handleCloseButton}></CloseButton>
 			<PanelContainer>
-				{!checkButton('AddObject') && (
-					<AddObjectControl mapId={mapId} handler={handleCloseButton} />
-				)}
-				{!checkButton('EditGeometry') && (
-					<EditGeometryControl
-						mapId={mapId}
-						mapRef={mapRef}
-						handler={handleCloseButton}
-						mapInfoRadius={mapInfoRadius}
-					/>
-				)}
+				<DrawButton />
+				<EditGeometryControl />
 			</PanelContainer>
 		</EditGeometryPanelContainer>
 	);
