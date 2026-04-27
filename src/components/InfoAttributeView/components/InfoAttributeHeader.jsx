@@ -122,7 +122,7 @@ const LayerTitle = styled.span`
 
 const MetricsText = styled.span`
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 16px;
 	padding-left: 3px;
 `;
 

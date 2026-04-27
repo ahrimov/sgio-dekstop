@@ -13,18 +13,20 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			marginBottom: '2px',
 			whiteSpace: 'normal',
 			wordWrap: 'break-word',
-			lineHeight: '1.2'
+			lineHeight: '1.2',
+			fontSize: '16px',
 		},
 		item: { marginBottom: '4px' }
 	};
-	const inputStyle = { color: DARK_BLUE };
-	const compactInputStyle = { color: DARK_BLUE, width: '150px' };
+	const inputStyle = { color: DARK_BLUE, fontSize: '16px' };
+	const compactInputStyle = { color: DARK_BLUE, width: '150px', fontSize: '16px' };
 	const selectStyle = {
 		color: DARK_BLUE,
 		width: '200px',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
-		whiteSpace: 'nowrap'
+		whiteSpace: 'nowrap',
+		fontSize: '16px'
 	};
 	
 	const totalItems = attributes.length;
@@ -60,12 +62,14 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 							popupClassName="select-dropdown-wrap"
 							dropdownStyle={{
 								color: DARK_BLUE,
-								maxWidth: '400px'
+								maxWidth: '400px',
+								fontSize: '16px',
 							}}
 							dropdownRender={(menu) => (
 								<div style={{
 									color: DARK_BLUE,
-									whiteSpace: 'normal'
+									whiteSpace: 'normal',
+									fontSize: '16px',
 								}}>
 									{menu}
 								</div>
@@ -89,12 +93,14 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 											wordWrap: 'break-word',
 											height: 'auto',
 											padding: '5px 12px',
-											lineHeight: '1.4'
+											lineHeight: '1.4',
+											fontSize: '16px',
 										}}
 									>
 										<div style={{
 											whiteSpace: 'normal',
-											wordWrap: 'break-word'
+											wordWrap: 'break-word',
+											fontSize: '16px',
 										}}>
 											{label}
 										</div>
@@ -108,7 +114,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			case 'NUMBER':
 			case 'DOUBLE':
 				return (
-					<Form.Item {...commonProps} style={{ marginBottom: '4px' }}>
+					<Form.Item {...commonProps} style={{ marginBottom: '4px', fontSize: '16px' }}>
 						<Input type="number" placeholder="Введите число" style={compactInputStyle} />
 					</Form.Item>
 				);
@@ -128,7 +134,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 							}
 							return { value: null };
 						}}
-						style={{ marginBottom: '4px' }}
+						style={{ marginBottom: '4px', fontSize: '16px' }}
 					>
 						<DatePicker
 							format="YYYY-MM-DD"
@@ -141,7 +147,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			case 'STRING':
 			default:
 				return (
-					<Form.Item {...commonProps} style={{ marginBottom: '4px' }}>
+					<Form.Item {...commonProps} style={{ marginBottom: '4px', fontSize: '16px' }}>
 						<Input placeholder={`Введите текст`} style={inputStyle} />
 					</Form.Item>
 				);
@@ -159,7 +165,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 		>
 			<Flex gap={10} wrap="nowrap" style={{ overflowX: 'auto' }}>
 				{columns.map((columnAttribs, columnIndex) => (
-					<div key={columnIndex} style={{ flex: columnsCount > 1 ? '0 0 auto' : '1', minWidth: '300px' }}>
+					<div key={columnIndex} style={{ flex: columnsCount > 1 ? '0 0 auto' : '1', minWidth: '300px', fontSize: '16px' }}>
 						{columnAttribs.map(atrib => renderFormItem(atrib))}
 					</div>
 				))}

@@ -54,7 +54,8 @@ export function AttributeComparisonDialog({
 			dataIndex: 'layerAttr',
 			key: 'layerAttr',
 			width: '40%',
-			render: text => <Text style={{ color: MEDIUM_DARK_BLUE }}>{text}</Text>,
+			align: 'right',
+			render: text => <Text style={{ color: MEDIUM_DARK_BLUE, fontSize: '16px' }}>{text.toUpperCase()}</Text>,
 		},
 		{
 			title: 'Свойство из KML',
@@ -63,7 +64,7 @@ export function AttributeComparisonDialog({
 			width: '60%',
 			render: (_, record) => (
 				<Select
-					style={{ width: '100%', color: MEDIUM_DARK_BLUE }}
+					style={{ width: '100%', color: MEDIUM_DARK_BLUE, fontSize: '16px' }}
 					placeholder="Нет соответствия"
 					value={mappings[record.attrName]}
 					onChange={value => handleMappingChange(record.attrName, value)}
@@ -71,7 +72,7 @@ export function AttributeComparisonDialog({
 				>
 					{kmlProperties?.map(prop => (
 						<Select.Option key={prop} value={prop}>
-							{prop}
+							{prop.toUpperCase()}
 						</Select.Option>
 					))}
 				</Select>
@@ -122,7 +123,7 @@ export function AttributeComparisonDialog({
 			</WarningText>
 			<Description>
 				Соотнесите служебные имена характеристик в левой части (атрибуты из панели свойств)
-				и имена характеристик в правой (полученные из импортируемого Вами файла)
+				и имена характеристик в правой (полученные из импортируемого Вами файла).
 			</Description>
 			<TableWrapper>
 				<Table
@@ -131,6 +132,13 @@ export function AttributeComparisonDialog({
 					pagination={false}
 					size="small"
 					scroll={{ y: 400 }}
+					// styles={{
+					// 	body: {
+					// 		row: {
+					// 			height: 28
+					// 		}
+					// 	},
+					// }}
 					showHeader={false}
 				/>
 			</TableWrapper>
@@ -197,14 +205,15 @@ const ControlButton = styled.button`
 const WarningText = styled.p`
 	margin: 8px 24px 0 24px;
 	color: ${MEDIUM_DARK_BLUE};
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: 500;
 `;
 
 const Description = styled.p`
 	margin: 16px 24px;
 	color: ${MEDIUM_DARK_BLUE};
-	font-size: 14px;
+	font-size: 16px;
+	line-height: 19px;
 `;
 
 const TableWrapper = styled.div`
@@ -212,5 +221,19 @@ const TableWrapper = styled.div`
 
 	.ant-table-tbody > tr:hover > td {
 		background: transparent !important;
+	}
+
+	.ant-table-tbody > tr > td {
+		height: 28px !important;
+		padding-top: 2px;
+		padding-bottom: 2px;
+	}
+
+	.ant-table-tbody .ant-table-measure-row {
+		display: none;
+	}
+
+	.ant-table-tbody .ant-table-row {
+		height: 28px !important;
 	}
 `;
