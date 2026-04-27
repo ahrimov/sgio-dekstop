@@ -16,14 +16,35 @@ import {
 	changeInteractionMode,
 	CHOOSE_GEOMETRY_EDIT_INTERACTION,
 } from '../../store/mapInteractionMode.js';
+import { $infoFeature } from '../../store/featuredInfoEvent.js';
+import { startGeometryEdit } from '../../features/draw/store.js';
 
 export function EditGeometryPanel({ handleCloseButton }) {
 	const isFeatureSelectionMode = useUnit($isEditGeometryFeatureSelectionMode);
+	const infoFeature = useUnit($infoFeature);
 
 	const textHeader = 'Редактирование';
 	const editGeometryButtonTitle = 'Выберите объект на карте';
 
 	const handleSelectFeatureClick = () => {
+		// If InfoAttributeView is open with a feature, start editing it directly
+		if (infoFeature && infoFeature.featureId && infoFeature.layer) {
+			const layer = infoFeature.layer;
+			const featureId = infoFeature.featureId;
+			
+			// Get the feature from the layer
+			const source = layer.getSource();
+			const features = source.getFeatures();
+			const feature = features.find(f => f.id === featureId);
+			
+			if (feature) {
+				startGeometryEdit({ feature, layer });
+				closeEditGeometryPanel();
+				return;
+			}
+		}
+		
+		// Otherwise, set map to feature selection mode
 		changeInteractionMode(CHOOSE_GEOMETRY_EDIT_INTERACTION);
 		closeEditGeometryPanel();
 	};
