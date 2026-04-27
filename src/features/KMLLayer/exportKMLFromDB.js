@@ -15,6 +15,7 @@ export async function exportKMLFromDB(layerId) {
     const format = new KML({
         showPointNames: true,
         writeStyles: true,
+        extractStyles: true,
     });
 
     const query = `SELECT * FROM ${layer.id}`;
@@ -58,7 +59,10 @@ export async function exportKMLFromDB(layerId) {
             
             if (feature) {
                 const clonedFeature = feature.clone();
-                clonedFeature.setProperties(props);
+                
+                for (const [key, value] of Object.entries(props)) {
+                    clonedFeature.set(key, value);
+                }
                 
                 const geometry = clonedFeature.getGeometry();
                 if (geometry) {
