@@ -7,6 +7,18 @@ import { layers } from './globals.js';
 import { showAlert, showConfirm } from '../store/modalDialog.js';
 import { refreshFeatureTable } from '../store/refreshTable.js';
 
+/**
+ * Escapes single quotes in SQL string values by doubling them
+ * @param {string} value - The value to escape
+ * @returns {string} - The escaped value
+ */
+function escapeSQLString(value) {
+	if (value === null || value === undefined) {
+		return '';
+	}
+	return String(value).replace(/'/g, "''");
+}
+
 export async function importKML(
 	layerID,
 	dict,
@@ -153,7 +165,7 @@ export async function importKML(
 							key == 'ID'
 						)
 							continue;
-						updates.push(`${key} = '${props[dict[key]]}'`);
+						updates.push(`${key} = '${escapeSQLString(props[dict[key]])}'`);
 						atribNames.push(key);
 						values.push(props[dict[key]]);
 					}
@@ -195,7 +207,7 @@ export async function importKML(
 					)
 						continue;
 					atribNames.push(key);
-					atribValues.push(`'${props[dict[key]]}'`);
+					atribValues.push(`'${escapeSQLString(props[dict[key]])}'`);
 					values.push(props[dict[key]]);
 				}
 
