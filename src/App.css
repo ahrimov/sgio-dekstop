@@ -60,6 +60,45 @@ body {
 	z-index: 1000;
 }
 
+.app-menu {
+	position: absolute;
+	top: 52px;
+	right: 12px;
+	z-index: 1000;
+}
+
+.app-menu-btn {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	transition: all 0.3s ease;
+}
+
+.app-menu-btn:hover {
+	border-width: 2px !important;
+}
+
+.app-menu-dropdown .ant-dropdown-menu {
+	background-color: rgba(255, 255, 255, 0.7);
+	border: 1px solid rgb(76, 147, 194);
+	border-radius: 8px;
+	backdrop-filter: blur(10px);
+	color: rgb(76, 147, 194);
+	opacity: 0.9;
+	
+}
+
+.app-menu-dropdown .ant-dropdown-menu-title-content {
+	color: rgb(0, 94, 154);
+}
+
+.app-menu-dropdown .ant-dropdown-menu-item {
+	color: rgb(0, 94, 154);
+}
+
+.app-menu-dropdown .ant-dropdown-menu-item:hover {
+	background-color: rgba(76, 147, 194, 0.2);
+	color: rgb(0, 94, 154);
+}
+
 .layers-toggle-btn {
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }

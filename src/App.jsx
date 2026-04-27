@@ -3,7 +3,7 @@ import { LoadingProvider, useLoading } from './components/LoadingScreen/LoadingC
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen.jsx';
 import { setProgressCallbacks, setConfigUpdateCallback } from './legacy/XMLParser.js';
 import { setDBProgressCallbacks, loadAllLayers } from './legacy/DBManage.js';
-import { ConfigProvider, Modal } from 'antd';
+import { ConfigProvider, Modal, Dropdown } from 'antd';
 import { ConfigProvider as AppConfigProvider, useConfig } from './context/ConfigContext.jsx';
 import { MessageProvider } from './context/MessageContext.jsx';
 import MapComponent from './components/Map/MapComponent.js';
@@ -23,6 +23,7 @@ import { $numberOfLayers } from './store/numberOfLayers.js';
 import { $infoFeature, showInfo } from './store/featuredInfoEvent.js';
 import { Taskbar } from './components/WindowControls/taskbar.jsx';
 import { InfoModal } from './components/InfoModal/InfoModal.jsx';
+import { openInfoModal } from './components/InfoModal/store.js';
 import { AttributeComparisonDialog } from './components/KMLImport/AttributeComparisonDialog.jsx';
 import {
 	$kmlImportDialogData,
@@ -126,6 +127,14 @@ const AppContent = () => {
 		await importKML(layerId, dict, features, loadingCallbacks);
 	};
 
+	const menuItems = [
+		{
+			key: 'about',
+			label: 'О приложении',
+			onClick: openInfoModal,
+		},
+	];
+
 	return (
 		<ConfigProvider
 			locale={ruRU}
@@ -154,6 +163,29 @@ const AppContent = () => {
 								</Button>
 							</div>
 						)}
+					</div>
+					<div className="app-menu">
+						<Dropdown
+							menu={{ items: menuItems }}
+							trigger={['click']}
+							placement="bottomRight"
+							overlayClassName="app-menu-dropdown"
+						>
+							<Button
+								type="text"
+								icon={<MenuOutlined />}
+								className="app-menu-btn"
+								style={{
+									backgroundColor: 'rgba(255, 255, 255, 0.7)',
+									opacity: 0.9,
+									border: '1px solid rgb(76, 147, 194)',
+									borderRadius: '8px',
+									color: 'rgb(76, 147, 194)',
+									width: '34px',
+									height: '34px',
+								}}
+							/>
+						</Dropdown>
 					</div>
 					{loadingState.total && !loadingState.visible ? (
 						<div className="app-container">

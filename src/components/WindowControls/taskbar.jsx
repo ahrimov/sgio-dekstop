@@ -3,9 +3,7 @@ import styled from 'styled-components';
 import { useUnit } from 'effector-react';
 import { $windows, windowClosed, windowRestored } from './store.js';
 import { DARK_BLUE, MEDIUM_BLUE, MEDIUM_DARK_BLUE, SUPER_DARK_BLUE } from '../../consts/style.js';
-import { CloseOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
-import { openInfoModal } from '../InfoModal/store.js';
+import { CloseOutlined } from '@ant-design/icons';
 
 export function Taskbar() {
 	const { windows, restore, close } = useUnit({
@@ -18,16 +16,7 @@ export function Taskbar() {
 
 	return (
 		<TaskbarContainer>
-			<LeftBlock>
-				<Button
-					title={'О приложении'}
-					style={{ color: 'white', borderRadius: '16px' }}
-					ariant="text"
-					type="text"
-					icon={<InfoCircleOutlined />}
-					onClick={openInfoModal}
-				/>
-			</LeftBlock>
+			<LeftBlock></LeftBlock>
 			<RightBlock>
 				{minimizedWindows.map(window => (
 					<TaskbarButton key={window.id} title={`Восстановить: ${window.title}`}>
