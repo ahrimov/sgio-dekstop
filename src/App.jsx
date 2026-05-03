@@ -164,29 +164,6 @@ const AppContent = () => {
 							</div>
 						)}
 					</div>
-					<div className="app-menu">
-						<Dropdown
-							menu={{ items: menuItems }}
-							trigger={['click']}
-							placement="bottomRight"
-							overlayClassName="app-menu-dropdown"
-						>
-							<Button
-								type="text"
-								icon={<MenuOutlined />}
-								className="app-menu-btn"
-								style={{
-									backgroundColor: 'rgba(255, 255, 255, 0.7)',
-									opacity: 0.9,
-									border: '1px solid rgb(76, 147, 194)',
-									borderRadius: '8px',
-									color: 'rgb(76, 147, 194)',
-									width: '34px',
-									height: '34px',
-								}}
-							/>
-						</Dropdown>
-					</div>
 					{loadingState.total && !loadingState.visible ? (
 						<div className="app-container">
 							<div className="top-row">

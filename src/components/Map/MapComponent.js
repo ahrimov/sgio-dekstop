@@ -17,6 +17,9 @@ import FullscreenButton from './FullscreenButton.jsx';
 import { useShowOnMapHighlight } from './hooks/useShowOnMapHighlight.js';
 import { ScaleText } from './ScaleText.jsx';
 import { showAlert } from '../../store/modalDialog.js';
+import { openInfoModal } from '../InfoModal/store.js';
+import { Dropdown, Button } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
@@ -142,6 +145,14 @@ const MapComponent = () => {
 		}, 100);
 	};
 
+	const menuItems = [
+		{
+			key: 'about',
+			label: 'О приложении',
+			onClick: openInfoModal,
+		},
+	];
+
 	return (
 		<div className="map-container-wrapper">
 			<div className={`map-wrapper ${isFullscreen ? 'map-fullscreen' : ''}`}>
@@ -153,11 +164,35 @@ const MapComponent = () => {
 
 				<ZoomControls map={map} />
 
+				<div className="app-menu">
+					<Dropdown
+						menu={{ items: menuItems }}
+						trigger={['click']}
+						placement="bottomRight"
+						overlayClassName="app-menu-dropdown"
+					>
+						<Button
+							type="text"
+							icon={<MenuOutlined />}
+							className="app-menu-btn"
+							style={{
+								backgroundColor: 'rgba(255, 255, 255, 0.7)',
+								opacity: 0.9,
+								border: '1px solid rgb(76, 147, 194)',
+								borderRadius: '8px',
+								color: 'rgb(76, 147, 194)',
+								width: '34px',
+								height: '34px',
+							}}
+						/>
+					</Dropdown>
+				</div>
+
 				<MapButtonsContainer />
 
 				<BottomLeftButtonsContainer />
 	
-					<ScaleText map={map} />
+				<ScaleText map={map} />
 
 				{controlButtons}
 
