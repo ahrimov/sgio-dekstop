@@ -13,10 +13,11 @@ export async function deleteFeature(featureId, layer, callback) {
 		return;
 	}
 
+	const pk = layer.primaryKey || 'id';
 	const deleteQuery = `
-        DELETE FROM ${layer.id} 
-        WHERE id = ${featureId};
-    `;
+	       DELETE FROM ${layer.table}
+	       WHERE ${pk} = ${featureId};
+	   `;
 
 	requestToDB(
 		deleteQuery,

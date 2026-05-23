@@ -53,15 +53,16 @@ export async function updateFeatureAttributes(
 			geometryUpdate = `, Geometry = GeomFromText('${featureString}', 3857)`;
 		}
 
+		const pk = layer.primaryKey || 'id';
 		const kmlType = layer.get('kmlType');
 		if (kmlType) {
 			feature.changed();
 			await syncChangesWithKML(layer.id);
 		} else {
 			const query = `
-			UPDATE ${layer.id} 
+			UPDATE ${layer.table}
 			SET ${setClauses}${geometryUpdate}
-			WHERE id = ${featureId};
+			WHERE ${pk} = ${featureId};
 		`;
 			await requestToDBPromise(query);
 		}
@@ -108,6 +109,7 @@ export async function updateFeatureGeometry(layer, featureId, geometry, onSucces
 
 		feature.setGeometry(geometry);
 
+		const pk = layer.primaryKey || 'id';
 		const kmlType = layer.get('kmlType');
 		if (kmlType) {
 			feature.changed();
@@ -115,9 +117,9 @@ export async function updateFeatureGeometry(layer, featureId, geometry, onSucces
 		} else {
 			const featureString = writeFeatureInKML(feature);
 			const query = `
-				UPDATE ${layer.id} 
+				UPDATE ${layer.table}
 				SET Geometry = GeomFromText('${featureString}', 3857)
-				WHERE id = ${featureId};
+				WHERE ${pk} = ${featureId};
 			`;
 			await requestToDBPromise(query);
 		}

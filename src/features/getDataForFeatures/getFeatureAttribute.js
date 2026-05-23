@@ -1,11 +1,12 @@
 import { requestToDBPromise } from '../../legacy/DBManage';
 
 export async function getFeatureAttributes(layer, featureId) {
-	const tableName = layer.id;
+	const tableName = layer.table;
+	const pk = layer.primaryKey || 'id';
 	const atribs = layer.atribs.map(a => a.name);
 	const fields = atribs.join(', ');
 
-	const sql = `SELECT ${fields} FROM ${tableName} WHERE id = ${featureId}`;
+	const sql = `SELECT ${fields} FROM ${tableName} WHERE ${pk} = ${featureId}`;
 
 	const result = await requestToDBPromise(sql);
 

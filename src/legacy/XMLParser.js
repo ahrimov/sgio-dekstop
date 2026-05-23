@@ -276,6 +276,19 @@ export function configParser(data) {
 		layer.set('descr', dom.getElementsByTagName('label').item(0).textContent);
 		layer.id = dom.getElementsByTagName('id').item(0).textContent;
 		layer.label = dom.getElementsByTagName('label').item(0).textContent;
+		const layerDbEl = dom.getElementsByTagName('layerDb').item(0);
+		const tableEl = layerDbEl ? layerDbEl.getElementsByTagName('table').item(0) : null;
+		layer.table = tableEl ? tableEl.textContent : layer.id;
+		const whereClauseEl = layerDbEl ? layerDbEl.getElementsByTagName('where_clause').item(0) : null;
+		layer.whereClause = whereClauseEl ? whereClauseEl.textContent.trim() : '';
+		const primaryEl = layerDbEl ? layerDbEl.getElementsByTagName('primary').item(0) : null;
+		layer.primaryKey = primaryEl ? primaryEl.textContent.trim() : 'id';
+		const geometryColumnEl = layerDbEl ? layerDbEl.getElementsByTagName('geometry_column').item(0) : null;
+		layer.geometryColumn = geometryColumnEl ? geometryColumnEl.textContent.trim() : 'AsText(Geometry) as geom';
+		const showButtonsEl = layerDbEl ? layerDbEl.getElementsByTagName('show_buttons').item(0) : null;
+		layer.showButtons = showButtonsEl
+			? showButtonsEl.textContent.split(',').map(s => s.trim()).filter(Boolean)
+			: null;
 		layer.geometryType = geometryType;
 
 		let layerZoomMin = parseFloat(dom.getElementsByTagName('zoomMax').item(0)?.textContent);
@@ -295,10 +308,12 @@ export function configParser(data) {
 			const tagVisible = atrib.getElementsByTagName('visible').item(0);
 			const visible = tagVisible ? tagVisible.textContent === 'true' : true;
 			let type = atrib.getAttribute('type');
+			const tagWidth = atrib.getElementsByTagName('width').item(0);
+			const width = tagWidth ? parseInt(tagWidth.textContent, 10) || null : null;
 			if (type == 'ENUM') {
 				let options = parseEnum(atrib.getElementsByTagName('options').item(0).textContent);
-				layer.atribs.push(new LayerAtribs(atribName, label, type, visible, options));
-			} else layer.atribs.push(new LayerAtribs(atribName, label, type, visible));
+				layer.atribs.push(new LayerAtribs(atribName, label, type, visible, options, width));
+			} else layer.atribs.push(new LayerAtribs(atribName, label, type, visible, null, width));
 		}
 
 		const styleTypeColumn =

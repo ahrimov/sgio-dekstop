@@ -171,9 +171,11 @@ export function FeatureTable({ layer }) {
 		};
 
 		const attributeColumns = atribs.slice(1).map(atrib => {
-			let columnWidth = 150;
+			let columnWidth;
 
-			if (
+			if (atrib.width != null) {
+				columnWidth = atrib.width;
+			} else if (
 				atrib.type === 'INTEGER' ||
 				atrib.type === 'FLOAT' ||
 				atrib.type === 'NUMBER' ||
@@ -184,6 +186,8 @@ export function FeatureTable({ layer }) {
 				columnWidth = 120;
 			} else if (atrib.type === 'DATE' || atrib.type === 'DATETIME') {
 				columnWidth = 80;
+			} else {
+				columnWidth = 150;
 			}
 
 			const base = {
@@ -460,28 +464,36 @@ export function FeatureTable({ layer }) {
 		});
 	};
 
+	const showBtn = (id) => !layer.showButtons || layer.showButtons.includes(id);
+
 	return (
 		<TableContainer>
 			<TableButtonsContainer>
-				<BaseMapButton
-					onClick={handleExportKML}
-					title={'Экспорт KML'}
-					img={exportIcon}
-					styleImage={{ scale: 1.3 }}
-				/>
-				<BaseMapButton
-					onClick={handleShowOnMap}
-					title={'Показать на карте'}
-					img={showOnMapIcon}
-					styleImage={{ scale: 1.3 }}
-					isDisabled={selectedRowKeys.length === 0}
-				/>
-				<BaseMapButton
-					onClick={handleDelete}
-					title={'Удалить'}
-					img={deleteIcon}
-					isDisabled={selectedRowKeys.length === 0}
-				/>
+				{showBtn('export') && (
+					<BaseMapButton
+						onClick={handleExportKML}
+						title={'Экспорт KML'}
+						img={exportIcon}
+						styleImage={{ scale: 1.3 }}
+					/>
+				)}
+				{showBtn('showOnMap') && (
+					<BaseMapButton
+						onClick={handleShowOnMap}
+						title={'Показать на карте'}
+						img={showOnMapIcon}
+						styleImage={{ scale: 1.3 }}
+						isDisabled={selectedRowKeys.length === 0}
+					/>
+				)}
+				{showBtn('delete') && (
+					<BaseMapButton
+						onClick={handleDelete}
+						title={'Удалить'}
+						img={deleteIcon}
+						isDisabled={selectedRowKeys.length === 0}
+					/>
+				)}
 			</TableButtonsContainer>
 			<TableWrapper>
 				<CustomPaginationBar>

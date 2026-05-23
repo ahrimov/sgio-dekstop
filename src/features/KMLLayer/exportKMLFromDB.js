@@ -18,7 +18,8 @@ export async function exportKMLFromDB(layerId) {
         extractStyles: true,
     });
 
-    const query = `SELECT * FROM ${layer.id}`;
+    const whereClause = layer.whereClause ? ` WHERE ${layer.whereClause}` : '';
+    const query = `SELECT * FROM ${layer.table}${whereClause}`;
 
     try {
         const data = await requestToDBPromise(query);

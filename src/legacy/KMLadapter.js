@@ -110,15 +110,15 @@ export async function importKML(
 					featureMaxID++;
 					feature_id = featureMaxID;
 				}
-				props['id'] = feature_id;
-				dict['id'] = 'id';
+				props[layer.primaryKey || 'id'] = feature_id;
+				dict[layer.primaryKey || 'id'] = layer.primaryKey || 'id';
 			}
 
 			console.log('dict:', dict);
 			console.log('props:', props);
 			console.log('layer atribs:', layer.atribs[0].name);
 
-			let query = `SELECT COUNT(1) as bool FROM ${layer.id} WHERE ${layer.atribs[0].name} = ${feature_id};`;
+			let query = `SELECT COUNT(1) as bool FROM ${layer.table} WHERE ${layer.atribs[0].name} = ${feature_id};`;
 			const intersection = await new Promise((resolve, reject) => {
 				requestToDB(
 					query,
@@ -177,7 +177,7 @@ export async function importKML(
 					let feautureString = format.writeFeature(feature);
 					feautureString = convertToGeometryType(feautureString, layer.geometryType);
 					updates.push(`Geometry = GeomFromText('${feautureString}', 3857)`);
-					query = `UPDATE ${layer.id} SET ${updates.join(', ')} WHERE ${layer.atribs[0].name} = ${feature_id} `;
+					query = `UPDATE ${layer.table} SET ${updates.join(', ')} WHERE ${layer.atribs[0].name} = ${feature_id} `;
 					await requestToDBPromise(query);
 					for (let old_feature of layer.getSource().getFeatures()) {
 						if (old_feature.id == feature_id) {
@@ -217,9 +217,9 @@ export async function importKML(
 				let feautureString = format.writeFeature(feature);
 				feautureString = convertToGeometryType(feautureString, layer.geometryType);
 				let query = `
-                INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
-                VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
-            ;`;
+				             INSERT INTO ${layer.table} (${atribNames.join(', ')}, Geometry)
+				             VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
+				         ;`;
 				console.log('kml insert: ', query);
 				await requestToDBPromise(query);
 
@@ -411,7 +411,7 @@ function filterProperties(values, dict, layer) {
 function autonumericID(idName, layer) {
 	return new Promise(resolve => {
 		requestToDB(
-			`SELECT MAX(${idName}) as id FROM ${layer.id}`,
+			`SELECT MAX(${idName}) as id FROM ${layer.table}`,
 			function (data) {
 				let id = 0;
 				if (typeof data.rows.item(0).id != 'undefined') id = data.rows.item(0).id + 1;

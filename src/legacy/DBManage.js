@@ -93,8 +93,9 @@ export function requestToDB(query, callback, notification = 'Неизвестн�
 			callback(compatibleResult);
 		})
 		.catch(error => {
-			console.log('Query:', query);
-			throw Error('Database transaction error:', error);
+			console.error('Query:', query);
+			console.error('Database transaction error:', error);
+			throw new Error(`Database transaction error: ${error?.message || error}`);
 		});
 }
 
@@ -160,9 +161,12 @@ export function getDataLayerFromBD(layer) {
 			selectLabelQuery = ` ${layer.labelColumn} as description, `;
 		}
 
+		const whereClause = layer.whereClause ? ` WHERE ${layer.whereClause}` : '';
+		const pk = layer.primaryKey || 'id';
+		const geomExpr = layer.geometryColumn || 'AsText(Geometry) as geom';
 		const query =
-			`SELECT ${layer.atribs[0].name} as id,${selectTypeQuery} ${selectLabelQuery} AsText(Geometry) as geom from ` +
-			layer.id;
+			`SELECT ${layer.atribs[0].name} as id,${selectTypeQuery} ${selectLabelQuery} ${geomExpr} FROM ` +
+			layer.table + whereClause;
 
 		requestToDB(
 			query,
@@ -177,7 +181,7 @@ export function getDataLayerFromBD(layer) {
 							feature = format.readFeature(wkt.replace(/nan/g, '0'));
 						}
 						feature.id = res.rows.item(i).id;
-						feature.set('id', res.rows.item(i).id);
+						feature.set(pk, res.rows.item(i).id);
 						feature.layerID = layer.id;
 						feature.type = res.rows.item(i).type;
 						feature.label = res.rows.item(i).description;

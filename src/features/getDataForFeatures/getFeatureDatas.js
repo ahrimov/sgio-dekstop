@@ -6,11 +6,14 @@ export function getFeatureDatas(
 	{ offset = 0, limit = 100, filters = {}, sorter = {} },
 	callback
 ) {
-	const tableName = layer.id;
+	const tableName = layer.table;
 	const atribs = layer.atribs.map(a => a.name);
 	const fields = [...atribs, 'rowid as key'].join(', ');
 	const filterClauses = buildFilterClauses(layer.atribs, filters);
-	const where = filterClauses.length ? `WHERE ${filterClauses.join(' AND ')}` : '';
+	const allClauses = layer.whereClause
+		? [layer.whereClause, ...filterClauses]
+		: filterClauses;
+	const where = allClauses.length ? `WHERE ${allClauses.join(' AND ')}` : '';
 	let orderBy = '';
 	if (sorter.field && sorter.order) {
 		orderBy = `ORDER BY "${sorter.field}" ${sorter.order}`;

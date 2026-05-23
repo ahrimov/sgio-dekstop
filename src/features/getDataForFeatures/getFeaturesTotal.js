@@ -8,9 +8,12 @@ export function getFeaturesTotal(layer, filters, callback) {
         const features = source.getFeatures();
         callback(features.length);
     } else {
-        const tableName = layer.id;
+        const tableName = layer.table;
         const filterClauses = buildFilterClauses(layer.atribs, filters);
-        const where = filterClauses.length ? `WHERE ${filterClauses.join(' AND ')}` : '';
+        const allClauses = layer.whereClause
+            ? [layer.whereClause, ...filterClauses]
+            : filterClauses;
+        const where = allClauses.length ? `WHERE ${allClauses.join(' AND ')}` : '';
         const sql = `SELECT count(*) as cnt FROM ${tableName} ${where}`;
         requestToDB(sql, (result) => {
             callback(result.rows.item(0).cnt);

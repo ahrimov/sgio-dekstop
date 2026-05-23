@@ -40,10 +40,11 @@ export async function deleteMultipleFeatures(featureIds, layer, callback) {
 	}
 
 	// Для БД слоев удаляем из базы данных
+	const pk = layer.primaryKey || 'id';
 	const idsString = featureIds.join(',');
 	const deleteQuery = `
-		DELETE FROM ${layer.id} 
-		WHERE id IN (${idsString});
+		DELETE FROM ${layer.table}
+		WHERE ${pk} IN (${idsString});
 	`;
 
 	requestToDB(

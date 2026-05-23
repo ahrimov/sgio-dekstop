@@ -19,7 +19,7 @@ export async function clearLayer(layer) {
 		syncChangesWithKML(layer.id);
 		refreshFeatureTable();
 	} else {
-		const query = `DELETE FROM ${layer.id};`;
+		const query = `DELETE FROM ${layer.table};`;
 
 		requestToDB(query, () => {
 			layer.getSource().clear();

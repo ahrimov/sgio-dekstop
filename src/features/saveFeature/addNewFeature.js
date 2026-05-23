@@ -25,9 +25,9 @@ export async function addNewFeature(layer, feature) {
 			await syncChangesWithKML(layer.id);
 		} else {
 			const query = `
-                INSERT INTO ${layer.id} (${atribNames.join(', ')}, Geometry)
-                VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
-                ;`;
+			              INSERT INTO ${layer.table} (${atribNames.join(', ')}, Geometry)
+			              VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
+			              ;`;
 			console.log('draw insert: ', query);
 			await requestToDBPromise(query);
 		}
