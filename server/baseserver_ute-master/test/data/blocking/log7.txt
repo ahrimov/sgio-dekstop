@@ -1,0 +1,173 @@
+13.07.2021 11:07:58 info: <input process_id="5e0461d6" calc_line_events="true" line_events_query="select event_id from PODS.ILI_INSPECTION_RANGE where ili_inspection_id = 1302181" calc_construction_intervals="true" construction_element_query="select event_id from pods.valve" calc_regular_intervals="true" regular_intervals_distance="100" install_date="11.6.2002" calc_sto_xxx="true"  inspection_id="1302181"/>
+13.07.2021 11:07:58 info: service : @5e0461d6@ : {"serviceName": "sto-ehz-insp-proc", "serviceGroup": "ili"}
+13.07.2021 11:07:58 info: proc_start : process_data
+13.07.2021 11:07:58 info: begin_transaction
+13.07.2021 11:07:58 info: proc_start : clear_old_calc
+13.07.2021 11:07:58 info: status : Очистка старых расчетов
+13.07.2021 11:07:58 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_6"; descrType="update"]
+13.07.2021 11:07:58 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 11:07:59 info: proc_end : clear_old_calc
+13.07.2021 11:07:59 info: proc_start : make_regular_intervals
+13.07.2021 11:07:59 info: status : Нарезка участка между на регулярные интервалы
+13.07.2021 11:07:59 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_9"; descrType="update"]
+13.07.2021 11:07:59 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:06:37 info: proc_end : make_regular_intervals
+13.07.2021 12:06:37 info: proc_start : make_construction_intervals
+13.07.2021 12:06:37 info: status : Нарезка участка между конструктивными элементами
+13.07.2021 12:06:37 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_8"; descrType="update"]
+13.07.2021 12:06:38 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:07:35 info: proc_end : make_construction_intervals
+13.07.2021 12:07:35 info: proc_start : make_line_events
+13.07.2021 12:07:35 info: status : Создание записей для линейных объектов
+13.07.2021 12:07:35 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_7"; descrType="update"]
+13.07.2021 12:07:35 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:07:36 info: proc_start : load_data
+13.07.2021 12:07:36 info: proc_end : make_line_events
+13.07.2021 12:07:36 info: status : Загрузка данных по отчету и интервалам.
+13.07.2021 12:07:36 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_1"; descrType="select"]
+13.07.2021 12:07:36 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:07:43 info: status : Загрузка дефектов.
+13.07.2021 12:07:43 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_3"; descrType="select"]
+13.07.2021 12:07:43 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:09:39 info: status : Загрузка данных по пересечениям.
+13.07.2021 12:09:39 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_4"; descrType="select"]
+13.07.2021 12:09:40 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:09:40 info: status : Загрузка данных по швам.
+13.07.2021 12:09:40 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_5"; descrType="select"]
+13.07.2021 12:09:40 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:09:40 info: proc_end : load_data
+13.07.2021 12:09:40 info: proc_start : calc_sto_xxx
+13.07.2021 12:09:40 info: status : calc_sto_xxx for 1302181
+13.07.2021 12:10:37 info: proc_start : write_result
+13.07.2021 12:10:37 info: status : Заполнение результата расчета
+13.07.2021 12:10:37 info: dbWriter : Параметры [descrId="UTE_SEM.xml#CALC_EHZ_INSP_CALC_STO_2"; descrType="insert"]
+13.07.2021 12:10:37 info: dbWriter : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:10:37 info: 0 %
+13.07.2021 12:10:37 info: 5 %
+13.07.2021 12:10:38 info: 10 %
+13.07.2021 12:10:38 info: 15 %
+13.07.2021 12:10:38 info: 20 %
+13.07.2021 12:10:38 info: 25 %
+13.07.2021 12:10:38 info: 30 %
+13.07.2021 12:10:38 info: 35 %
+13.07.2021 12:10:38 info: 40 %
+13.07.2021 12:10:39 info: 45 %
+13.07.2021 12:10:39 info: 50 %
+13.07.2021 12:10:39 info: 55 %
+13.07.2021 12:10:39 info: 60 %
+13.07.2021 12:10:39 info: 65 %
+13.07.2021 12:10:39 info: 70 %
+13.07.2021 12:10:39 info: 75 %
+13.07.2021 12:10:40 info: 80 %
+13.07.2021 12:10:40 info: 85 %
+13.07.2021 12:10:40 info: 90 %
+13.07.2021 12:10:40 info: 95 %
+13.07.2021 12:10:40 info: 100 %
+13.07.2021 12:10:40 info: proc_end : write_result
+13.07.2021 12:10:40 info: proc_end : calc_sto_xxx
+13.07.2021 12:10:40 info: proc_start : post_calc
+13.07.2021 12:10:40 info: status : Постобработка после выполнения каждого отчета
+13.07.2021 12:10:40 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_INTEGR_2_13"; descrType="update"]
+13.07.2021 12:10:40 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 12:10:40 info: proc_end : post_calc
+13.07.2021 12:10:40 info: commit_transaction
+13.07.2021 12:10:40 info: proc_end : process_data
+13.07.2021 12:10:40 info: finished : @5e0461d6@ : {"serviceName": "sto-ehz-insp-proc", "serviceGroup": "ili"}
+13.07.2021 14:32:15 error : Ошибка: ENOENT: no such file or directory, open '/home/websys53/gis_web77/website/Core/Query/none'
+{"showLoader":"false","descrId":"none","descrType":"select","getSchema":"true","toElements":"false","data":"<root USER_ID=\"1045\" USER_LOGIN=\"editor\" PODS_USER=\"editor\" ><data/></root>"}
+ Error: Ошибка: ENOENT: no such file or directory, open '/home/websys53/gis_web77/website/Core/Query/none'
+    at Function.parseXml (/home/websys53/gis_web77/nodejs/baseserver/src/service/sql/prepareService.js:18:19)
+    at queryPrepare (/home/websys53/gis_web77/nodejs/baseserver/src/middlewares/queryPrepare.js:5:51)
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:335:12)
+    at next (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver/node_modules/express-fileupload/lib/index.js:34:14
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:335:12)
+    at next (/home/websys53/gis_web77/nodejs/baseserver/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver/node_modules/body-parser/lib/read.js:130:5
+    at invokeCallback (/home/websys53/gis_web77/nodejs/baseserver/node_modules/raw-body/index.js:224:16)
+    at done (/home/websys53/gis_web77/nodejs/baseserver/node_modules/raw-body/index.js:213:7)
+    at IncomingMessage.onEnd (/home/websys53/gis_web77/nodejs/baseserver/node_modules/raw-body/index.js:273:7)
+    at IncomingMessage.emit (events.js:180:13)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)
+13.07.2021 16:38:03 info: <input buffer_width="5" event_type_LABEL="Родительский элемент группы" event_type="OFFLN_EV_TYPE_09" feature_id="STRUCTURE"  line_id="1300013" process_id="19cb016c" />
+13.07.2021 16:38:03 info: service : @19cb016c@ : {"serviceName": "offline-line-idx", "serviceGroup": "route"}
+13.07.2021 16:38:03 info: proc_start : process_data
+13.07.2021 16:38:03 info: begin_transaction
+13.07.2021 16:38:03 info: proc_start : load_geo
+13.07.2021 16:38:03 info: geoReader : Параметры [descrId="UTE_SEM.xml#OFFLINE_OFFLINE_LINE_IDX_C_3"; descrType="select"]
+13.07.2021 16:38:03 info: geoReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 16:38:04 info: proc_end : load_geo
+13.07.2021 16:38:04 info: proc_start : load_lines
+13.07.2021 16:38:04 info: dbReader : Параметры [descrId="UTE_SEM.xml#OFFLINE_OFFLINE_LINE_IDX_C_1"; descrType="select"]
+13.07.2021 16:38:04 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 16:38:04 info: proc_end : load_lines
+13.07.2021 16:38:04 info: proc_start : delete_links
+13.07.2021 16:38:04 info: dbCommand : Параметры [descrId="UTE_SEM.xml#OFFLINE_OFFLINE_LINE_IDX_C_2"; descrType="update"]
+13.07.2021 16:38:04 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 16:38:05 info: proc_end : delete_links
+13.07.2021 16:38:05 info: proc_start : load_line
+13.07.2021 16:38:05 info: dbReader : Параметры [descrId="UTE_SEM.xml#OFFLINE_OFFLINE_LINE_IDX_C_5"; descrType="select"]
+13.07.2021 16:38:06 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+13.07.2021 16:41:15 error : Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+{"templateName":"OFFLINE_LINE_Idx.xml","input":"<input buffer_width=\"5\" event_type_LABEL=\"Родительский элемент группы\" event_type=\"OFFLN_EV_TYPE_09\" feature_id=\"STRUCTURE\"  line_id=\"1300013\" process_id=\"19cb016c\" />"}
+ Error: Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+    at uteBlockingValidation (/home/websys53/gis_web77/nodejs/baseserver_ute/src/middlewares/uteBlockingValidation.js:19:10)
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:284:7
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:354:14)
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:365:14)
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:410:3)
+    at next (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/body-parser/lib/read.js:130:5
+    at invokeCallback (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:224:16)
+    at done (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:213:7)
+    at IncomingMessage.onEnd (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:273:7)
+    at IncomingMessage.emit (events.js:180:13)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)
+13.07.2021 16:41:50 info: Server 'baseserver' listening on port 3002
+13.07.2021 16:41:50 info: Server 'baseserver' listening on port 3002
+13.07.2021 16:41:55 error : Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+{"templateName":"OFFLINE_LINE_Idx.xml","input":"<input buffer_width=\"5\" event_type_LABEL=\"Родительский элемент группы\" event_type=\"OFFLN_EV_TYPE_09\" feature_id=\"STRUCTURE\"  line_id=\"1300013\" process_id=\"7d92baa1\" />"}
+ Error: Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+    at uteBlockingValidation (/home/websys53/gis_web77/nodejs/baseserver_ute/src/middlewares/uteBlockingValidation.js:19:10)
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:284:7
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:354:14)
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:365:14)
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:410:3)
+    at next (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/body-parser/lib/read.js:130:5
+    at invokeCallback (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:224:16)
+    at done (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:213:7)
+    at IncomingMessage.onEnd (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:273:7)
+    at IncomingMessage.emit (events.js:180:13)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)
+13.07.2021 16:42:05 error : Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+{"templateName":"OFFLINE_LINE_Idx.xml","input":"<input buffer_width=\"5\" event_type_LABEL=\"Родительский элемент группы\" event_type=\"OFFLN_EV_TYPE_09\" feature_id=\"STRUCTURE\"  line_id=\"1300013\" process_id=\"7d92baa1\" />"}
+ Error: Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+    at uteBlockingValidation (/home/websys53/gis_web77/nodejs/baseserver_ute/src/middlewares/uteBlockingValidation.js:19:10)
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:284:7
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:354:14)
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:365:14)
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:410:3)
+    at next (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/body-parser/lib/read.js:130:5
+    at invokeCallback (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:224:16)
+    at done (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:213:7)
+    at IncomingMessage.onEnd (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:273:7)
+    at IncomingMessage.emit (events.js:180:13)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)

@@ -1,0 +1,10 @@
+// This will be our application entry. We'll setup our server here.
+const http = require('http');
+const app = require('../src/app'); // The express app we just created
+
+const port = parseInt(process.env.PORT, 10) || 3002;
+app.set('port', port);
+const responseTimeout = parseInt(process.env.RESPONSE_TIMEOUT, 10) || 0; // set default infinity timeout(0)
+const server = http.createServer(app);
+server.setTimeout(responseTimeout*60*1000);//Default was 2
+server.listen(port);

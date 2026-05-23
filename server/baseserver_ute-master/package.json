@@ -1,0 +1,51 @@
+{
+  "name": "baseserver_ute",
+  "version": "8.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "NODE_ENV=dev PORT=3003 nodemon ./bin/www",
+    "test": "jest --detectOpenHandles",
+    "prod": "node ./bin/www",
+    "lint": "eslint -c .eslintrc.json --ext .js .",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "keywords": [],
+  "author": {
+    "name": "gis",
+    "email": "support@corelight.ru"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@turf/nearest-point-on-line": "^6.3.0",
+    "@turf/turf": "^6.3.0",
+    "body-parser": "1.19.0",
+    "camaro": "4.1.2",
+    "compression": "1.7.4",
+    "decimal.js": "^10.2.1",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "gdal": "^0.9.9",
+    "simplify-js": "^1.2.4",
+    "turf-multilinestring": "^1.0.2",
+    "wkx": "^0.5.0",
+    "xml-js": "1.6.11",
+    "cookie-parser": "^1.4.6",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^1.4.1",
+    "eslint": "^8.54.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "jest": "24.9.0",
+    "nodemon": "2.0.2",
+    "supertest": "4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
+}

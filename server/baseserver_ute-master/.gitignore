@@ -1,0 +1,10 @@
+.idea/
+/node_modules/
+/export_excel/
+/original/
+/virtual/
+/process_query/
+/virtual2/
+/virtual2_origData/
+.svn/*
+package-lock.json

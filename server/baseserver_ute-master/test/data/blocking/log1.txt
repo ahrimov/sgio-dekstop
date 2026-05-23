@@ -1,0 +1,9 @@
+28.06.2021 15:42:43 info: <input process_id="964e3797" calc_line_events="true" line_events_query="select event_id from PODS.ILI_INSPECTION_RANGE where ili_inspection_id = 1302134" calc_construction_intervals="true" construction_element_query="select event_id from pods.valve" calc_regular_intervals="true" regular_intervals_distance="100" pressure="7.36" breaking_point="588" safety_factor_of_internal_pressure="1.1" safety_factor_of_working_conditions="0.9" safety_factor_of_material="1" safety_factor_of_destination="1.34" thickness="16" lifetime="25" average_cost_of_responding="150" cost_of_replacing_a_pipe="0.6" cost_of_the_ILI_per_km="0.1" cost_per_hole="0.2" cost_of_repair_per_km="23.8" calc_sto_2_2_3_292_2007="true" calc_sto_2_2_3_401_2003="true" calc_sto_2_2_3_095_2007="true" calc_sto_xxx="true"  inspection_id="1302134"/>
+28.06.2021 15:42:43 info: service : @964e3797@ : {"serviceName": "sto-ili-insp-proc", "serviceGroup": "ili"}
+28.06.2021 15:42:43 info: proc_start : process_data
+28.06.2021 16:54:11 info: proc_end : process_data
+28.06.2021 16:54:11 info: finished : @964e3797@ : {"serviceName": "sto-ili-insp-proc", "serviceGroup": "ili"}
+
+18.06.2021 10:21:45 info: <input process_id="aa731349" route_id="1301500"/>
+18.06.2021 10:21:45 info: service : @aa731349@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+18.06.2021 10:21:45 info: proc_start : process_data

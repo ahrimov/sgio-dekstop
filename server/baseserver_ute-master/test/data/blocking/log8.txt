@@ -1,0 +1,598 @@
+14.07.2021 17:35:08 info: Server 'baseserver_ute' listening on port 3002
+14.07.2021 17:35:47 info: <input process_id="cbe3681a" route_id="1301748"/>
+14.07.2021 17:35:47 info: service : @cbe3681a@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+14.07.2021 17:35:47 info: proc_start : process_data
+14.07.2021 17:35:47 info: begin_transaction
+14.07.2021 17:35:47 info: proc_start : prepare_lrs_data
+14.07.2021 17:35:47 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+14.07.2021 17:35:47 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+14.07.2021 17:35:48 info: proc_end : prepare_lrs_data
+14.07.2021 17:35:48 info: proc_start : lrs_calc
+14.07.2021 17:35:48 info: Начинаем проецирование 54217 объектов типа ST_POINT_TYPE_05
+14.07.2021 17:36:13 info: Спроецировано 1000 из 54217 объектов.
+14.07.2021 17:36:37 info: Спроецировано 2000 из 54217 объектов.
+14.07.2021 17:37:01 info: Спроецировано 3000 из 54217 объектов.
+14.07.2021 17:37:26 info: Спроецировано 4000 из 54217 объектов.
+14.07.2021 17:37:50 info: Спроецировано 5000 из 54217 объектов.
+14.07.2021 17:38:14 info: Спроецировано 6000 из 54217 объектов.
+14.07.2021 17:38:39 info: Спроецировано 7000 из 54217 объектов.
+14.07.2021 17:39:03 info: Спроецировано 8000 из 54217 объектов.
+14.07.2021 17:39:27 info: Спроецировано 9000 из 54217 объектов.
+14.07.2021 17:39:52 info: Спроецировано 10000 из 54217 объектов.
+14.07.2021 17:40:16 info: Спроецировано 11000 из 54217 объектов.
+14.07.2021 17:40:40 info: Спроецировано 12000 из 54217 объектов.
+14.07.2021 17:41:05 info: Спроецировано 13000 из 54217 объектов.
+14.07.2021 17:41:29 info: Спроецировано 14000 из 54217 объектов.
+14.07.2021 17:41:53 info: Спроецировано 15000 из 54217 объектов.
+14.07.2021 17:42:18 info: Спроецировано 16000 из 54217 объектов.
+14.07.2021 17:42:42 info: Спроецировано 17000 из 54217 объектов.
+14.07.2021 17:43:06 info: Спроецировано 18000 из 54217 объектов.
+14.07.2021 17:43:31 info: Спроецировано 19000 из 54217 объектов.
+14.07.2021 17:43:55 info: Спроецировано 20000 из 54217 объектов.
+14.07.2021 17:44:19 info: Спроецировано 21000 из 54217 объектов.
+14.07.2021 17:44:44 info: Спроецировано 22000 из 54217 объектов.
+14.07.2021 17:45:08 info: Спроецировано 23000 из 54217 объектов.
+14.07.2021 17:45:32 info: Спроецировано 24000 из 54217 объектов.
+14.07.2021 17:45:57 info: Спроецировано 25000 из 54217 объектов.
+14.07.2021 17:46:21 info: Спроецировано 26000 из 54217 объектов.
+14.07.2021 17:46:45 info: Спроецировано 27000 из 54217 объектов.
+14.07.2021 17:47:10 info: Спроецировано 28000 из 54217 объектов.
+14.07.2021 17:47:34 info: Спроецировано 29000 из 54217 объектов.
+14.07.2021 17:47:58 info: Спроецировано 30000 из 54217 объектов.
+14.07.2021 17:48:23 info: Спроецировано 31000 из 54217 объектов.
+14.07.2021 17:48:47 info: Спроецировано 32000 из 54217 объектов.
+14.07.2021 17:49:12 info: Спроецировано 33000 из 54217 объектов.
+14.07.2021 17:49:36 info: Спроецировано 34000 из 54217 объектов.
+14.07.2021 17:50:00 info: Спроецировано 35000 из 54217 объектов.
+14.07.2021 17:50:25 info: Спроецировано 36000 из 54217 объектов.
+14.07.2021 17:50:49 info: Спроецировано 37000 из 54217 объектов.
+14.07.2021 17:51:13 info: Спроецировано 38000 из 54217 объектов.
+14.07.2021 17:51:38 info: Спроецировано 39000 из 54217 объектов.
+14.07.2021 17:52:02 info: Спроецировано 40000 из 54217 объектов.
+14.07.2021 17:52:27 info: Спроецировано 41000 из 54217 объектов.
+14.07.2021 17:52:51 info: Спроецировано 42000 из 54217 объектов.
+14.07.2021 17:53:15 info: Спроецировано 43000 из 54217 объектов.
+14.07.2021 17:53:40 info: Спроецировано 44000 из 54217 объектов.
+14.07.2021 17:54:04 info: Спроецировано 45000 из 54217 объектов.
+14.07.2021 17:54:28 info: Спроецировано 46000 из 54217 объектов.
+14.07.2021 17:54:53 info: Спроецировано 47000 из 54217 объектов.
+14.07.2021 17:55:17 info: Спроецировано 48000 из 54217 объектов.
+14.07.2021 17:55:41 info: Спроецировано 49000 из 54217 объектов.
+14.07.2021 17:56:06 info: Спроецировано 50000 из 54217 объектов.
+14.07.2021 17:56:30 info: Спроецировано 51000 из 54217 объектов.
+14.07.2021 17:56:54 info: Спроецировано 52000 из 54217 объектов.
+14.07.2021 17:57:19 info: Спроецировано 53000 из 54217 объектов.
+14.07.2021 17:57:43 info: Спроецировано 54000 из 54217 объектов.
+14.07.2021 17:57:48 info: Проецирование закончено
+14.07.2021 17:57:49 info: proc_start : update_lrs_data
+14.07.2021 17:57:49 info: status : Обновление STATION_POINT
+14.07.2021 17:57:49 info: dbWriter : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_2"; descrType="insert"]
+14.07.2021 17:57:49 info: dbWriter : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+14.07.2021 17:57:49 error : Client has encountered a connection error and is not queryable
+query:
+			UPDATE PODS.STATION_POINT
+			SET MEASURE = 0
+			WHERE STATION_ID = 1303108288
+			 SequelizeDatabaseError: Client has encountered a connection error and is not queryable
+    at Query.formatError (/home/websys53/gis_web77/nodejs/gis-core/node_modules/sequelize/lib/dialects/postgres/query.js:366:16)
+    at query.catch.err (/home/websys53/gis_web77/nodejs/gis-core/node_modules/sequelize/lib/dialects/postgres/query.js:72:18)
+    at tryCatcher (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/util.js:16:23)
+    at Promise._settlePromiseFromHandler (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:547:31)
+    at Promise._settlePromise (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:604:18)
+    at Promise._settlePromise0 (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:649:10)
+    at Promise._settlePromises (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:725:18)
+    at _drainQueueStep (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:93:12)
+    at _drainQueue (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:86:9)
+    at Async._drainQueues (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:102:5)
+    at Immediate.Async.drainQueues [as _onImmediate] (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:15:14)
+    at runCallback (timers.js:763:18)
+    at tryOnImmediate (timers.js:734:5)
+    at processImmediate (timers.js:716:5)
+14.07.2021 17:57:49 error : Возникла ошибка при конвертировании кодировки файла:Во время выполнения команды возникла ошибка:  Client has encountered a connection error and is not queryable Error: Во время выполнения команды возникла ошибка:  Client has encountered a connection error and is not queryable
+    at db.query.then.catch.err (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/sql/QueryService.js:146:11)
+    at tryCatcher (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/util.js:16:23)
+    at Promise._settlePromiseFromHandler (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:547:31)
+    at Promise._settlePromise (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:604:18)
+    at Promise._settlePromise0 (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:649:10)
+    at Promise._settlePromises (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/promise.js:725:18)
+    at _drainQueueStep (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:93:12)
+    at _drainQueue (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:86:9)
+    at Async._drainQueues (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:102:5)
+    at Immediate.Async.drainQueues [as _onImmediate] (/home/websys53/gis_web77/nodejs/gis-core/node_modules/bluebird/js/release/async.js:15:14)
+    at runCallback (timers.js:763:18)
+    at tryOnImmediate (timers.js:734:5)
+    at processImmediate (timers.js:716:5)
+14.07.2021 17:57:49 info: rollback_transaction
+14.07.2021 17:57:49 error : SequelizeDatabaseError: Client has encountered a connection error and is not queryable
+{"templateName":"LRS_ROUTE_Calc.xml","input":"<input process_id=\"cbe3681a\" route_id=\"1301748\"/>"}
+ Error: SequelizeDatabaseError: Client has encountered a connection error and is not queryable
+    at Function.rollback (/home/websys53/gis_web77/nodejs/gis-core/lib/database/index.js:153:19)
+    at <anonymous>
+14.07.2021 17:57:49 info: finished : @cbe3681a@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+15.07.2021 11:47:54 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 11:49:08 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 11:49:26 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 11:49:26 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 11:49:26 info: proc_start : process_data
+15.07.2021 11:49:27 info: begin_transaction
+15.07.2021 11:49:27 info: status : Получение идентификатора участка
+15.07.2021 11:49:27 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 11:49:27 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 11:49:27 info: ROUTE_ID=1304887
+15.07.2021 11:49:27 info: status : Получение диаметра
+15.07.2021 11:49:27 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 11:49:27 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 11:49:27 info: DIAMETER=1420.0000
+15.07.2021 11:49:27 info: proc_start : load_def
+15.07.2021 11:49:27 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 11:49:27 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 11:50:59 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 11:53:32 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 11:53:32 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 11:53:32 info: proc_start : process_data
+15.07.2021 11:53:32 info: begin_transaction
+15.07.2021 11:53:33 info: status : Получение идентификатора участка
+15.07.2021 11:53:33 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 11:53:33 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 11:53:33 info: ROUTE_ID=1304887
+15.07.2021 11:53:33 info: status : Получение диаметра
+15.07.2021 11:53:33 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 11:53:33 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 11:53:33 info: DIAMETER=1420.0000
+15.07.2021 11:53:33 info: proc_start : load_def
+15.07.2021 11:53:33 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 11:53:33 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:09:42 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 12:10:32 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 12:10:32 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 12:10:32 info: proc_start : process_data
+15.07.2021 12:10:32 info: begin_transaction
+15.07.2021 12:10:32 info: status : Получение идентификатора участка
+15.07.2021 12:10:32 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 12:10:32 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:10:32 info: ROUTE_ID=1304887
+15.07.2021 12:10:32 info: status : Получение диаметра
+15.07.2021 12:10:32 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 12:10:32 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:10:32 info: DIAMETER=1420.0000
+15.07.2021 12:10:32 info: proc_start : load_def
+15.07.2021 12:10:32 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 12:10:33 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:22:30 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 12:22:32 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 12:22:32 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 12:22:32 info: proc_start : process_data
+15.07.2021 12:22:32 info: begin_transaction
+15.07.2021 12:22:32 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 12:22:32 info: status : Получение идентификатора участка
+15.07.2021 12:22:32 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:22:32 info: ROUTE_ID=1304887
+15.07.2021 12:22:32 info: status : Получение диаметра
+15.07.2021 12:22:32 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 12:22:32 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:22:32 info: DIAMETER=1420.0000
+15.07.2021 12:22:32 info: proc_start : load_def
+15.07.2021 12:22:32 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 12:22:32 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:25:49 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 12:27:39 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 12:27:39 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 12:27:39 info: proc_start : process_data
+15.07.2021 12:27:39 info: begin_transaction
+15.07.2021 12:27:40 info: status : Получение идентификатора участка
+15.07.2021 12:27:40 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 12:27:40 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:27:40 info: ROUTE_ID=1304887
+15.07.2021 12:27:40 info: status : Получение диаметра
+15.07.2021 12:27:40 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 12:27:40 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:27:40 info: DIAMETER=1420.0000
+15.07.2021 12:27:40 info: proc_start : load_def
+15.07.2021 12:27:40 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 12:27:40 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 12:31:58 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 12:51:22 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:16:06 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:16:07 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:16:07 info: proc_start : process_data
+15.07.2021 13:16:07 info: begin_transaction
+15.07.2021 13:16:07 info: status : Получение идентификатора участка
+15.07.2021 13:16:07 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:16:07 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:16:07 info: ROUTE_ID=1304887
+15.07.2021 13:16:07 info: status : Получение диаметра
+15.07.2021 13:16:07 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:16:07 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:16:07 info: DIAMETER=1420.0000
+15.07.2021 13:16:07 info: proc_start : load_def
+15.07.2021 13:16:07 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:16:07 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:16:59 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:17:05 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:17:05 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:17:05 info: proc_start : process_data
+15.07.2021 13:17:05 info: begin_transaction
+15.07.2021 13:17:05 info: status : Получение идентификатора участка
+15.07.2021 13:17:05 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:17:05 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:17:05 info: ROUTE_ID=1304887
+15.07.2021 13:17:05 info: status : Получение диаметра
+15.07.2021 13:17:05 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:17:06 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:17:06 info: DIAMETER=1420.0000
+15.07.2021 13:17:06 info: proc_start : load_def
+15.07.2021 13:17:06 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:17:06 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:18:22 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:18:26 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:18:26 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:18:26 info: proc_start : process_data
+15.07.2021 13:18:27 info: begin_transaction
+15.07.2021 13:18:27 info: status : Получение идентификатора участка
+15.07.2021 13:18:27 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:18:27 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:18:27 info: ROUTE_ID=1304887
+15.07.2021 13:18:27 info: status : Получение диаметра
+15.07.2021 13:18:27 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:18:27 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:18:27 info: DIAMETER=1420.0000
+15.07.2021 13:18:27 info: proc_start : load_def
+15.07.2021 13:18:27 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:18:27 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:19:12 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:19:14 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:19:14 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:19:14 info: proc_start : process_data
+15.07.2021 13:19:14 info: begin_transaction
+15.07.2021 13:19:14 info: status : Получение идентификатора участка
+15.07.2021 13:19:14 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:19:14 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:19:14 info: ROUTE_ID=1304887
+15.07.2021 13:19:14 info: status : Получение диаметра
+15.07.2021 13:19:14 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:19:14 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:19:14 info: DIAMETER=1420.0000
+15.07.2021 13:19:14 info: proc_start : load_def
+15.07.2021 13:19:14 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:19:14 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:20:34 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:20:40 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:20:40 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:20:40 info: proc_start : process_data
+15.07.2021 13:20:40 info: begin_transaction
+15.07.2021 13:20:41 info: status : Получение идентификатора участка
+15.07.2021 13:20:41 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:20:41 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:20:41 info: ROUTE_ID=1304887
+15.07.2021 13:20:41 info: status : Получение диаметра
+15.07.2021 13:20:41 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:20:41 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:20:41 info: DIAMETER=1420.0000
+15.07.2021 13:20:41 info: proc_start : load_def
+15.07.2021 13:20:41 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:20:41 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:35:19 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:35:21 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:35:21 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:35:21 info: proc_start : process_data
+15.07.2021 13:35:21 info: begin_transaction
+15.07.2021 13:35:21 info: status : Получение идентификатора участка
+15.07.2021 13:35:21 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:35:21 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:35:21 info: ROUTE_ID=1304887
+15.07.2021 13:35:21 info: status : Получение диаметра
+15.07.2021 13:35:21 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:35:21 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:35:21 info: DIAMETER=1420.0000
+15.07.2021 13:35:21 info: proc_start : load_def
+15.07.2021 13:35:21 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:35:21 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:39:07 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:39:10 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:39:11 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:39:11 info: proc_start : process_data
+15.07.2021 13:39:11 info: begin_transaction
+15.07.2021 13:39:11 info: status : Получение идентификатора участка
+15.07.2021 13:39:11 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:39:11 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:39:11 info: ROUTE_ID=1304887
+15.07.2021 13:39:11 info: status : Получение диаметра
+15.07.2021 13:39:11 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:39:11 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:39:11 info: DIAMETER=1420.0000
+15.07.2021 13:39:11 info: proc_start : load_def
+15.07.2021 13:39:11 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:39:11 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:43:25 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:43:27 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:43:27 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:43:27 info: proc_start : process_data
+15.07.2021 13:43:28 info: begin_transaction
+15.07.2021 13:43:28 info: status : Получение идентификатора участка
+15.07.2021 13:43:28 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:43:28 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:43:28 info: ROUTE_ID=1304887
+15.07.2021 13:43:28 info: status : Получение диаметра
+15.07.2021 13:43:28 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:43:28 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:43:28 info: DIAMETER=1420.0000
+15.07.2021 13:43:28 info: proc_start : load_def
+15.07.2021 13:43:28 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:43:28 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:46:14 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 13:46:16 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 13:46:16 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 13:46:16 info: proc_start : process_data
+15.07.2021 13:46:16 info: begin_transaction
+15.07.2021 13:46:16 info: status : Получение идентификатора участка
+15.07.2021 13:46:16 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 13:46:16 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:46:16 info: ROUTE_ID=1304887
+15.07.2021 13:46:16 info: status : Получение диаметра
+15.07.2021 13:46:16 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 13:46:17 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 13:46:17 info: DIAMETER=1420.0000
+15.07.2021 13:46:17 info: proc_start : load_def
+15.07.2021 13:46:17 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 13:46:17 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 14:00:11 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 14:00:13 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 14:00:13 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 14:00:13 info: proc_start : process_data
+15.07.2021 14:00:14 info: begin_transaction
+15.07.2021 14:00:14 info: status : Получение идентификатора участка
+15.07.2021 14:00:14 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 14:00:14 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 14:00:14 info: ROUTE_ID=1304887
+15.07.2021 14:00:14 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 14:00:14 info: status : Получение диаметра
+15.07.2021 14:00:14 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 14:00:14 info: DIAMETER=1420.0000
+15.07.2021 14:00:14 info: proc_start : load_def
+15.07.2021 14:00:14 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 14:00:14 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:27:34 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 15:30:08 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 15:30:49 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 15:30:49 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 15:30:49 info: proc_start : process_data
+15.07.2021 15:30:50 info: begin_transaction
+15.07.2021 15:30:50 info: status : Получение идентификатора участка
+15.07.2021 15:30:50 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 15:30:50 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:30:50 info: ROUTE_ID=1304887
+15.07.2021 15:30:50 info: status : Получение диаметра
+15.07.2021 15:30:50 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 15:30:50 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:30:50 info: DIAMETER=1420.0000
+15.07.2021 15:30:50 info: proc_start : load_def
+15.07.2021 15:30:50 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 15:30:50 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:30:50 info: proc_end : load_def
+15.07.2021 15:30:50 info: proc_start : calc_cluster
+15.07.2021 15:36:35 error : defWidth.mul is not a function
+{"templateName":"ILI_Cluster.xml","input":"<input pressure=\"7.4\" thickness=\"16\"  inspection_id=\"1302173\" process_id=\"1124d8de\"/>"}
+ TypeError: defWidth.mul is not a function
+    at IliCluster.calcSurfaceDefects (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliCluster.js:123:23)
+    at IliCluster.process (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliCluster.js:62:11)
+    at Function.call (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliClusterService.js:57:19)
+    at <anonymous>
+15.07.2021 15:36:35 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 15:36:46 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 15:47:05 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 15:47:05 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 15:47:05 info: proc_start : process_data
+15.07.2021 15:47:05 info: begin_transaction
+15.07.2021 15:47:06 info: status : Получение идентификатора участка
+15.07.2021 15:47:06 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 15:47:06 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:47:06 info: ROUTE_ID=1304887
+15.07.2021 15:47:06 info: status : Получение диаметра
+15.07.2021 15:47:06 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 15:47:06 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:47:06 info: DIAMETER=1420.0000
+15.07.2021 15:47:06 info: proc_start : load_def
+15.07.2021 15:47:06 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 15:47:06 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:47:06 info: proc_end : load_def
+15.07.2021 15:47:06 info: proc_start : calc_cluster
+15.07.2021 15:47:48 error : [DecimalError] Invalid argument: 90263.130.04
+{"templateName":"ILI_Cluster.xml","input":"<input pressure=\"7.4\" thickness=\"16\"  inspection_id=\"1302173\" process_id=\"1124d8de\"/>"}
+ Error: [DecimalError] Invalid argument: 90263.130.04
+    at parseOther (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/decimal.js/decimal.js:3620:13)
+    at new Decimal (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/decimal.js/decimal.js:4386:55)
+    at IliCluster.calcSurfaceDefects (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliCluster.js:122:21)
+    at IliCluster.process (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliCluster.js:62:11)
+    at Function.call (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliClusterService.js:57:19)
+    at <anonymous>
+15.07.2021 15:47:48 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 15:53:36 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 15:54:11 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 15:54:11 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 15:54:11 info: proc_start : process_data
+15.07.2021 15:54:11 info: begin_transaction
+15.07.2021 15:54:12 info: status : Получение идентификатора участка
+15.07.2021 15:54:12 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 15:54:12 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:54:12 info: ROUTE_ID=1304887
+15.07.2021 15:54:12 info: status : Получение диаметра
+15.07.2021 15:54:12 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 15:54:12 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:54:12 info: DIAMETER=1420.0000
+15.07.2021 15:54:12 info: proc_start : load_def
+15.07.2021 15:54:12 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 15:54:12 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 15:54:12 info: proc_end : load_def
+15.07.2021 15:54:12 info: proc_start : calc_cluster
+15.07.2021 15:54:13 error : defStartOrientataion.minus is not a function
+{"templateName":"ILI_Cluster.xml","input":"<input pressure=\"7.4\" thickness=\"16\"  inspection_id=\"1302173\" process_id=\"1124d8de\"/>"}
+ TypeError: defStartOrientataion.minus is not a function
+    at IliCluster.calcSurfaceDefects (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliCluster.js:134:73)
+    at IliCluster.process (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliCluster.js:62:11)
+    at Function.call (/home/websys53/gis_web77/nodejs/baseserver_ute/src/service/ute/ili/ili-cluster/IliClusterService.js:57:19)
+    at <anonymous>
+15.07.2021 15:54:13 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 15:54:45 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 16:06:43 info: <input pressure="7.4" thickness="16"  inspection_id="1302173" process_id="1124d8de"/>
+15.07.2021 16:06:43 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 16:06:43 info: proc_start : process_data
+15.07.2021 16:06:44 info: begin_transaction
+15.07.2021 16:06:44 info: status : Получение идентификатора участка
+15.07.2021 16:06:44 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 16:06:44 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:06:44 info: ROUTE_ID=1304887
+15.07.2021 16:06:44 info: status : Получение диаметра
+15.07.2021 16:06:44 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 16:06:44 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:06:44 info: DIAMETER=1420.0000
+15.07.2021 16:06:44 info: proc_start : load_def
+15.07.2021 16:06:44 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 16:06:44 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:06:45 info: proc_end : load_def
+15.07.2021 16:06:45 info: proc_start : calc_cluster
+15.07.2021 16:07:09 info: proc_end : calc_cluster
+15.07.2021 16:07:09 info: proc_start : clear_old_calc
+15.07.2021 16:07:09 info: status : Очистка старого расчета
+15.07.2021 16:07:09 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_6"; descrType="update"]
+15.07.2021 16:07:09 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:07:13 info: proc_end : clear_old_calc
+15.07.2021 16:07:13 info: status : Заполнение или обновление данных по дефектам в таблице СТО
+15.07.2021 16:07:13 info: proc_start : prepare_defs
+15.07.2021 16:07:13 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_4"; descrType="update"]
+15.07.2021 16:07:13 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:07:26 info: Server 'baseserver_ute' listening on port 3002
+15.07.2021 16:07:56 info: <input pressure="7.4" thickness="16"  inspection_id="1302183" process_id="1124d8de"/>
+15.07.2021 16:07:56 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 16:07:56 info: proc_start : process_data
+15.07.2021 16:07:56 info: begin_transaction
+15.07.2021 16:07:56 info: status : Получение идентификатора участка
+15.07.2021 16:07:56 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_1"; descrType="select"]
+15.07.2021 16:07:56 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:07:56 info: ROUTE_ID=1304887
+15.07.2021 16:07:56 info: status : Получение диаметра
+15.07.2021 16:07:56 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_CLUSTER_2"; descrType="select"]
+15.07.2021 16:07:56 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:07:56 info: DIAMETER=1420.0000
+15.07.2021 16:07:56 info: proc_start : load_def
+15.07.2021 16:07:56 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_1"; descrType="select"]
+15.07.2021 16:07:57 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:07:57 info: proc_end : load_def
+15.07.2021 16:07:57 info: proc_start : calc_cluster
+15.07.2021 16:08:50 info: proc_end : calc_cluster
+15.07.2021 16:08:50 info: proc_start : clear_old_calc
+15.07.2021 16:08:50 info: status : Очистка старого расчета
+15.07.2021 16:08:50 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_6"; descrType="update"]
+15.07.2021 16:08:50 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:08:51 info: proc_end : clear_old_calc
+15.07.2021 16:08:51 info: proc_start : prepare_defs
+15.07.2021 16:08:51 info: status : Заполнение или обновление данных по дефектам в таблице СТО
+15.07.2021 16:08:51 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_4"; descrType="update"]
+15.07.2021 16:08:51 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:08:51 info: proc_end : prepare_defs
+15.07.2021 16:08:51 info: proc_start : write_cluster
+15.07.2021 16:08:51 info: status : Заполнение кластеров
+15.07.2021 16:08:53 info: dbWriter : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_2"; descrType="insert"]
+15.07.2021 16:08:53 info: dbWriter : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:08:53 info: 5 %
+15.07.2021 16:08:53 info: 10 %
+15.07.2021 16:08:53 info: 15 %
+15.07.2021 16:08:53 info: 20 %
+15.07.2021 16:08:54 info: 25 %
+15.07.2021 16:08:54 info: 30 %
+15.07.2021 16:08:54 info: 35 %
+15.07.2021 16:08:54 info: 40 %
+15.07.2021 16:08:54 info: 45 %
+15.07.2021 16:08:54 info: 50 %
+15.07.2021 16:08:54 info: 55 %
+15.07.2021 16:08:54 info: 60 %
+15.07.2021 16:08:54 info: 65 %
+15.07.2021 16:08:54 info: 70 %
+15.07.2021 16:08:54 info: 75 %
+15.07.2021 16:08:54 info: 80 %
+15.07.2021 16:08:54 info: 85 %
+15.07.2021 16:08:54 info: 90 %
+15.07.2021 16:08:54 info: 95 %
+15.07.2021 16:08:54 info: 100 %
+15.07.2021 16:09:05 info: proc_end : write_cluster
+15.07.2021 16:09:06 info: proc_end : fill_def
+15.07.2021 16:09:06 info: proc_start : write_def
+15.07.2021 16:09:05 info: proc_start : fill_def
+15.07.2021 16:09:06 info: status : Заполнение дефектов
+15.07.2021 16:09:07 info: dbWriter : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_3"; descrType="insert"]
+15.07.2021 16:09:07 info: dbWriter : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:09:07 info: 0 %
+15.07.2021 16:09:07 info: 5 %
+15.07.2021 16:09:07 info: 10 %
+15.07.2021 16:09:07 info: 15 %
+15.07.2021 16:09:07 info: 20 %
+15.07.2021 16:09:08 info: 25 %
+15.07.2021 16:09:08 info: 30 %
+15.07.2021 16:09:08 info: 35 %
+15.07.2021 16:09:08 info: 40 %
+15.07.2021 16:09:08 info: 45 %
+15.07.2021 16:09:08 info: 50 %
+15.07.2021 16:09:08 info: 55 %
+15.07.2021 16:09:08 info: 60 %
+15.07.2021 16:09:08 info: 65 %
+15.07.2021 16:09:08 info: 70 %
+15.07.2021 16:09:08 info: 75 %
+15.07.2021 16:09:08 info: 80 %
+15.07.2021 16:09:08 info: 85 %
+15.07.2021 16:09:09 info: 90 %
+15.07.2021 16:09:09 info: 95 %
+15.07.2021 16:09:09 info: 100 %
+15.07.2021 16:09:09 info: proc_end : write_def
+15.07.2021 16:09:09 info: proc_start : fill_avg
+15.07.2021 16:09:09 info: status : Расчет средних значений по кластерам
+15.07.2021 16:09:10 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_ILI_CALC_CLUSTER_5"; descrType="update"]
+15.07.2021 16:09:10 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:09:10 info: proc_end : fill_avg
+15.07.2021 16:09:10 info: proc_start : geolize_clusters
+15.07.2021 16:09:10 info: status : Геопривязка кластеров
+15.07.2021 16:09:11 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:09:11 info: dbCommand : Параметры [descrId="UTE_SEM.xml#CALC_ILI_GEOLIZE_CLUSTER_1"; descrType="update"]
+15.07.2021 16:09:11 info: proc_end : geolize_clusters
+15.07.2021 16:09:11 info: proc_start : post_calc
+15.07.2021 16:09:11 info: status : Постобработка после выполнения каждого отчета
+15.07.2021 16:09:11 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_INTEGR_2_13"; descrType="update"]
+15.07.2021 16:09:11 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+15.07.2021 16:09:11 info: proc_end : post_calc
+15.07.2021 16:09:11 info: commit_transaction
+15.07.2021 16:09:11 info: proc_end : process_data
+15.07.2021 16:09:11 info: service : @1124d8de@ : {"serviceName": "ili-cluster", "serviceGroup": "ili"}
+15.07.2021 16:10:15 error : Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+{"templateName":"ILI_Cluster.xml","input":"<input pressure=\"7.4\" thickness=\"16\"  inspection_id=\"1302183\" process_id=\"1124d8de\"/>"}
+ Error: Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+    at uteBlockingValidation (/home/websys53/gis_web77/nodejs/baseserver_ute/src/middlewares/uteBlockingValidation.js:19:10)
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:284:7
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:354:14)
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:365:14)
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:410:3)
+    at next (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/body-parser/lib/read.js:130:5
+    at invokeCallback (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:224:16)
+    at done (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:213:7)
+    at IncomingMessage.onEnd (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:273:7)
+    at IncomingMessage.emit (events.js:180:13)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)
+15.07.2021 16:10:34 error : Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+{"templateName":"ILI_Cluster.xml","input":"<input pressure=\"7.4\" thickness=\"16\"  inspection_id=\"1302183\" process_id=\"1124d8de\"/>"}
+ Error: Данный вызов не может быть выполнен, поскольку в данный момент выполняется серверная задача. Повторите попытку позже.
+    at uteBlockingValidation (/home/websys53/gis_web77/nodejs/baseserver_ute/src/middlewares/uteBlockingValidation.js:19:10)
+    at Layer.handle [as handle_request] (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:317:13)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:284:7
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:354:14)
+    at param (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:365:14)
+    at Function.process_params (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:410:3)
+    at next (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/express/lib/router/index.js:275:10)
+    at /home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/body-parser/lib/read.js:130:5
+    at invokeCallback (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:224:16)
+    at done (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:213:7)
+    at IncomingMessage.onEnd (/home/websys53/gis_web77/nodejs/baseserver_ute/node_modules/raw-body/index.js:273:7)
+    at IncomingMessage.emit (events.js:180:13)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)

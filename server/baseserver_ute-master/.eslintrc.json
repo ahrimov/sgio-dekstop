@@ -1,0 +1,42 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "es6": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "extends": "airbnb-base",
+    "plugins": [
+        "@stylistic/js"
+    ],
+    "rules": {
+        "no-console": "error",
+        "strict": ["error", "global"],
+        "no-unused-vars": "warn",
+        "quotes": ["warn", "single"],
+        "prefer-const": "warn",
+        "indent": ["warn", 4, { "SwitchCase": 1 }],
+        "comma-dangle": ["warn", "always-multiline"],
+        "semi": ["warn", "always"],
+        "import/order": [
+            "warn",
+            {
+                "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"]
+            }
+        ],
+        "eol-last": ["warn", "always"],
+        "dot-location": ["warn", "property"],
+        "default-case": "warn",
+        "eqeqeq": ["warn", "always"],
+        "no-empty-pattern": "warn",
+        "no-multi-spaces": "warn",
+        "no-multi-str": "warn",
+        "comma-spacing": ["warn", { "before": false, "after": true }],
+        "no-multiple-empty-lines": ["warn", { "max": 1 }],
+        "@stylistic/js/object-curly-spacing": ["warn", "always"]
+    }
+}

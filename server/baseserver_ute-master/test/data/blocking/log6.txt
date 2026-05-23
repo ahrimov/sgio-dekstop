@@ -1,0 +1,192 @@
+25.06.2021 10:44:57 info: <input process_id="a72bf126" root_path="" xml_file_name="Public/Data/UploadedFiles/КС Ординская - КС Чайковская-115cb9a2.xml" do_calc_inspection="false" data_file_name="КС Ординская - КС Чайковская-115cb9a2.xml" pipe="1304887" route_id="" ROUTE_ID="" km_start="1813" km_end="1934" date="25.6.2021" format="xml" company="UNKNOWN" ps_idx="false" start_odometr="" end_odometr="" tool_type_cl="" model="" sensor_gcl="" sensor_spacing_min="" sensor_spacing_max="" min_temp="" max_temp="" avg_temp="" min_velocity="" max_velocity="" avg_velocity="" sampling_frequency="" resolution="" rated_max_velocity="" rated_max_wt="" cluster_rule_cl="" source_gcl="UNKNOWN" weld_increment="" REF_ROUTE_ID="Ямбург-Западная граница СССР (Прогресс) (1813.00 - 1934.00)" company_LABEL="Неизвестно" />
+25.06.2021 10:44:57 info: service : @a72bf126@ : {"serviceName": "ili-import-xml", "serviceGroup": "ili"}
+25.06.2021 10:44:57 info: proc_start : process_data
+25.06.2021 10:44:57 info: status : Получение идентификатора участка
+25.06.2021 10:44:57 info: proc_start : load_types
+25.06.2021 10:44:57 info: status : Загружаю справочник аномалий
+25.06.2021 10:44:57 info: dbReader : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_9"; descrType="select"]
+25.06.2021 10:44:58 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 10:44:58 info: proc_end : load_types
+25.06.2021 10:44:58 info: proc_start : sub_template
+25.06.2021 10:44:58 info: status : Чтение оригинального файла /home/websys53/gis_web77/website/Public/Data/UploadedFiles/КС Ординская - КС Чайковская-115cb9a2.xml
+25.06.2021 10:44:59 info: proc_end : sub_template
+25.06.2021 10:44:59 info: proc_start : check_anomaly_types
+25.06.2021 10:44:59 info: status : Проверяю типы аномалий
+25.06.2021 10:45:00 info: proc_end : check_anomaly_types
+25.06.2021 10:45:00 info: proc_start : set_weld_nums
+25.06.2021 10:45:00 info: status : Проставляю на швах номера информацию о следующем шве. Новая простановка через c# SetWeldNums
+25.06.2021 10:45:00 info: proc_end : set_weld_nums
+25.06.2021 10:45:00 info: begin_transaction
+25.06.2021 10:45:07 info: proc_start : set_srv_district_id
+25.06.2021 10:45:07 info: status : Проставляю идентификторы ЛПУ
+25.06.2021 10:45:07 info: proc_end : set_srv_district_id
+25.06.2021 10:45:07 info: proc_start : upload_report
+25.06.2021 10:45:07 info: proc_start : get_first_weld_number
+25.06.2021 10:45:07 info: proc_end : get_first_weld_number
+25.06.2021 10:45:07 info: proc_start : create_report
+25.06.2021 10:45:07 info: status : Создаю записи самого отчета route_id=[1304887]
+25.06.2021 10:45:07 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_7"; descrType="update"]
+25.06.2021 10:45:07 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 10:45:07 info: dbSimpleScalarReader : Параметры [sql="select * from (select -50 id where coalesce('','0')='0'                   union all                  select max(e.event_id) id from pods.event_range e where coalesce('','0')<>'0') dd limit 1"]
+25.06.2021 10:45:07 info: dbSimpleScalarReader : Параметры [sql="SELECT max(ili_inspection_id) id FROM PODS.ILI_INSPECTION"]
+25.06.2021 10:45:07 info: status : Идентификатор отчета ILI_INSPECTION_ID=[1302144]
+25.06.2021 10:45:07 info: proc_end : create_report
+25.06.2021 10:45:07 info: proc_start : load_ili_data
+25.06.2021 10:45:07 info: status : Вставка дефектов
+25.06.2021 10:45:07 info: dbWriter : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_8"; descrType="insert"]
+25.06.2021 10:45:07 info: dbWriter : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 10:45:07 info: 0 %
+25.06.2021 10:45:10 info: 5 %
+25.06.2021 10:45:12 info: 10 %
+25.06.2021 10:45:14 info: 15 %
+25.06.2021 10:45:17 info: 20 %
+25.06.2021 10:45:19 info: 25 %
+25.06.2021 10:45:21 info: 30 %
+25.06.2021 10:45:23 info: 35 %
+25.06.2021 10:45:26 info: 40 %
+25.06.2021 10:45:28 info: 45 %
+25.06.2021 10:45:30 info: 50 %
+25.06.2021 10:45:32 info: 55 %
+25.06.2021 10:45:34 info: 60 %
+25.06.2021 10:45:36 info: 65 %
+25.06.2021 10:45:38 info: 70 %
+25.06.2021 10:45:40 info: 75 %
+25.06.2021 10:45:42 info: 80 %
+25.06.2021 10:45:45 info: 85 %
+25.06.2021 10:45:47 info: 90 %
+25.06.2021 10:45:49 info: 95 %
+25.06.2021 10:45:51 info: 100 %
+25.06.2021 10:45:51 info: proc_end : load_ili_data
+25.06.2021 10:45:51 info: proc_end : upload_report
+25.06.2021 10:45:51 info: proc_start : postprocess_report
+25.06.2021 10:45:51 info: proc_start : prepare_data
+25.06.2021 10:45:51 info: status : Заполнение ANOMALY_EXTENSION_CL
+25.06.2021 10:45:51 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_1"; descrType="update"]
+25.06.2021 10:45:51 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 10:45:54 info: status : Проставляю на швах номера предыдущих швов и дистанцию до них
+25.06.2021 10:45:54 info: proc_end : prepare_data
+25.06.2021 10:45:54 info: proc_start : set_weld_nums_old
+25.06.2021 10:45:54 info: status : Простановка на дефектах и особеностях номеров швов, дистанций до швов. Старая простановка через SQL
+25.06.2021 10:45:54 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_4"; descrType="update"]
+25.06.2021 10:45:54 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 10:45:57 info: proc_end : set_weld_nums_old
+25.06.2021 10:45:57 info: proc_start : prepare_pipe_len
+25.06.2021 10:45:57 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_5"; descrType="update"]
+25.06.2021 10:45:57 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 10:45:57 info: proc_end : prepare_pipe_len
+25.06.2021 10:45:57 info: proc_end : postprocess_report
+25.06.2021 10:45:57 info: commit_transaction
+25.06.2021 10:45:57 info: proc_start : delete_xml_file
+25.06.2021 10:45:57 info: proc_end : delete_xml_file
+25.06.2021 10:45:57 info: proc_end : process_data
+25.06.2021 10:45:57 info: finished : @a72bf126@ : {"serviceName": "ili-import-xml", "serviceGroup": "ili"}
+25.06.2021 10:48:49 error : request to http://localhost:3000/api/process-query failed, reason: socket hang up
+{}
+ FetchError: request to http://localhost:3000/api/process-query failed, reason: socket hang up
+    at ClientRequest.<anonymous> (/home/websys53/gis_web77/nodejs/baseserver/node_modules/node-fetch/lib/index.js:1461:11)
+    at ClientRequest.emit (events.js:180:13)
+    at Socket.socketOnEnd (_http_client.js:429:9)
+    at Socket.emit (events.js:185:15)
+    at endReadableNT (_stream_readable.js:1106:12)
+    at process._tickCallback (internal/process/next_tick.js:178:19)
+25.06.2021 10:48:50 info: Server 'baseserver' listening on port 3000
+25.06.2021 10:48:50 info: Server 'baseserver' listening on port 3000
+25.06.2021 11:02:18 info: Server 'baseserver' listening on port 3000
+25.06.2021 11:15:33 info: Server 'baseserver' listening on port 3000
+25.06.2021 11:17:07 info: <input process_id="aae98dac" root_path="" xml_file_name="Public/Data/UploadedFiles/КС Ординская - КС Чайковская-23dbebf6.xml" do_calc_inspection="true" data_file_name="КС Ординская - КС Чайковская-23dbebf6.xml" pipe="1304887" route_id="" ROUTE_ID="" km_start="1813" km_end="1934" date="25.5.2021" format="xml" company="UNKNOWN" ps_idx="false" start_odometr="" end_odometr="" tool_type_cl="" model="" sensor_gcl="" sensor_spacing_min="" sensor_spacing_max="" min_temp="" max_temp="" avg_temp="" min_velocity="" max_velocity="" avg_velocity="" sampling_frequency="" resolution="" rated_max_velocity="" rated_max_wt="" cluster_rule_cl="" source_gcl="UNKNOWN" weld_increment="" REF_ROUTE_ID="Ямбург-Западная граница СССР (Прогресс) (1813.00 - 1934.00)" company_LABEL="Неизвестно" />
+25.06.2021 11:17:07 info: service : @aae98dac@ : {"serviceName": "ili-import-xml", "serviceGroup": "ili"}
+25.06.2021 11:17:07 info: proc_start : process_data
+25.06.2021 11:17:07 info: status : Получение идентификатора участка
+25.06.2021 11:17:07 info: proc_start : load_types
+25.06.2021 11:17:07 info: status : Загружаю справочник аномалий
+25.06.2021 11:17:07 info: dbReader : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_9"; descrType="select"]
+25.06.2021 11:17:07 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:17:07 info: proc_end : load_types
+25.06.2021 11:17:07 info: proc_start : sub_template
+25.06.2021 11:17:07 info: status : Чтение оригинального файла /home/websys53/gis_web77/website/Public/Data/UploadedFiles/КС Ординская - КС Чайковская-23dbebf6.xml
+25.06.2021 11:17:09 info: proc_end : sub_template
+25.06.2021 11:17:09 info: proc_start : check_anomaly_types
+25.06.2021 11:17:09 info: status : Проверяю типы аномалий
+25.06.2021 11:17:09 info: proc_end : check_anomaly_types
+25.06.2021 11:17:09 info: proc_start : set_weld_nums
+25.06.2021 11:17:09 info: status : Проставляю на швах номера информацию о следующем шве. Новая простановка через c# SetWeldNums
+25.06.2021 11:17:09 info: proc_end : set_weld_nums
+25.06.2021 11:17:09 info: begin_transaction
+25.06.2021 11:17:09 info: proc_start : set_srv_district_id
+25.06.2021 11:17:09 info: status : Проставляю идентификторы ЛПУ
+25.06.2021 11:17:09 info: proc_end : set_srv_district_id
+25.06.2021 11:17:09 info: proc_start : upload_report
+25.06.2021 11:17:09 info: proc_start : get_first_weld_number
+25.06.2021 11:17:09 info: proc_end : get_first_weld_number
+25.06.2021 11:17:09 info: proc_start : create_report
+25.06.2021 11:17:09 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_7"; descrType="update"]
+25.06.2021 11:17:09 info: status : Создаю записи самого отчета route_id=[1304887]
+25.06.2021 11:17:09 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:17:09 info: dbSimpleScalarReader : Параметры [sql="select * from (select -50 id where coalesce('','0')='0'                   union all                  select max(e.event_id) id from pods.event_range e where coalesce('','0')<>'0') dd limit 1"]
+25.06.2021 11:17:09 info: dbSimpleScalarReader : Параметры [sql="SELECT max(ili_inspection_id) id FROM PODS.ILI_INSPECTION"]
+25.06.2021 11:17:09 info: status : Идентификатор отчета ILI_INSPECTION_ID=[1302145]
+25.06.2021 11:17:09 info: proc_end : create_report
+25.06.2021 11:17:09 info: proc_start : load_ili_data
+25.06.2021 11:17:09 info: status : Вставка дефектов
+25.06.2021 11:17:09 info: dbWriter : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_8"; descrType="insert"]
+25.06.2021 11:17:09 info: dbWriter : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:17:09 info: 0 %
+25.06.2021 11:17:11 info: 5 %
+25.06.2021 11:17:14 info: 10 %
+25.06.2021 11:17:16 info: 15 %
+25.06.2021 11:17:18 info: 20 %
+25.06.2021 11:17:20 info: 25 %
+25.06.2021 11:17:22 info: 30 %
+25.06.2021 11:17:24 info: 35 %
+25.06.2021 11:17:26 info: 40 %
+25.06.2021 11:17:28 info: 45 %
+25.06.2021 11:17:31 info: 50 %
+25.06.2021 11:17:33 info: 55 %
+25.06.2021 11:17:35 info: 60 %
+25.06.2021 11:17:37 info: 65 %
+25.06.2021 11:17:39 info: 70 %
+25.06.2021 11:17:41 info: 75 %
+25.06.2021 11:17:43 info: 80 %
+25.06.2021 11:17:45 info: 85 %
+25.06.2021 11:17:47 info: 90 %
+25.06.2021 11:17:50 info: 95 %
+25.06.2021 11:17:52 info: 100 %
+25.06.2021 11:17:52 info: proc_end : load_ili_data
+25.06.2021 11:17:52 info: proc_end : upload_report
+25.06.2021 11:17:52 info: proc_start : prepare_data
+25.06.2021 11:17:52 info: proc_start : postprocess_report
+25.06.2021 11:17:52 info: status : Заполнение ANOMALY_EXTENSION_CL
+25.06.2021 11:17:52 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_1"; descrType="update"]
+25.06.2021 11:17:52 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:17:55 info: status : Проставляю на швах номера предыдущих швов и дистанцию до них
+25.06.2021 11:17:55 info: proc_end : prepare_data
+25.06.2021 11:17:55 info: proc_start : set_weld_nums_old
+25.06.2021 11:17:55 info: status : Простановка на дефектах и особеностях номеров швов, дистанций до швов. Старая простановка через SQL
+25.06.2021 11:17:55 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_4"; descrType="update"]
+25.06.2021 11:17:55 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:17:57 info: proc_end : set_weld_nums_old
+25.06.2021 11:17:57 info: proc_start : prepare_pipe_len
+25.06.2021 11:17:57 info: dbCommand : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_5"; descrType="update"]
+25.06.2021 11:17:58 info: dbCommand : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:17:58 info: proc_end : prepare_pipe_len
+25.06.2021 11:17:58 info: proc_end : postprocess_report
+25.06.2021 11:17:58 info: commit_transaction
+25.06.2021 11:17:58 info: dbScalarReader : Параметры [descrId="UTE_SEM.xml#ILI_ILI_ZIP_IMP_C_55_0"; descrType="select"]
+25.06.2021 11:18:06 info: dbScalarReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:18:14 info: proc_start : calc_report
+25.06.2021 11:18:14 info: proc_start : set_params
+25.06.2021 11:18:14 info: status : Установка параметра: P_ROUTE_ID=1304887
+25.06.2021 11:18:14 info: status : Установка параметра: P_REPORT_ID=1302145
+25.06.2021 11:18:14 info: proc_end : set_params
+25.06.2021 11:18:14 info: proc_start : process_data
+25.06.2021 11:18:14 info: proc_start : load_repers
+25.06.2021 11:18:14 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_LINK_REPERS_1"; descrType="select"]
+25.06.2021 11:18:15 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:18:15 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_LINK_REPERS_2"; descrType="select"]
+25.06.2021 11:18:24 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+25.06.2021 11:18:27 info: proc_end : load_repers
+25.06.2021 11:18:27 info: proc_start : link_repers
+25.06.2021 11:18:55 info: begin_transaction
+25.06.2021 11:20:05 info: proc_start : update_control_points
+25.06.2021 11:20:05 info: status : Обновляю контрольные точки
+25.06.2021 11:20:05 info: dbWriter : Параметры [descrId="UTE_SEM.xml#CALC_LINK_REPERS_3"; descrType="insert"]

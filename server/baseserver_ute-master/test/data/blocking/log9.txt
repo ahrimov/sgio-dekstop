@@ -1,0 +1,162 @@
+23.07.2021 15:13:50 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:16:26 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:16:29 info: <input process_id="cc808019" route_id="1301748"/>
+23.07.2021 15:16:29 info: service : @cc808019@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:16:29 info: proc_start : process_data
+23.07.2021 15:16:29 info: proc_start : prepare_lrs_data
+23.07.2021 15:16:32 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:21:05 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:21:49 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:22:43 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:23:37 info: <input process_id="c005d5c7" route_id="1301748"/>
+23.07.2021 15:23:37 info: service : @c005d5c7@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:23:37 info: proc_start : process_data
+23.07.2021 15:23:38 info: proc_start : prepare_lrs_data
+23.07.2021 15:26:42 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:23:41 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:32:44 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:32:47 info: <input process_id="c005d5c7" route_id="1301748"/>
+23.07.2021 15:32:47 info: service : @c005d5c7@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:32:47 info: proc_start : process_data
+23.07.2021 15:32:47 info: proc_start : prepare_lrs_data
+23.07.2021 15:32:52 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:33:03 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:33:19 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:36:16 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:37:16 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:37:42 info: <input process_id="70ed67ee" route_id="1301748"/>
+23.07.2021 15:37:42 info: service : @70ed67ee@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:37:42 info: proc_start : process_data
+23.07.2021 15:37:43 info: proc_start : prepare_lrs_data
+23.07.2021 15:37:49 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:37:52 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:38:09 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:38:11 info: <input process_id="70ed67ee" route_id="1301748"/>
+23.07.2021 15:38:11 info: service : @70ed67ee@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:38:11 info: proc_start : process_data
+23.07.2021 15:38:12 info: proc_start : prepare_lrs_data
+23.07.2021 15:38:19 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:38:58 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:39:55 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:40:21 info: <input process_id="70ed67ee" route_id="1301748"/>
+23.07.2021 15:40:21 info: service : @70ed67ee@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:40:21 info: proc_start : process_data
+23.07.2021 15:40:21 info: proc_start : prepare_lrs_data
+23.07.2021 15:40:26 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:45:53 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:46:14 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 15:46:24 info: <input process_id="70ed67ee" route_id="1301748"/>
+23.07.2021 15:46:24 info: service : @70ed67ee@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 15:46:24 info: proc_start : process_data
+23.07.2021 15:46:25 info: proc_start : prepare_lrs_data
+23.07.2021 15:46:34 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 15:47:40 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+23.07.2021 15:47:57 info: Server 'baseserver_ute' listening on port 3002
+23.07.2021 16:05:57 info: <input process_id="70ed67ee" route_id="1301748"/>
+23.07.2021 16:05:57 info: service : @70ed67ee@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+23.07.2021 16:05:57 info: proc_start : process_data
+23.07.2021 16:05:57 info: proc_start : prepare_lrs_data
+23.07.2021 16:06:05 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+23.07.2021 16:25:24 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:16:43 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 10:30:18 info: <input buffer_width="5" feature_id="TEST_LEAD"  route_id="1304563" process_id="b27312a1" />
+26.07.2021 10:30:18 info: service : @b27312a1@ : {"serviceName": "line-route-idx", "serviceGroup": "route"}
+26.07.2021 10:30:18 info: proc_start : process_data
+26.07.2021 10:30:21 info: proc_start : load_geo
+26.07.2021 10:30:21 info: geoReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_2"; descrType="select"]
+26.07.2021 10:30:21 info: geoReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:30:23 info: proc_end : load_geo
+26.07.2021 10:30:23 info: proc_start : iterate_routes
+26.07.2021 10:30:23 info: proc_start : load_routes
+26.07.2021 10:30:26 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_1"; descrType="select"]
+26.07.2021 10:30:29 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:30:46 info: proc_end : load_routes
+26.07.2021 10:30:51 info: proc_start : load_route
+26.07.2021 10:30:51 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_4"; descrType="select"]
+26.07.2021 10:30:51 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:31:04 info: proc_end : load_route
+26.07.2021 10:36:43 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 10:43:45 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 10:45:29 info: <input buffer_width="5" feature_id="TEST_LEAD"  route_id="1304563" process_id="b27312a1" />
+26.07.2021 10:45:29 info: service : @b27312a1@ : {"serviceName": "line-route-idx", "serviceGroup": "route"}
+26.07.2021 10:45:29 info: proc_start : process_data
+26.07.2021 10:45:31 info: proc_start : load_geo
+26.07.2021 10:45:31 info: geoReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_2"; descrType="select"]
+26.07.2021 10:45:31 info: geoReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:45:33 info: proc_end : load_geo
+26.07.2021 10:45:33 info: proc_start : iterate_routes
+26.07.2021 10:45:33 info: proc_start : load_routes
+26.07.2021 10:45:33 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_1"; descrType="select"]
+26.07.2021 10:45:33 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:45:47 info: proc_end : load_routes
+26.07.2021 10:45:49 info: proc_start : load_route
+26.07.2021 10:45:49 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_4"; descrType="select"]
+26.07.2021 10:45:49 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 10:45:50 info: proc_end : load_route
+26.07.2021 11:04:10 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 11:04:27 info: <input buffer_width="5" feature_id="TEST_LEAD"  route_id="1304563" process_id="b27312a1" />
+26.07.2021 11:04:27 info: service : @b27312a1@ : {"serviceName": "line-route-idx", "serviceGroup": "route"}
+26.07.2021 11:04:27 info: proc_start : process_data
+26.07.2021 11:04:30 info: proc_start : load_geo
+26.07.2021 11:04:30 info: geoReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_2"; descrType="select"]
+26.07.2021 11:04:30 info: geoReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:04:32 info: proc_end : load_geo
+26.07.2021 11:04:32 info: proc_start : iterate_routes
+26.07.2021 11:04:32 info: proc_start : load_routes
+26.07.2021 11:04:32 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_1"; descrType="select"]
+26.07.2021 11:04:32 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:04:34 info: proc_end : load_routes
+26.07.2021 11:04:34 info: proc_start : load_route
+26.07.2021 11:04:34 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_4"; descrType="select"]
+26.07.2021 11:04:34 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:04:34 info: proc_end : load_route
+26.07.2021 11:12:23 info: proc_end : iterate_routes
+26.07.2021 11:12:23 info: begin_transaction
+26.07.2021 11:12:35 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 11:13:50 info: <input buffer_width="5" feature_id="TEST_LEAD"  route_id="1304563" process_id="b27312a1" />
+26.07.2021 11:13:50 info: service : @b27312a1@ : {"serviceName": "line-route-idx", "serviceGroup": "route"}
+26.07.2021 11:13:50 info: proc_start : process_data
+26.07.2021 11:13:52 info: proc_start : load_geo
+26.07.2021 11:13:52 info: geoReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_2"; descrType="select"]
+26.07.2021 11:13:52 info: geoReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:13:54 info: proc_end : load_geo
+26.07.2021 11:13:54 info: proc_start : iterate_routes
+26.07.2021 11:13:54 info: proc_start : load_routes
+26.07.2021 11:13:54 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_1"; descrType="select"]
+26.07.2021 11:13:55 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:14:23 info: proc_end : load_routes
+26.07.2021 11:14:23 info: proc_start : load_route
+26.07.2021 11:14:23 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_4"; descrType="select"]
+26.07.2021 11:14:23 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:14:23 info: proc_end : load_route
+26.07.2021 11:26:35 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 11:27:15 info: <input buffer_width="5" feature_id="TEST_LEAD"  route_id="1304563" process_id="b27312a1" />
+26.07.2021 11:27:15 info: service : @b27312a1@ : {"serviceName": "line-route-idx", "serviceGroup": "route"}
+26.07.2021 11:27:15 info: proc_start : process_data
+26.07.2021 11:27:25 info: proc_start : load_geo
+26.07.2021 11:27:25 info: geoReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_2"; descrType="select"]
+26.07.2021 11:27:25 info: geoReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:27:27 info: proc_end : load_geo
+26.07.2021 11:27:27 info: proc_start : iterate_routes
+26.07.2021 11:27:27 info: proc_start : load_routes
+26.07.2021 11:27:27 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_1"; descrType="select"]
+26.07.2021 11:27:27 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:27:46 info: proc_end : load_routes
+26.07.2021 11:27:46 info: proc_start : load_route
+26.07.2021 11:27:46 info: dbReader : Параметры [descrId="UTE_SEM.xml#LINE_LINE_ROUTE_IDX_C_4"; descrType="select"]
+26.07.2021 11:27:46 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:27:46 info: proc_end : load_route
+26.07.2021 11:33:10 info: proc_end : iterate_routes
+26.07.2021 11:33:10 info: begin_transaction
+26.07.2021 11:33:24 info: Server 'baseserver_ute' listening on port 3002
+26.07.2021 11:39:03 info: <input process_id="53b8fd81" route_id="1304563"/>
+26.07.2021 11:39:03 info: service : @53b8fd81@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}
+26.07.2021 11:39:03 info: proc_start : process_data
+26.07.2021 11:39:03 info: proc_start : prepare_lrs_data
+26.07.2021 11:39:06 info: dbReader : Параметры [descrId="UTE_SEM.xml#CALC_CALC_LRS_1"; descrType="select"]
+26.07.2021 11:39:10 info: dbReader : Параметры соединения: [server="192.168.17.89"; dbPort="6432" dbName="testorwgs"; user="postgres"]
+26.07.2021 11:39:10 info: proc_end : prepare_lrs_data
+26.07.2021 11:39:16 info: proc_start : lrs_calc
+26.07.2021 11:40:17 info: proc_start : update_lrs_data
+26.07.2021 11:40:17 info: status : Обновление STATION_POINT
+26.07.2021 11:40:17 info: finished : @53b8fd81@ : {"serviceName": "lrs-route-calc", "serviceGroup": "route"}

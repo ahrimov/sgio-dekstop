@@ -1,0 +1,35 @@
+const { ErrorHandler, logger } = require('gis-core');
+const { errors } = require('../../../../resources');
+
+/**
+ * Класс подготовки пришедших данных от клиента для сервиса группировки пересекаемых объектов
+ * @param body
+ * @return {Promise<*>}
+ */
+class PrepareService {
+	/**
+     * Функция парсинга пришедших данных в атрибуте <input>
+     * @param body
+     * @return {Promise<*>}
+     */
+	static async parseRequest(body) {
+		const { transform } = require('camaro');
+		let jsonData;
+		if (!body.input) {
+			throw new ErrorHandler(errors.gis_core_2, 'input');
+		}
+		logger.info(`${body.input}`);
+		const template = {
+			route_id: '/input/@route_id',
+			processId: '/input/@process_id',
+			group_name: '/input/@group_name',
+			feature_id: '/input/@feature_id',
+		};
+		await transform(body.input, template)
+			.then((result) => {
+				jsonData = result;
+			});
+		return jsonData;
+	}
+}
+module.exports = PrepareService;

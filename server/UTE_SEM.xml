@@ -1,0 +1,718 @@
+﻿<root version="sqlite 8.0.8.2">
+	
+<data id="CALC_CALC_DEF_1" comment="CALC_CALC_DEF_1" schema="UTE" table="CALC_CALC_DEF">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+ 			SELECT ILI_DATA_ID "ILI_DATA_ID", ABSOLUTE_ODOMETER "ABSOLUTE_ODOMETER", CALIBRATED_MEASURE "MEASURE", 
+                         CONTROL_POINT_LF "CONTROL_POINT_LF", CERTAINTY_INTERVAL "ACCURACY", null "EVENT_ID"
+ 			FROM sgio_ili_data d 
+ 			WHERE d.ili_inspection_id = {P_REPORT_ID}
+ 			AND absolute_odometer IS NOT NULL
+ 			order by absolute_odometer
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_CALC_DEF_2" comment="CALC_CALC_DEF_2" schema="UTE" table="CALC_CALC_DEF">
+	<select>
+		<dbQuery>
+		<var name="P_ROUTE_ID"/>
+		<var name="P_REPORT_ID"/>
+			<query>
+WITH        
+z_route as (SELECT id,GEOMETRY geom	FROM pods_route),
+segments AS (SELECT id,ST_DumpPoints(ST_LineMerge(st_transform(l.geom,4326)))  as p from  z_route l where id={P_ROUTE_ID}),
+              points AS (SELECT id,(p).path[1] AS point_index,(p).geom AS point_geom  FROM segments),
+       line_segments AS (SELECT p1.id, p1.point_index,ST_MakeLine(p1.point_geom, p2.point_geom) AS segment  FROM points p1 JOIN points p2 ON p1.id = p2.id AND p1.point_index = p2.point_index - 1),
+     segment_lengths AS (SELECT id, point_index,ST_Length(segment::geography) AS segment_length FROM line_segments),
+  cumulative_lengths AS (SELECT id, point_index, segment_length, SUM(segment_length) OVER (PARTITION BY id ORDER BY point_index) AS cumulative_length FROM segment_lengths),
+pnt_meas as (SELECT p.id, p.point_index,ST_X(p.point_geom) AS x,ST_Y(p.point_geom) AS y, coalesce(cl.cumulative_length,0) cumulative_length FROM points p left JOIN cumulative_lengths cl
+ 						ON cl.id = p.id AND cl.point_index+1 = p.point_index ORDER BY p.id, p.point_index),
+                 lin as (select ST_GeomFromText('Linestring m ('||string_agg(X||' '||Y||' '||cumulative_length, ',' order by cumulative_length)||')',4326) geom, id from pnt_meas group by id),
+	  arr_points as (SELECT ST_InterpolatePoint((select geom from lin), m.geom) measure, 
+ST_LineInterpolatePoint((select geom from lin), ST_LineLocatePoint((select geom from lin), m.geom)) geom,
+m.station_id id,
+m.station,
+'marker' cls from pods_marker m
+where ST_within(m.geom,(select st_buffer(geom::geography,10)::geometry geo from  lin))
+union all
+SELECT ST_InterpolatePoint((select geom from lin), (ST_Dump(st_transform(s.geom,4326))).geom) measure, 
+ST_LineInterpolatePoint((select geom from lin), ST_LineLocatePoint((select geom from lin), (ST_Dump(st_transform(s.geom,4326))).geom)) geom,
+id+1000000 id, 
+999 /*nullif(s."KM_CONNECT",'')::numeric*/ station,
+'valve' cls FROM pods_valve s
+where ST_within(st_transform(s.geom,4326),(select st_buffer(geom::geography,1)::geometry geo from  lin))
+ union all
+select calibrated_measure "MEASURE",ST_GeomFromText('POINT('||X_COORD||' '||Y_COORD||')', 4326) geom, 
+ili_data_id id,
+   station "STATION",'valve' cls 
+			from sgio_ili_data d where d.ili_inspection_id={P_REPORT_ID} and  REF_EVENT_ID=-999
+union all
+SELECT  ST_M((dp).geom) measure ,(dp).geom,(dp).path[1] id,
+null station,
+'point' cls
+FROM (
+  SELECT ST_DumpPoints(st_transform(l.geom,4326)) AS dp
+  FROM lin l
+) AS dump_points)
+select 
+S.measure "MEASURE", 
+S.STATION "STATION", 
+50 "LINE_ID", 
+50 "ROUTE_ID", 
+50 "SERIES_ID", 
+50 "SERIES", 
+id "STATION_ID",
+0 "DEPTH", 
+null "SRV_DISTRICT_GCL", 
+id "COORDINATE_ID", 
+id "LOCATION_ID", 
+st_x(geom) "X", 
+st_y(geom) "Y", 
+null "Z"
+from arr_points s order by s.measure
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_CALC_DEF_3" comment="CALC_CALC_DEF_3" schema="UTE" table="CALC_CALC_DEF">
+	<insert>
+		<dbCommand>
+		<var name="config.main.COORD_TOLERANCE"/>
+		<var name="config.main.LINK_RADIUS"/>
+		<var name="config.main.PODS_USER"/>
+		<var name="NEAREST_DIST" type="Decimal"/>
+		<var name="COORDINATE_ID" type="Decimal"/>	
+		<var name="LOCATION_ID" type="Decimal"/>	
+		<var name="DEPTH" type="Decimal"/>		
+		<var name="SRV_DISTRICT_GCL" type="Decimal"/>	
+		<var name="dist" type="Decimal"/>	
+		<var name="X" type="Decimal"/>
+		<var name="Y" type="Decimal"/>	
+		<var name="Z" type="Decimal"/>	
+		<var name="STATION_ID" type="Decimal"/>		
+		<var name="LINE_ID" type="Decimal"/>	
+		<var name="ROUTE_ID" type="Decimal"/>	
+		<var name="SERIES_ID" type="Decimal"/>
+		<var name="SERIES" type="Decimal"/>	
+		<var name="STATION" type="Decimal"/>	
+		<var name="MEASURE" type="Decimal"/>
+		<var name="ACCURACY" type="Decimal"/>	
+		<var name="ILI_DATA_ID" type="Decimal"/>			
+			<query>
+			DO $$
+			
+			DECLARE
+ 			sp_id NUMERIC(16,0);
+ 			loc_id NUMERIC(16,0);
+ 			c_id NUMERIC(16,0);
+ 			e_id NUMERIC(16,0);
+ 			BEGIN
+ 			
+ 			UPDATE sgio_ili_data 
+ 			SET 
+                            CALIBRATED_MEASURE = {MEASURE},
+                            srv_district_gcl = {SRV_DISTRICT_GCL},
+			    x_coord = {X},
+			    y_coord = {Y},
+                 	    z_coord = {Z},
+			    tube_height = {DEPTH},
+			   station = {STATION},
+			   pipe_measure = {MEASURE}
+ 			WHERE ili_data_id = {ILI_DATA_ID};
+ 			END $$;
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+ 
+<data id="CALC_CALC_DEF_4" comment="CALC_CALC_DEF_4" schema="UTE" table="CALC_CALC_DEF">
+	<insert>
+		<dbCommand>		
+		<var name="src_id" type="String"/>
+		<var name="fract" type="Decimal"/>	
+		<var name="s_id" type="Decimal"/>	
+		<var name="e_id" type="Decimal"/>		
+		<var name="id" type="Decimal"/>	
+		<var name="dist" type="Decimal"/>	
+			<query>
+			DO $$
+			DECLARE
+ 			km NUMERIC(10,2);
+ 			lc NUMERIC(10,2);
+ 			BEGIN
+ 			DELETE FROM WEB50.PS_INDEX_OBJ WHERE KEY_VALUES = '{src_id}';
+ 
+ 			SELECT sp1.measure+{fract}*(sp2.measure-sp1.measure),sp1.station+{fract}*(sp2.station-sp1.station)
+ 			INTO lc,km
+ 			FROM pods.station_point sp1, pods.station_point sp2
+ 			WHERE sp1.station_id = {s_id} AND sp2.station_id = {e_id};
+
+ 			INSERT INTO WEB50.PS_INDEX_OBJ(TEMPLATE_ID, PIPE_SYSTEM_ID, STATE_ID, KEY_FIELDS, KEY_VALUES, KM_START, KM_END, LINE_COORD_START, LINE_COORD_END, DISTANCE, GID, CUSER_ID) 
+ 			VALUES(1, {id}, 0, 'ILI_DATA_ID', '{src_id}', km, km, lc, lc, {dist}, NULL, 0);
+ 			END $$;
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+ 
+<data id="CALC_CALC_DEF_5" comment="CALC_CALC_DEF_5" schema="UTE" table="CALC_CALC_DEF">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+			SELECT p.ILI_PIPE_LENGTH_ID "ILI_PIPE_LENGTH_ID", p.WELD_NUMBER "WELD_NUMBER", null "EVENT_ID", 
+ 			d1.x_coord "X_COORD", d1.y_coord "Y_COORD", 
+                        d1.DS_WELD_DISTANCE "ODOM_LENGTH", d2.pipe_MEASURE-d1.pipe_MEASURE "LENGTH",
+ 			d2.x_coord "NEXT_X_COORD", d2.y_coord "NEXT_Y_COORD"
+			from sgio_ili_pipe_length p
+			join sgio_ili_data d1 on p.ili_inspection_id = d1.ili_inspection_id and p.weld_number = d1.weld_number and d1.anomaly_type_cl = 5001
+			join sgio_ili_data d2 on p.ili_inspection_id = d2.ili_inspection_id and p.weld_number = d2.us_weld_number and d2.anomaly_type_cl = 5001
+			where p.ili_inspection_id = {P_REPORT_ID}
+			order by d1.absolute_odometer
+			</query>
+		</dbQuery>
+	</select>
+</data> 
+
+<data id="CALC_CALC_DEF_6" comment="CALC_CALC_DEF_6" schema="UTE" table="CALC_CALC_DEF">
+	<insert>
+		<dbCommand>		
+		<var name="config.main.PODS_USER"/>		
+		<var name="LENGTH" type="Decimal"/>
+		<var name="ODOM_LENGTH" type="Decimal"/>	
+		<var name="STATION_ID" type="Decimal"/>	
+		<var name="NEXT_STATION_ID" type="Decimal"/>		
+		<var name="VALIDITY_TOLERANCE" type="Decimal"/>	
+		<var name="EVENT_ID" type="Decimal" default="SELECT max(EVENT_ID) id FROM PODS.EVENT_RANGE" />	
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+		</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<data id="CALC_CALC_DEF_7" comment="CALC_CALC_DEF_7" schema="UTE" table="CALC_CALC_DEF">
+	<insert>
+		<dbCommand>	
+		<var name="EVENT_ID" type="Decimal"/>
+		<var name="COORDINATE_ID" type="Decimal"/>	
+		<var name="NEXT_COORDINATE_ID" type="Decimal"/>	
+		<var name="ILI_PIPE_LENGTH_ID" type="Decimal"/>
+			<query>
+ 			UPDATE sgio_ili_pipe_length 
+ 			SET  
+                        x_coord_start = {X_COORD},
+                        y_coord_start = {Y_COORD},
+                        x_coord_end   = {NEXT_X_COORD},
+                        y_coord_end   = {NEXT_Y_COORD}
+ 			WHERE ILI_PIPE_LENGTH_ID = {ILI_PIPE_LENGTH_ID}
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<data id="CALC_CALC_DEF_8" comment="CALC_CALC_DEF_8" schema="UTE" table="CALC_CALC_DEF">
+	<update>
+		<dbCommand>
+		<var name="P_REPORT_ID"/>	 
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+			</query>
+		</dbCommand>
+	</update>
+</data> 
+
+<data id="CALC_CALC_DEF_9" comment="CALC_CALC_DEF_9" schema="UTE" table="CALC_CALC_DEF">
+	<update>
+		<dbCommand>
+		<var name="P_REPORT_ID"/>	 
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="CALC_CALC_DEF_10" comment="CALC_CALC_DEF_10" schema="UTE" table="CALC_CALC_DEF">
+	<update>
+		<dbCommand>
+		<var name="P_REPORT_ID"/>	 
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+			/*UPDATE sgio_ili_data set
+			    srv_district_gcl = null,
+			    x_coord = null,
+			    y_coord = null,
+                 	    z_coord = null,
+			    tube_height = null,
+			   station = null,
+			   pipe_measure = null,
+			   ref_event_id = null,  control_point_lf = 'N', 
+			calibrated_measure = null, certainty_interval = null
+ 			WHERE ili_inspection_id = {P_REPORT_ID} and control_point_lf = 'N'
+*/
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="CALC_CALC_DEF_11" comment="CALC_CALC_DEF_11" schema="UTE" table="CALC_CALC_DEF">
+	<update>
+		<dbCommand>
+		<var name="P_REPORT_ID"/>	 
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+/*
+			UPDATE sgio_ili_pipe_length set event_id = null,
+                        x_coord_start = null,
+                        y_coord_start = null,
+                        x_coord_end   = null,
+                        y_coord_end   = null  WHERE ili_inspection_id = {P_REPORT_ID} */
+			</query>
+		</dbCommand>
+	</update>
+</data>
+ 
+<data id="CALC_CALC_DEF_12" comment="CALC_CALC_DEF_12" schema="UTE" table="CALC_CALC_DEF">
+	<update>
+		<dbCommand>
+		<var name="call_complex_method.STATION_RANGE"/>	 
+		<var name="P_REPORT_ID"/>		
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+			</query>
+		</dbCommand>
+	</update>
+</data>
+ 
+<data id="CALC_CALC_DEF_13" comment="CALC_CALC_DEF_13" schema="UTE" table="CALC_CALC_DEF">
+	<update>
+		<dbCommand> 
+		<var name="P_REPORT_ID"/>		
+			<query>
+			/*10.10.25: это больше не нужно надо удалить вызов*/
+			select null res;
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<
+<data id="CALC_LINK_REPERS_1" comment="CALC_LINK_REPERS_1" schema="UTE" table="CALC_LINK_REPERS">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+			SELECT ili_data_id "OBJ_ID", absolute_odometer "LINE_COORD",
+ 			CASE WHEN d.anomaly_type_cl IN (1003,1007,1008) THEN '1' WHEN d.anomaly_type_cl=1004 THEN '2' END "OBJ_CLS_ID"
+ 			FROM sgio_ili_data d
+ 			WHERE d.ili_inspection_id = {P_REPORT_ID} AND d.anomaly_type_cl IN (1003,1004,1007,1008)
+			ORDER BY absolute_odometer 
+			</query>
+		</dbQuery>
+	</select>
+</data> 
+
+<data id="CALC_LINK_REPERS_2" comment="CALC_LINK_REPERS_2" schema="UTE" table="CALC_LINK_REPERS">
+	<select>
+		<dbQuery>
+		<var name="P_ROUTE_ID"/>
+		<var name="P_REPORT_ID"/>
+			<query>
+WITH        z_route as (SELECT id,GEOMETRY geom	FROM pods_route),
+segments AS (SELECT id,ST_DumpPoints(ST_LineMerge(st_transform(l.geom,4326)))  as p from  z_route l where id={P_ROUTE_ID}),
+              points AS (SELECT id,(p).path[1] AS point_index,(p).geom AS point_geom  FROM segments),
+       line_segments AS (SELECT p1.id, p1.point_index,ST_MakeLine(p1.point_geom, p2.point_geom) AS segment  FROM points p1 JOIN points p2 ON p1.id = p2.id AND p1.point_index = p2.point_index - 1),
+     segment_lengths AS (SELECT id, point_index,ST_Length(segment::geography) AS segment_length FROM line_segments),
+  cumulative_lengths AS (SELECT id, point_index, segment_length, SUM(segment_length) OVER (PARTITION BY id ORDER BY point_index) AS cumulative_length FROM segment_lengths),
+pnt_meas as (SELECT p.id, p.point_index,ST_X(p.point_geom) AS x,ST_Y(p.point_geom) AS y, coalesce(cl.cumulative_length,0) cumulative_length FROM points p left JOIN cumulative_lengths cl
+ 						ON cl.id = p.id AND cl.point_index+1 = p.point_index ORDER BY p.id, p.point_index),
+                 lin as (select ST_GeomFromText('Linestring m ('||string_agg(X||' '||Y||' '||cumulative_length, ',' order by cumulative_length)||')',4326) geom, id from pnt_meas group by id),
+	  arr_points as (SELECT ST_InterpolatePoint((select geom from lin), m.geom) measure, 
+ST_LineInterpolatePoint((select geom from lin), ST_LineLocatePoint((select geom from lin), m.geom)) geom,
+m.station_id id,
+m.station,
+'2' cls from sgio_ngg_marker m
+where ST_within(m.geom,(select st_buffer(geom::geography,10)::geometry geo from  lin))
+union all
+SELECT ST_InterpolatePoint((select geom from lin), (ST_Dump(st_transform(s.geom,4326))).geom) measure, 
+ST_LineInterpolatePoint((select geom from lin), ST_LineLocatePoint((select geom from lin), (ST_Dump(st_transform(s.geom,4326))).geom)) geom,
+id+1000000 id, 
+999 /*nullif(s."KM_CONNECT",'')::numeric*/ station,
+'1' cls FROM pods_valve s
+where ST_within(st_transform(s.geom,4326),(select st_buffer(geom::geography,1)::geometry geo from  lin))
+union all
+  SELECT  calibrated_measure measure,
+          ST_GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326) geom,
+          ref_event_id id,
+           station,
+ 	  '1' obj_cls_id
+ 	FROM sgio_ili_data d where d.ili_inspection_id={P_REPORT_ID} and ref_event_id=-999 and calibrated_measure is not null
+)
+select 
+id  "OBJ_ID",
+S.measure "LINE_COORD", 
+cls "OBJ_CLS_ID"
+from arr_points s order by s.measure
+			</query>
+		</dbQuery>
+	</select>
+</data> 
+
+<data id="CALC_LINK_REPERS_3" comment="CALC_LINK_REPERS_3" schema="UTE" table="CALC_LINK_REPERS">
+	<insert>
+		<dbCommand>
+		<var name="COEFF" type="Decimal"/>	
+		<var name="FACILITY_ID" type="Decimal"/>	
+		<var name="REPER_ID" type="Decimal"/>	
+		<var name="P_ROUTE_ID"/>
+		<var name="P_REPORT_ID"/>		
+			<query>
+WITH       z_route as (SELECT id,GEOMETRY geom	FROM pods_route),
+ segments AS (SELECT id,ST_DumpPoints(ST_LineMerge(st_transform(l.geom,4326)))  as p from  z_route l where id={P_ROUTE_ID}),
+              points AS (SELECT id,(p).path[1] AS point_index,(p).geom AS point_geom  FROM segments),
+       line_segments AS (SELECT p1.id, p1.point_index,ST_MakeLine(p1.point_geom, p2.point_geom) AS segment  FROM points p1 JOIN points p2 ON p1.id = p2.id AND p1.point_index = p2.point_index - 1),
+     segment_lengths AS (SELECT id, point_index,ST_Length(segment::geography) AS segment_length FROM line_segments),
+  cumulative_lengths AS (SELECT id, point_index, segment_length, SUM(segment_length) OVER (PARTITION BY id ORDER BY point_index) AS cumulative_length FROM segment_lengths),
+pnt_meas as (SELECT p.id, p.point_index,ST_X(p.point_geom) AS x,ST_Y(p.point_geom) AS y, coalesce(cl.cumulative_length,0) cumulative_length FROM points p left JOIN cumulative_lengths cl
+ 						ON cl.id = p.id AND cl.point_index+1 = p.point_index ORDER BY p.id, p.point_index),
+                 lin as (select ST_GeomFromText('Linestring m ('||string_agg(X||' '||Y||' '||cumulative_length, ',' order by cumulative_length)||')',4326) geom, id from pnt_meas group by id),
+	  arr_points as (SELECT ST_InterpolatePoint((select geom from lin), m.geom) measure, 
+ST_LineInterpolatePoint((select geom from lin), ST_LineLocatePoint((select geom from lin), m.geom)) geom,
+m.station_id id,
+m.station,
+'2' cls from pods_marker m
+where ST_within(m.geom,(select st_buffer(geom::geography,10)::geometry geo from  lin))
+union all
+SELECT ST_InterpolatePoint((select geom from lin), (ST_Dump(st_transform(s.geom,4326))).geom) measure, 
+ST_LineInterpolatePoint((select geom from lin), ST_LineLocatePoint((select geom from lin), (ST_Dump(st_transform(s.geom,4326))).geom)) geom,
+id+1000000 id, 
+999 /*nullif(s."KM_CONNECT",'')::numeric*/  station,
+'1' cls FROM pods_valve
+where ST_within(st_transform(s.geom,4326),(select st_buffer(geom::geography,1)::geometry geo from  lin)))
+			UPDATE sgio_ili_data 
+ 			SET (ref_event_id, control_point_lf, calibrated_measure, certainty_interval) = (
+ 			SELECT id,  'Y', measure, {COEFF}
+ 			FROM arr_points WHERE id = {FACILITY_ID}) 
+ 			WHERE ili_data_id = {REPER_ID} and coalesce(ref_event_id,0)&lt;&gt;-999
+			</query>
+		</dbCommand>
+	</insert>
+</data> 
+
+<data id="CALC_LINK_REPERS_4" comment="CALC_LINK_REPERS_4" schema="UTE" table="CALC_LINK_REPERS">
+	<update>
+		<dbCommand>
+		<var name="P_REPORT_ID"/>
+			<query>
+			UPDATE sgio_ili_data SET 
+ 			ref_event_id = null, control_point_lf = 'N', 
+ 			calibrated_measure = null, certainty_interval = null
+ 			WHERE ili_inspection_id = {P_REPORT_ID} and coalesce(ref_event_id,0)&lt;&gt;-999
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+
+<data id="ILI_ILI_INSP_PROC_C_1" comment="ILI_ILI_INSP_PROC_C_1" schema="UTE" table="ILI_ILI_INSP_PROC_C">
+	<select>
+		<dbQuery>
+		<var name="INSPECTION_ID"/>			
+			<query>
+			SELECT ROUTE_ID "ROUTE_ID"
+ 			FROM sgio_ili_inspection i WHERE ILI_INSPECTION_ID = {INSPECTION_ID}
+			</query>
+		</dbQuery>
+	</select>
+</data>
+<data id="ILI_ILI_ZIP_IMP_C_55_0" comment="ILI_ILI_ZIP_IMP_C_55_0" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<select>
+		<dbQuery>
+			<var name="db_command.CMD.ILI_INSPECTION_ID"/>
+			<query>
+				SELECT ROUTE_ID "ROUTE_ID"
+				FROM sgio_ili_inspection i WHERE ILI_INSPECTION_ID = {db_command.CMD.ILI_INSPECTION_ID}
+			</query>
+		</dbQuery>
+	</select>
+</data>
+<data id="ILI_ILI_ZIP_IMP_C_55_1" comment="ILI_ILI_ZIP_IMP_C_55_1" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="db_command.CMD.ILI_INSPECTION_ID"/>	
+			<query>
+			UPDATE sgio_ili_data dst
+ 			SET anomaly_extension_cl = coalesce((SELECT a.code
+ 			FROM sgio_anomaly_extension_cl a
+ 			JOIN sgio_ili_anomaly_type_cl b
+ 			ON a.code = b.index_description
+ 			WHERE b.code = dst.anomaly_type_cl),'UNKNOWN')
+ 			WHERE dst.ili_inspection_id = {db_command.CMD.ILI_INSPECTION_ID}
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="ILI_ILI_ZIP_IMP_C_55_2" comment="ILI_ILI_ZIP_IMP_C_55_2" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="db_command.CMD.ILI_INSPECTION_ID"/>	
+			<query>
+
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="ILI_ILI_ZIP_IMP_C_55_3" comment="ILI_ILI_ZIP_IMP_C_55_3" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="db_command.CMD.ILI_INSPECTION_ID"/>	
+			<query>
+		
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="ILI_ILI_ZIP_IMP_C_55_4" comment="ILI_ILI_ZIP_IMP_C_55_4" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="db_command.CMD.ILI_INSPECTION_ID"/>	
+			<query>
+				DO $$ 
+				BEGIN
+                 update sgio_ili_data set weld_number=null where weld_number like ''  and ili_inspection_id = {db_command.CMD.ILI_INSPECTION_ID};
+                
+                update sgio_ili_data d set 
+                us_weld_distance=d.absolute_odometer-d.us_weld_odometer
+                ,ds_weld_distance=d.ds_weld_odometer -  d.absolute_odometer
+                where EXISTS (select 1 from sgio_ili_data ddd
+                 JOIN sgio_ili_data ww 
+                 ON ww.ili_inspection_id = ddd.ili_inspection_id
+                 AND ddd.absolute_odometer&gt;=ww.absolute_odometer 
+                             AND ww.absolute_odometer&gt;=ddd.absolute_odometer-100
+                 WHERE ww.ili_inspection_id = {db_command.CMD.ILI_INSPECTION_ID}
+                 AND ww.anomaly_type_cl = 5001
+                 AND ddd.ili_data_id = d.ili_data_id);
+                 
+                 END $$;
+			</query>
+		</dbCommand>
+	</update>
+</data>
+	<data id="ILI_ILI_ZIP_IMP_C_55_4_2" comment="ILI_ILI_ZIP_IMP_C_55_4" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+		<update>
+			<dbCommand>
+				<var name="db_command_err.CMD.ILI_INSPECTION_ID"/>
+				<query>
+					DO $$
+					BEGIN
+
+					update sgio_ili_data set weld_number=null where weld_number like '' and ili_inspection_id = {db_command_err.CMD.ILI_INSPECTION_ID};
+					
+
+					update sgio_ili_data d set
+					us_weld_distance=d.absolute_odometer-d.us_weld_odometer
+					,ds_weld_distance=d.ds_weld_odometer - d.us_weld_odometer + d.absolute_odometer - d.us_weld_odometer
+					where EXISTS (select 1 from sgio_ili_data ddd
+					JOIN sgio_ili_data ww
+					ON ww.ili_inspection_id = ddd.ili_inspection_id
+					AND ddd.absolute_odometer&gt;=ww.absolute_odometer
+					AND ww.absolute_odometer&gt;=ddd.absolute_odometer-100
+					WHERE ww.ili_inspection_id = {db_command_err.CMD.ILI_INSPECTION_ID}
+					AND ddd.weld_number is null
+					AND ww.anomaly_type_cl = 5001
+					AND ddd.ili_data_id = d.ili_data_id);
+
+
+					END $$;
+				</query>
+			</dbCommand>
+		</update>
+	</data>
+
+<data id="ILI_ILI_ZIP_IMP_C_55_5" comment="ILI_ILI_ZIP_IMP_C_55_5" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="db_command.CMD.ILI_INSPECTION_ID"/>	
+			<query>
+			insert into sgio_ili_pipe_length(ili_inspection_id, weld_number, sequence_number, start_odometer, end_odometer, measured_wall_thickness, nominal_wall_thickness, source_gcl)
+			 select ili_inspection_id, weld_number, row_number() over(order by absolute_odometer), 
+ 			absolute_odometer, lead(absolute_odometer) over(order by absolute_odometer),
+ 			measured_wall_thickness, nominal_wall_thickness, source_gcl
+ 			from sgio_ili_data d
+ 			where ili_inspection_id = {db_command.CMD.ILI_INSPECTION_ID} and anomaly_type_cl = 5001
+			</query>
+		</dbCommand>
+	</update>
+</data>
+	<data id="ILI_ILI_ZIP_IMP_C_55_5_2" comment="ILI_ILI_ZIP_IMP_C_55_5" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+		<update>
+			<dbCommand>
+				<var name="db_command_err.CMD.ILI_INSPECTION_ID"/>
+				<query>
+					insert into sgio_ili_pipe_length(ili_inspection_id, weld_number, sequence_number, start_odometer, end_odometer, measured_wall_thickness, nominal_wall_thickness, source_gcl)
+					select ili_inspection_id, weld_number, row_number() over(order by absolute_odometer),
+					absolute_odometer, lead(absolute_odometer) over(order by absolute_odometer),
+					measured_wall_thickness, nominal_wall_thickness, source_gcl
+					from sgio_ili_data d
+					where ili_inspection_id = {db_command_err.CMD.ILI_INSPECTION_ID} and anomaly_type_cl = 5001
+				</query>
+			</dbCommand>
+		</update>
+	</data>
+
+
+	<data id="ILI_ILI_ZIP_IMP_C_55_6" comment="ILI_ILI_ZIP_IMP_C_55_6" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<select>
+		<dbQuery>
+		<var name="PIPE"/>		
+		<var name="KM_START"/>	
+		<var name="KM_END"/>		
+			<query>
+			SELECT coalesce(MIN(route_id),0) "ROUTE_ID"
+ 			FROM 
+ 			(SELECT s.route_id, min(s.station_begin) min_km, max(s.station_end) max_km
+ 			FROM pods.line l
+ 			JOIN pods.series s 
+ 			ON s.line_id = l.line_id
+ 			WHERE UPPER(REGEXP_REPLACE(REPLACE(REPLACE(REPLACE(l.description,'III','3'),'II','2'),'I','1'),'\s|-|\(|\)','')) 
+ 			LIKE TRIM(UPPER(REGEXP_REPLACE(REPLACE(REPLACE(REPLACE('{PIPE}','III','3'),'II','2'),'I','1'),'\s|-|\(|\)','')))
+ 			GROUP BY s.route_id) dd 
+ 			WHERE ABS(min_km-{KM_START})&lt;15 
+ 			AND ABS(max_km-{KM_END})&lt;15
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="ILI_ILI_ZIP_IMP_C_55_7" comment="ILI_ILI_ZIP_IMP_C_55_7" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="DATE"/>	
+		<var name="MODEL"/>
+		<var name="FORMAT"/>
+		<var name="COMPANY"/>
+		<var name="config.main.PODS_USER"/>
+		<var name="KM_START"/>
+		<var name="KM_END"/>
+		<var name="call_complex_method.FIRST_WELD_NUMBER"/>	
+		<var name="ROUTE_ID" type="Decimal"/>		
+		<var name="EVENT_ID" type="Decimal" default="select * from (select -50 id where coalesce('','0')='0' 
+																	union all
+																	select max(e.event_id) id from pods.event_range e where coalesce('','0')&lt;&gt;'0') dd limit 1" />	
+		<var name="ILI_INSPECTION_ID" type="Decimal" default="SELECT max(ili_inspection_id) id FROM sgio_ILI_INSPECTION" />			
+			<query>
+			DO $$
+                DECLARE
+                RETURNiliid integer;
+                RETURNeventid integer default -50;
+                v_pipe varchar(50) default 'Объект лежит не на оси трубопровода';
+                BEGIN 
+                 select l.description from pods.line l, pods.route r where r.route_id = {ROUTE_ID} and l.line_id = r.line_id into v_pipe;
+              
+                INSERT INTO sgio_ILI_INSPECTION(BEGIN_DATE, END_DATE, TOOL_TYPE_CL, MODEL, ILI_COMMENTS, TOOL_VENDOR_CL, DESCRIPTION, "comments" ,route_id) VALUES
+                 (TO_DATE('{DATE}','DD.MM.YYYY'), TO_DATE('{DATE}','DD.MM.YYYY'), 'UNKNOWN', '{MODEL}', '{FORMAT}', '{COMPANY}', '{KM_START}-{KM_END}',v_pipe, {ROUTE_ID}) RETURNING ili_inspection_id INTO RETURNiliid; 
+                 END $$;
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="ILI_ILI_ZIP_IMP_C_55_8" comment="ILI_ILI_ZIP_IMP_C_55_8" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<insert>
+		<dbCommand>
+		<var name="SOURCE_GCL"/>
+		<var name="DATE"/>		
+		<var name="X" type="Decimal"/>	
+		<var name="Y" type="Decimal"/>		
+		<var name="ILI_INSPECTION_ID" type="Decimal"/>
+		<var name="SRV_DISTRICT_GCL" type="Decimal"/>	
+		<var name="Z" type="Decimal"/>		
+		<var name="WELD_NUMBER" type="String"/>	
+		<var name="ABSOLUTE_ODOMETER" type="Decimal"/>	
+		<var name="AVERAGE_DEPTH" type="String"/>		
+		<var name="LENGTH" type="String"/>
+		<var name="WIDTH" type="String"/>	
+		<var name="BPR_PIG" type="String"/>		
+		<var name="ORIENTATION_DEG" type="String"/>	
+		<var name="SOURCE" type="String"/>	
+		<var name="ANOMALY_TYPE_CL" type="String"/>		
+		<var name="FEATURE_DESCRIPTION" type="String"/>
+		<var name="DESCRIPTION" type="String"/>	
+		<var name="MILEPOST" type="String"/>		
+		<var name="NOMINAL_WALL_THICKNESS" type="String"/>	
+		<var name="DL_TUBE" type="Decimal"/>	
+		<var name="COMMENTS" type="String"/>
+		<var name="US_WELD_ODOMETER" type="Decimal"/>
+		<var name="DS_WELD_ODOMETER" type="Decimal"/>
+		<var name="US_WELD_NUMBER" type="String"/>
+			<query>
+				DO $$
+
+				DECLARE
+				v_coordinate_id NUMERIC(16);
+				v_report_vendor VARCHAR(254);
+				v_coordinate_source_operator VARCHAR(16);
+				v_coordinate_source_id NUMERIC(16);
+				v_year VARCHAR(4);
+				v_location_id NUMERIC(16);
+
+				BEGIN
+				INSERT INTO
+				    sgio_ILI_DATA(ILI_INSPECTION_ID,WELD_NUMBER,ABSOLUTE_ODOMETER,AVERAGE_DEPTH,LENGTH,WIDTH,INTERNAL_EXTERNAL_CL,SOURCE_GCL,DATE_COLLECTED,
+                                      ORIENTATION_DEG,ANOMALY_TYPE_CL,ANOMALY_EXTENSION_CL,MEASURED_WALL_THICKNESS,
+                                      FEATURE_DESCRIPTION,DESCRIPTION,MILEPOST,NOMINAL_WALL_THICKNESS,
+                                      COMMENTS,US_WELD_ODOMETER,DS_WELD_ODOMETER,US_WELD_NUMBER,srv_district_gcl,x_coord,y_coord)
+				VALUES({ILI_INSPECTION_ID},'{WELD_NUMBER}',NULLIF(replace('{ABSOLUTE_ODOMETER}',',','.'),'')::numeric,NULLIF(replace('{AVERAGE_DEPTH}',',','.'),'')::numeric,
+				NULLIF(replace('{LENGTH}',',','.'),'')::numeric,
+				NULLIF(replace('{WIDTH}',',','.'),'')::numeric,
+                                'UNKNOWN','{SOURCE_GCL}',TO_DATE('{DATE}','DD.MM.YYYY'),ROUND(NULLIF(replace('{ORIENTATION_DEG}',',','.'),'')::numeric)
+				,CASE WHEN '{SOURCE}'='WLD'
+				THEN 5001
+				ELSE (SELECT MIN(CODE)
+				FROM sgio_ili_anomaly_type_cl t
+				WHERE upper(','||coalesce(t.description,'')::text || ',' || coalesce(t.anomaly_references,'')::text) LIKE '%'||REGEXP_REPLACE (UPPER (TRIM ('{ANOMALY_TYPE_CL}')),'\(.*\)|[*.?]|\s+','%')|| '%')
+				END
+				,'UNKNOWN',NULL,'{FEATURE_DESCRIPTION}','{DESCRIPTION}','{MILEPOST}',NULLIF(replace('{NOMINAL_WALL_THICKNESS}',',','.'),'')::numeric,
+                                '{COMMENTS}',NULLIF(replace('{US_WELD_ODOMETER}',',','.'),'')::numeric,NULLIF(replace('{DS_WELD_ODOMETER}',',','.'),'')::numeric,
+				NULLIF(replace('{US_WELD_NUMBER}',',','.'),'')::numeric,
+				{SRV_DISTRICT_GCL},NULLIF(replace('{X}',',','.'),'')::numeric,NULLIF(replace('{Y}',',','.'),'')::numeric); 			
+
+				END $$;
+			</query>
+		</dbCommand>
+	</insert>
+</data> 
+
+<data id="ILI_ILI_ZIP_IMP_C_55_9" comment="ILI_ILI_ZIP_IMP_C_55_9" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<select>
+		<dbQuery>	
+			<query>
+			SELECT CODE "CODE"
+	 			,UPPER(description)
+	 			||CASE WHEN ANOMALY_REFERENCES IS NOT NULL
+	 			THEN ','|| UPPER(ANOMALY_REFERENCES)
+	 			ELSE ''
+	 			END "EXTENDED_DESCRIPTION"
+	 			FROM sgio_ili_anomaly_type_cl
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+
+</root>
