@@ -6,6 +6,16 @@ import { getSourcePath } from './pathHandlers.js';
 
 const databases = new Map();
 
+/**
+ * Get an already-open database connection by path.
+ * Used by other IPC handlers (e.g. ILI import) to reuse the existing connection.
+ * @param {string} dbPath
+ * @returns {object|undefined}
+ */
+export function getOpenDatabase(dbPath) {
+	return databases.get(dbPath);
+}
+
 export function registerDbIpc() {
 ipcMain.handle('db-open', async (event, dbPath) => {
         return new Promise((resolve, reject) => {

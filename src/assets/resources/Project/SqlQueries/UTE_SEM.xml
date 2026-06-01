@@ -1,0 +1,440 @@
+<root version="sqlite">
+
+<!-- ==================== ILI IMPORT XML QUERIES (SQLite adapted) ==================== -->
+
+<!-- Load anomaly type dictionary -->
+<data id="ILI_ILI_ZIP_IMP_C_55_9" comment="Load anomaly types dictionary" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<select>
+		<dbQuery>
+			<query>
+			SELECT CODE "CODE",
+				UPPER(description)
+				|| CASE WHEN ANOMALY_REFERENCES IS NOT NULL
+				THEN ',' || UPPER(ANOMALY_REFERENCES)
+				ELSE ''
+				END "EXTENDED_DESCRIPTION"
+			FROM sgio_ili_anomaly_type_cl
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<!-- Get route_id by inspection_id -->
+<data id="ILI_ILI_ZIP_IMP_C_55_0" comment="Get route_id by inspection" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<select>
+		<dbQuery>
+			<var name="ILI_INSPECTION_ID"/>
+			<query>
+				SELECT ROUTE_ID "ROUTE_ID"
+				FROM sgio_ili_inspection i WHERE ILI_INSPECTION_ID = {ILI_INSPECTION_ID}
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<!-- Fill ANOMALY_EXTENSION_CL -->
+<data id="ILI_ILI_ZIP_IMP_C_55_1" comment="Fill anomaly_extension_cl" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="ILI_INSPECTION_ID"/>
+			<query>
+			UPDATE sgio_ili_data
+			SET anomaly_extension_cl = COALESCE((SELECT a.code
+			FROM sgio_anomaly_extension_cl a
+			JOIN sgio_ili_anomaly_type_cl b
+			ON a.code = b.index_description
+			WHERE b.code = sgio_ili_data.anomaly_type_cl),'UNKNOWN')
+			WHERE sgio_ili_data.ili_inspection_id = {ILI_INSPECTION_ID}
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<!-- Set weld distances (old method via SQL) -->
+<data id="ILI_ILI_ZIP_IMP_C_55_4" comment="Set weld distances via SQL" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="ILI_INSPECTION_ID"/>
+			<query>
+			UPDATE sgio_ili_data SET weld_number = NULL
+			WHERE weld_number = '' AND ili_inspection_id = {ILI_INSPECTION_ID}
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<!-- Set weld distances part 2 -->
+<data id="ILI_ILI_ZIP_IMP_C_55_4b" comment="Set weld distances part 2" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="ILI_INSPECTION_ID"/>
+			<query>
+			UPDATE sgio_ili_data SET
+				us_weld_distance = absolute_odometer - us_weld_odometer,
+				ds_weld_distance = ds_weld_odometer - absolute_odometer
+			WHERE ili_inspection_id = {ILI_INSPECTION_ID}
+			AND EXISTS (
+				SELECT 1 FROM sgio_ili_data ddd
+				JOIN sgio_ili_data ww
+				ON ww.ili_inspection_id = ddd.ili_inspection_id
+				AND ddd.absolute_odometer >= ww.absolute_odometer
+				AND ww.absolute_odometer >= ddd.absolute_odometer - 100
+				WHERE ww.ili_inspection_id = {ILI_INSPECTION_ID}
+				AND ww.anomaly_type_cl = 5001
+				AND ddd.ili_data_id = sgio_ili_data.ili_data_id
+			)
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<!-- Prepare pipe lengths -->
+<data id="ILI_ILI_ZIP_IMP_C_55_5" comment="Insert pipe lengths from weld data" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="ILI_INSPECTION_ID"/>
+			<query>
+			INSERT INTO sgio_ili_pipe_length(ili_inspection_id, weld_number, sequence_number, start_odometer, end_odometer, measured_wall_thickness, nominal_wall_thickness, source_gcl)
+			SELECT ili_inspection_id, weld_number,
+				ROW_NUMBER() OVER(ORDER BY absolute_odometer),
+				absolute_odometer,
+				LEAD(absolute_odometer) OVER(ORDER BY absolute_odometer),
+				measured_wall_thickness, nominal_wall_thickness, source_gcl
+			FROM sgio_ili_data d
+			WHERE ili_inspection_id = {ILI_INSPECTION_ID} AND anomaly_type_cl = 5001
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<!-- Create inspection report record -->
+<data id="ILI_ILI_ZIP_IMP_C_55_7" comment="Create inspection report" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<update>
+		<dbCommand>
+		<var name="DATE"/>
+		<var name="MODEL"/>
+		<var name="FORMAT"/>
+		<var name="COMPANY"/>
+		<var name="KM_START"/>
+		<var name="KM_END"/>
+		<var name="FIRST_WELD_NUMBER"/>
+		<var name="ROUTE_ID" type="Decimal"/>
+		<var name="REPORT_NAME"/>
+			<query>
+			INSERT INTO sgio_ili_inspection(
+				begin_date, end_date, tool_type_cl, model,
+				ili_comments, tool_vendor_cl, description, comments, route_id, source_gcl
+			) VALUES (
+				'{DATE}', '{DATE}', 'UNKNOWN', '{MODEL}',
+				'{FORMAT}', '{COMPANY}', '{KM_START}-{KM_END}',
+				-- ПРИМЕЧАНИЕ: В оригинальной PostgreSQL-схеме pods.line — родительская сущность для pods.route
+				-- (иерархия: трубопровод -> маршрут). Здесь используем pods_route.description напрямую,
+				-- так как таблица pods_line отсутствует в SQLite-схеме.
+				-- В SQLite-схеме первичный ключ pods_route называется id (не route_id).
+				(SELECT COALESCE(r.description, 'Unknown route') FROM pods_route r WHERE r.id = {ROUTE_ID} LIMIT 1),
+				{ROUTE_ID},
+				'{REPORT_NAME}'
+			)
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<!-- Get last inserted inspection ID -->
+<data id="ILI_ILI_ZIP_IMP_C_55_7_ID" comment="Get last inserted inspection ID" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<select>
+		<dbQuery>
+			<query>
+			SELECT last_insert_rowid() AS "ILI_INSPECTION_ID"
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<!-- Insert defect row -->
+<data id="ILI_ILI_ZIP_IMP_C_55_8" comment="Insert ILI data row" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
+	<insert>
+		<dbCommand>
+		<var name="SOURCE_GCL"/>
+		<var name="DATE"/>
+		<var name="X" type="Decimal"/>
+		<var name="Y" type="Decimal"/>
+		<var name="ILI_INSPECTION_ID" type="Decimal"/>
+		<var name="SRV_DISTRICT_GCL" type="Decimal"/>
+		<var name="Z" type="Decimal"/>
+		<var name="WELD_NUMBER" type="String"/>
+		<var name="ABSOLUTE_ODOMETER" type="Decimal"/>
+		<var name="AVERAGE_DEPTH" type="String"/>
+		<var name="LENGTH" type="String"/>
+		<var name="WIDTH" type="String"/>
+		<var name="BPR_PIG" type="String"/>
+		<var name="ORIENTATION_DEG" type="String"/>
+		<var name="SOURCE" type="String"/>
+		<var name="ANOMALY_TYPE_CL" type="String"/>
+		<var name="FEATURE_DESCRIPTION" type="String"/>
+		<var name="DESCRIPTION" type="String"/>
+		<var name="MILEPOST" type="String"/>
+		<var name="NOMINAL_WALL_THICKNESS" type="String"/>
+		<var name="DL_TUBE" type="Decimal"/>
+		<var name="COMMENTS" type="String"/>
+		<var name="US_WELD_ODOMETER" type="Decimal"/>
+		<var name="DS_WELD_ODOMETER" type="Decimal"/>
+		<var name="US_WELD_NUMBER" type="String"/>
+			<query>
+			INSERT INTO sgio_ili_data(
+				ili_inspection_id, weld_number, absolute_odometer,
+				average_depth, length, width,
+				internal_external_cl, source_gcl, date_collected,
+				orientation_deg, anomaly_type_cl, anomaly_extension_cl,
+				measured_wall_thickness, feature_description, description,
+				milepost, nominal_wall_thickness,
+				comments, us_weld_odometer, ds_weld_odometer, us_weld_number,
+				srv_district_gcl, x_coord, y_coord
+			) VALUES (
+				{ILI_INSPECTION_ID},
+				'{WELD_NUMBER}',
+				NULLIF(REPLACE('{ABSOLUTE_ODOMETER}', ',', '.'), '') + 0,
+				NULLIF(REPLACE('{AVERAGE_DEPTH}', ',', '.'), '') + 0,
+				NULLIF(REPLACE('{LENGTH}', ',', '.'), '') + 0,
+				NULLIF(REPLACE('{WIDTH}', ',', '.'), '') + 0,
+				'UNKNOWN',
+				'{SOURCE_GCL}',
+				'{DATE}',
+				ROUND(NULLIF(REPLACE('{ORIENTATION_DEG}', ',', '.'), '') + 0),
+				CASE WHEN '{SOURCE}' = 'WLD'
+				THEN 5001
+				ELSE (SELECT MIN(CODE)
+					FROM sgio_ili_anomaly_type_cl t
+					WHERE UPPER(',' || COALESCE(t.description, '') || ',' || COALESCE(t.anomaly_references, ''))
+					LIKE '%' || REPLACE(REPLACE(UPPER(TRIM('{ANOMALY_TYPE_CL}')), '*', '%'), '?', '%') || '%')
+				END,
+				'UNKNOWN',
+				NULL,
+				'{FEATURE_DESCRIPTION}',
+				'{DESCRIPTION}',
+				'{MILEPOST}',
+				NULLIF(REPLACE('{NOMINAL_WALL_THICKNESS}', ',', '.'), '') + 0,
+				'{COMMENTS}',
+				NULLIF(REPLACE('{US_WELD_ODOMETER}', ',', '.'), '') + 0,
+				NULLIF(REPLACE('{DS_WELD_ODOMETER}', ',', '.'), '') + 0,
+				NULLIF(REPLACE('{US_WELD_NUMBER}', ',', '.'), '') + 0,
+				{SRV_DISTRICT_GCL},
+				NULLIF(REPLACE('{X}', ',', '.'), '') + 0,
+				NULLIF(REPLACE('{Y}', ',', '.'), '') + 0
+			)
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<!-- ==================== CALC / LINK REPERS QUERIES ==================== -->
+
+<data id="CALC_CALC_DEF_1" comment="Get ILI data for calculation" schema="UTE" table="CALC_CALC_DEF">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+			SELECT ili_data_id "ILI_DATA_ID", absolute_odometer "ABSOLUTE_ODOMETER",
+				calibrated_measure "MEASURE",
+				control_point_lf "CONTROL_POINT_LF", certainty_interval "ACCURACY",
+				NULL "EVENT_ID"
+			FROM sgio_ili_data d
+			WHERE d.ili_inspection_id = {P_REPORT_ID}
+			AND absolute_odometer IS NOT NULL
+			ORDER BY absolute_odometer
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_CALC_DEF_3" comment="Update ILI data coordinates" schema="UTE" table="CALC_CALC_DEF">
+	<insert>
+		<dbCommand>
+		<var name="MEASURE" type="Decimal"/>
+		<var name="SRV_DISTRICT_GCL" type="Decimal"/>
+		<var name="X" type="Decimal"/>
+		<var name="Y" type="Decimal"/>
+		<var name="Z" type="Decimal"/>
+		<var name="DEPTH" type="Decimal"/>
+		<var name="STATION" type="Decimal"/>
+		<var name="ILI_DATA_ID" type="Decimal"/>
+			<query>
+			UPDATE sgio_ili_data
+			SET
+				calibrated_measure = {MEASURE},
+				srv_district_gcl = {SRV_DISTRICT_GCL},
+				x_coord = {X},
+				y_coord = {Y},
+				z_coord = {Z},
+				tube_height = {DEPTH},
+				station = {STATION},
+				pipe_measure = {MEASURE}
+			WHERE ili_data_id = {ILI_DATA_ID}
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<data id="CALC_CALC_DEF_5" comment="Get pipe length data for coordinate update" schema="UTE" table="CALC_CALC_DEF">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+			SELECT p.ili_pipe_length_id "ILI_PIPE_LENGTH_ID", p.weld_number "WELD_NUMBER",
+				NULL "EVENT_ID",
+				d1.x_coord "X_COORD", d1.y_coord "Y_COORD",
+				d1.ds_weld_distance "ODOM_LENGTH",
+				d2.pipe_measure - d1.pipe_measure "LENGTH",
+				d2.x_coord "NEXT_X_COORD", d2.y_coord "NEXT_Y_COORD"
+			FROM sgio_ili_pipe_length p
+			JOIN sgio_ili_data d1 ON p.ili_inspection_id = d1.ili_inspection_id AND p.weld_number = d1.weld_number AND d1.anomaly_type_cl = 5001
+			JOIN sgio_ili_data d2 ON p.ili_inspection_id = d2.ili_inspection_id AND p.weld_number = d2.us_weld_number AND d2.anomaly_type_cl = 5001
+			WHERE p.ili_inspection_id = {P_REPORT_ID}
+			ORDER BY d1.absolute_odometer
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_CALC_DEF_7" comment="Update pipe length coordinates" schema="UTE" table="CALC_CALC_DEF">
+	<insert>
+		<dbCommand>
+		<var name="X_COORD" type="Decimal"/>
+		<var name="Y_COORD" type="Decimal"/>
+		<var name="NEXT_X_COORD" type="Decimal"/>
+		<var name="NEXT_Y_COORD" type="Decimal"/>
+		<var name="ILI_PIPE_LENGTH_ID" type="Decimal"/>
+			<query>
+			UPDATE sgio_ili_pipe_length
+			SET
+				x_coord_start = {X_COORD},
+				y_coord_start = {Y_COORD},
+				x_coord_end = {NEXT_X_COORD},
+				y_coord_end = {NEXT_Y_COORD}
+			WHERE ili_pipe_length_id = {ILI_PIPE_LENGTH_ID}
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<data id="CALC_LINK_REPERS_1" comment="Get repers from ILI data" schema="UTE" table="CALC_LINK_REPERS">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+			SELECT ili_data_id "OBJ_ID", absolute_odometer "LINE_COORD",
+				CASE WHEN d.anomaly_type_cl IN (1003,1007,1008) THEN '1' WHEN d.anomaly_type_cl=1004 THEN '2' END "OBJ_CLS_ID"
+			FROM sgio_ili_data d
+			WHERE d.ili_inspection_id = {P_REPORT_ID} AND d.anomaly_type_cl IN (1003,1004,1007,1008)
+			ORDER BY absolute_odometer
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_LINK_REPERS_4" comment="Reset reper links" schema="UTE" table="CALC_LINK_REPERS">
+	<update>
+		<dbCommand>
+		<var name="P_REPORT_ID"/>
+			<query>
+			UPDATE sgio_ili_data SET
+				ref_event_id = NULL, control_point_lf = 'N',
+				calibrated_measure = NULL, certainty_interval = NULL
+			WHERE ili_inspection_id = {P_REPORT_ID} AND COALESCE(ref_event_id, 0) != -999
+			</query>
+		</dbCommand>
+	</update>
+</data>
+
+<data id="ILI_ILI_INSP_PROC_C_1" comment="Get route_id by inspection" schema="UTE" table="ILI_ILI_INSP_PROC_C">
+	<select>
+		<dbQuery>
+		<var name="INSPECTION_ID"/>
+			<query>
+			SELECT ROUTE_ID "ROUTE_ID"
+			FROM sgio_ili_inspection i WHERE ili_inspection_id = {INSPECTION_ID}
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<!-- ==================== COORDINATE CALC HELPER QUERIES ==================== -->
+
+<data id="CALC_ROUTE_GEOMETRY" comment="Load route geometry WKT for JS processing" schema="UTE" table="CALC_ROUTE">
+	<select>
+		<dbQuery>
+		<var name="P_ROUTE_ID"/>
+			<query>
+			SELECT id "ID", AsText(Geometry) "GEOM"
+			FROM pods_route
+			WHERE id = {P_ROUTE_ID}
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<!-- station_id renamed to id -->
+<data id="CALC_MARKERS_FOR_ROUTE" comment="Load all markers for reper matching" schema="UTE" table="CALC_MARKERS">
+	<select>
+		<dbQuery>
+			<query>
+			SELECT id "STATION_ID", station "STATION",
+				AsText(Geometry) "GEOM"
+			FROM pods_marker
+			WHERE Geometry IS NOT NULL
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_VALVES_FOR_ROUTE" comment="Load all valves for reper matching" schema="UTE" table="CALC_VALVES">
+	<select>
+		<dbQuery>
+			<query>
+			SELECT id "ID", AsText(Geometry) "GEOM"
+			FROM pods_valve
+			WHERE Geometry IS NOT NULL
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_ILI_FIXED_REPERS" comment="Load manually fixed repers (ref_event_id=-999)" schema="UTE" table="CALC_FIXED_REPERS">
+	<select>
+		<dbQuery>
+		<var name="P_REPORT_ID"/>
+			<query>
+			SELECT ili_data_id "ILI_DATA_ID",
+				calibrated_measure "CALIBRATED_MEASURE",
+				x_coord "X_COORD", y_coord "Y_COORD",
+				station "STATION", ref_event_id "REF_EVENT_ID"
+			FROM sgio_ili_data
+			WHERE ili_inspection_id = {P_REPORT_ID}
+				AND ref_event_id = -999
+				AND calibrated_measure IS NOT NULL
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
+<data id="CALC_UPDATE_CONTROL_POINT" comment="Update a single control point after reper linking" schema="UTE" table="CALC_CONTROL_POINT">
+	<insert>
+		<dbCommand>
+		<var name="FACILITY_ID" type="Decimal"/>
+		<var name="MEASURE" type="Decimal"/>
+		<var name="COEFF" type="Decimal"/>
+		<var name="REPER_ID" type="Decimal"/>
+			<query>
+			UPDATE sgio_ili_data
+			SET ref_event_id = {FACILITY_ID},
+				control_point_lf = 'Y',
+				calibrated_measure = {MEASURE},
+				certainty_interval = {COEFF}
+			WHERE ili_data_id = {REPER_ID}
+				AND COALESCE(ref_event_id, 0) != -999
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+</root>

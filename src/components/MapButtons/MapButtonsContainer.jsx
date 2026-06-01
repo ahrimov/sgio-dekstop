@@ -9,10 +9,12 @@ import { AreaMeasureButton } from './AreaMeasureButton.jsx';
 import { SaveMapImageButton } from './SaveMapImageButton.jsx';
 import { PrintMapButton } from './PrintMapButton.jsx';
 import { ShowEditingGeometryPanelControl } from '../EditGeometryPanel/ShowEditingPanelButton.jsx';
+import { ILIImportButton } from './IliImportButton.jsx';
 
 export function MapButtonsContainer() {
 	return (
 		<Flex gap={0} style={{ position: 'absolute', top: '20px', right: '60px' }}>
+			<ILIImportButton />
 			<ShowEditingGeometryPanelControl />
 			<InfoButton />
 			<PanButton />

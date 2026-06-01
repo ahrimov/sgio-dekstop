@@ -29,6 +29,27 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
 	showMessageBox: (opts) => ipcRenderer.invoke('show-message-box', opts),
 	showSaveDialog: (opts) => ipcRenderer.invoke('show-save-dialog', opts),
+
+	// ILI Import
+	iliImportXml: (dbPath, params) => ipcRenderer.invoke('ili-import-xml', dbPath, params),
+	iliGetRoutes: (dbPath) => ipcRenderer.invoke('ili-get-routes', dbPath),
+	iliCheckExisting: (dbPath, routeId) => ipcRenderer.invoke('ili-check-existing', dbPath, routeId),
+	iliDeleteInspection: (dbPath, inspectionId) => ipcRenderer.invoke('ili-delete-inspection', dbPath, inspectionId),
+	iliDeleteAll: (dbPath) => ipcRenderer.invoke('ili-delete-all', dbPath),
+	onIliImportProgress: (callback) => {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('ili-import-progress', handler);
+		return () => ipcRenderer.removeListener('ili-import-progress', handler);
+	},
+
+	// ILI Coordinate Calculation
+	iliCalcCoordinates: (dbPath, params) => ipcRenderer.invoke('ili-calc-coordinates', dbPath, params),
+	iliGetInspections: (dbPath) => ipcRenderer.invoke('ili-get-inspections', dbPath),
+	onIliCalcProgress: (callback) => {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('ili-calc-progress', handler);
+		return () => ipcRenderer.removeListener('ili-calc-progress', handler);
+	},
 });
 
 window.addEventListener('contextmenu', e => {

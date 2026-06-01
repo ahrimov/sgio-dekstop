@@ -25,6 +25,7 @@ export function useFeatureHighlight(feature, isGeometryEditing) {
 			}
 
 			const geometry = feature.getGeometry();
+			if (!geometry) return;
 			const geometryType = geometry.getType();
 
 			let highlightStyle;

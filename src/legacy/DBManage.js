@@ -1,8 +1,17 @@
 import { Vector } from 'ol/source.js';
 import WKT from 'ol/format/WKT.js';
 import Feature from 'ol/Feature.js';
+import { transform } from 'ol/proj.js';
 
 let db;
+
+/**
+ * Returns the current database file path, or null if DB is not initialized.
+ * @returns {string|null}
+ */
+export function getDbPath() {
+	return db?.path ?? null;
+}
 
 let dbLoadState = {
 	totalLayers: 0,
@@ -165,7 +174,7 @@ export function getDataLayerFromBD(layer) {
 		const pk = layer.primaryKey || 'id';
 		const geomExpr = layer.geometryColumn || 'AsText(Geometry) as geom';
 		const query =
-			`SELECT ${layer.atribs[0].name} as id,${selectTypeQuery} ${selectLabelQuery} ${geomExpr} FROM ` +
+			`SELECT ${pk} as id,${selectTypeQuery} ${selectLabelQuery} ${geomExpr} FROM ` +
 			layer.table + whereClause;
 
 		requestToDB(
@@ -179,6 +188,22 @@ export function getDataLayerFromBD(layer) {
 						let feature = new Feature();
 						if (wkt) {
 							feature = format.readFeature(wkt.replace(/nan/g, '0'));
+							
+							// Apply coordinate transformation for ILI layers
+							// These layers have coordinates in EPSG:4326 but layer CRS is EPSG:3857
+							const iliLayers = [
+								'SGIO_ILI_DATA',
+								'SGIO_ILI_DATA_FEATURE',
+								'SGIO_ILI_DATA_VIRT_MARKER',
+								'SGIO_ILI_PIPE_LENGTH'
+							];
+							
+							if (iliLayers.includes(layer.id)) {
+								const geometry = feature.getGeometry();
+								if (geometry) {
+									geometry.transform('EPSG:4326', 'EPSG:3857');
+								}
+							}
 						}
 						feature.id = res.rows.item(i).id;
 						feature.set(pk, res.rows.item(i).id);
@@ -260,5 +285,44 @@ export function resetDBLoadState() {
 export function onProgress(message, currentFile = '', progress = 0) {
 	if (window.dbProgressCallbacks && window.dbProgressCallbacks.onProgress) {
 		window.dbProgressCallbacks.onProgress(message, currentFile, progress);
+	}
+}
+
+/**
+ * Reload specific DB layers by their IDs, re-querying the database and
+ * replacing the OpenLayers Vector source with fresh data.
+ * Used after ILI import to refresh the 4 VTD map layers.
+ * Does NOT touch the progress counter — safe to call at any time.
+ *
+ * @param {string[]} layerIds - Array of layer IDs to reload (e.g. ['SGIO_ILI_DATA', ...])
+ * @param {Array} layerList - The current layers array from globals
+ */
+export async function reloadLayersByIds(layerIds, layerList) {
+	const targets = layerList.filter(l => layerIds.includes(l.id));
+	if (targets.length === 0) {
+		console.warn('[reloadLayersByIds] No matching layers found for IDs:', layerIds);
+		return;
+	}
+	console.log(`[reloadLayersByIds] Reloading ${targets.length} layer(s):`, targets.map(l => l.id));
+
+	// Temporarily suppress progress callbacks so the reload doesn't corrupt
+	// the dbLoadState counter that was set during initial startup loading.
+	const savedProgress = dbLoadState.onProgress;
+	const savedLayerComplete = dbLoadState.onLayerComplete;
+	dbLoadState.onProgress = null;
+	dbLoadState.onLayerComplete = null;
+
+	try {
+		for (const layer of targets) {
+			try {
+				await getDataLayerFromBD(layer);
+				console.log(`[reloadLayersByIds] Reloaded layer: ${layer.id}`);
+			} catch (err) {
+				console.error(`[reloadLayersByIds] Failed to reload layer ${layer.id}:`, err);
+			}
+		}
+	} finally {
+		dbLoadState.onProgress = savedProgress;
+		dbLoadState.onLayerComplete = savedLayerComplete;
 	}
 }

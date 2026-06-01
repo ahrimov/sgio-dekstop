@@ -1,6 +1,11 @@
 import { requestToDBPromise } from '../../legacy/DBManage';
 
 export async function getFeatureAttributes(layer, featureId) {
+	if (featureId === undefined || featureId === null) {
+		console.warn(`getFeatureAttributes: featureId is ${featureId} for layer "${layer?.table}"`);
+		return null;
+	}
+
 	const tableName = layer.table;
 	const pk = layer.primaryKey || 'id';
 	const atribs = layer.atribs.map(a => a.name);

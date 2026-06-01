@@ -44,6 +44,10 @@ import {
 	$editGeometryPanelVisible,
 	closeEditGeometryPanel,
 } from './components/EditGeometryPanel/store.js';
+import { ILIImportDialog } from './components/ILIImport/ILIImportDialog.jsx';
+import { ILIImportProgress } from './components/ILIImport/ILIImportProgress.jsx';
+import { openIliImportDialog } from './store/iliImport.js';
+import { getDbPath } from './legacy/DBManage.js';
 
 const AppContent = () => {
 	const { loadingState, startLoading, updateProgress, finishLoading } = useLoading();
@@ -129,6 +133,11 @@ const AppContent = () => {
 
 	const menuItems = [
 		{
+			key: 'ili-import',
+			label: 'Импорт ВТД (XML)',
+			onClick: openIliImportDialog,
+		},
+		{
 			key: 'about',
 			label: 'О приложении',
 			onClick: openInfoModal,
@@ -211,6 +220,19 @@ const AppContent = () => {
 						<EditGeometryPanel handleCloseButton={closeEditGeometryPanel} />
 					)}
 
+					<Dropdown menu={{ items: menuItems }} trigger={['click']} placement="topRight">
+						<Button
+							type="text"
+							icon={<MenuOutlined />}
+							style={{
+								position: 'fixed',
+								bottom: 40,
+								right: 8,
+								zIndex: 1000,
+							}}
+						/>
+					</Dropdown>
+	
 					<Taskbar />
 					<InfoModal />
 
@@ -240,6 +262,9 @@ const AppContent = () => {
 						message={loadingState.message}
 					/>
 
+					<ILIImportDialog dbPath={getDbPath()} />
+					<ILIImportProgress />
+	
 					<ModalDialog />
 				</div>
 			</MessageProvider>

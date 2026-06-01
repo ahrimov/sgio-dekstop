@@ -312,6 +312,7 @@ export function FeatureTable({ layer }) {
 				title="Показать информацию по объекту"
 				onClick={e => {
 					e.stopPropagation();
+					console.log('record:', record);
 					showInfo({ featureId: record.id, layer });
 				}}
 				variant="text"

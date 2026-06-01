@@ -7,7 +7,7 @@
 	  <table>sgio_ili_data</table>
 	  <primary>ili_data_id</primary>
 	  <where_clause> anomaly_type_cl in (1004,1003)</where_clause>
-	  <geometry_column>GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326) geom</geometry_column>
+	  <geometry_column>AsText(GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326)) geom</geometry_column>
       <encoding>UTF-8</encoding>
       <crs>3857</crs>
       <geometry>MULTIPOINT</geometry>

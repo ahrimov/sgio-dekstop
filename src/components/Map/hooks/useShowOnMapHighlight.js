@@ -39,6 +39,10 @@ export function useShowOnMapHighlight(map, showOnMapFeatures) {
 		}
 		
 		const geometry = feature.getGeometry();
+		if (!geometry) {
+			console.log('drop feature, no geometry: ', feature);
+			return;
+		}
 		const geometryType = geometry.getType();
 
 		let highlightStyle;

@@ -6,6 +6,8 @@ export function registerDialogIpc() {
 			...options,
 			properties: ['openFile'],
 		});
+		
+		console.log(result);
 
 		if (result.canceled || result.filePaths.length === 0) {
 			return null;

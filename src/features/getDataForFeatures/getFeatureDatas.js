@@ -7,8 +7,10 @@ export function getFeatureDatas(
 	callback
 ) {
 	const tableName = layer.table;
+	const pk = layer.primaryKey || 'rowid';
 	const atribs = layer.atribs.map(a => a.name);
-	const fields = [...atribs, 'rowid as key'].join(', ');
+	const extraFields = pk === 'id' ? ['rowid as key'] : [`${pk} as id`, 'rowid as key'];
+	const fields = [...atribs, ...extraFields].join(', ');
 	const filterClauses = buildFilterClauses(layer.atribs, filters);
 	const allClauses = layer.whereClause
 		? [layer.whereClause, ...filterClauses]
