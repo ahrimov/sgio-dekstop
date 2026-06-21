@@ -29,6 +29,10 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 
 	const buttonStyle = { color: MEDIUM_DARK_BLUE, textAlign: 'left', display: 'inline' };
 
+	const showBtn = (id) => !layer.showButtons || layer.showButtons.includes(id);
+	console.log('layer.id: ', layer.id);
+	console.log('layer.showButtons: ', layer.showButtons);
+
 	const kmlType = layer.get('kmlType');
 	const content = (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -45,56 +49,62 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 			>
 				Показать списком
 			</Button>
-			<Button
-				type="text"
-				size="small"
-				onClick={() => {
-					setVisible(false);
-					startDrawing(layer);
-				}}
-				style={buttonStyle}
-			>
-				Создать объект
-			</Button>
+			{showBtn('add') ?
+				<Button
+					type="text"
+					size="small"
+					onClick={() => {
+						setVisible(false);
+						startDrawing(layer);
+					}}
+					style={buttonStyle}
+				>
+					Создать объект
+				</Button> : null
+			}
 			{!kmlType && (
 				<>
-					<Button
-						type="text"
-						size="small"
-						onClick={async () => {
-							setVisible(false);
-							try {
-								const filePath = await selectKMLFile();
-								if (!filePath) return;
+					{showBtn('import') ?
+						<Button
+							type="text"
+							size="small"
+							onClick={async () => {
+								setVisible(false);
+								try {
+									const filePath = await selectKMLFile();
+									if (!filePath) return;
 
-								const { features, properties } =
-									await readKMLForComparison(filePath);
+									const { features, properties } =
+										await readKMLForComparison(filePath);
 
-								openKMLImportDialog({
-									layerId: layer.id,
-									layerAttributes: layer.atribs || [],
-									features,
-									properties,
-								});
-							} catch (error) {
-								console.error('Ошибка при чтении KML файла: ', error.message);
-							}
-						}}
-						style={buttonStyle}
-					>
-						Импорт KML
-					</Button>
-					<Button
-						type="text"
-						size="small"
-						onClick={() => {
-							setVisible(false);
-							exportKMLFromDB(layer.id);
-						}}
-						style={buttonStyle}
-					>
-						Экспорт KML
-					</Button>
+									openKMLImportDialog({
+										layerId: layer.id,
+										layerAttributes: layer.atribs || [],
+										features,
+										properties,
+									});
+								} catch (error) {
+									console.error('Ошибка при чтении KML файла: ', error.message);
+								}
+							}}
+							style={buttonStyle}
+						>
+							Импорт KML
+						</Button> : null
+					}
+					{showBtn('export') ? 
+						<Button
+							type="text"
+							size="small"
+							onClick={() => {
+								setVisible(false);
+								exportKMLFromDB(layer.id);
+							}}
+							style={buttonStyle}
+						>
+							Экспорт KML
+						</Button> : null
+					}
 				</>
 			)}
 			{kmlType && (
@@ -110,17 +120,19 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 					Экспорт KML
 				</Button>
 			)}
-			<Button
-				type="text"
-				size="small"
-				onClick={() => {
-					setVisible(false);
-					clearLayer(layer);
-				}}
-				style={buttonStyle}
-			>
-				Очистить слой
-			</Button>
+			{showBtn('clear') ? 
+				<Button
+					type="text"
+					size="small"
+					onClick={() => {
+						setVisible(false);
+						clearLayer(layer);
+					}}
+					style={buttonStyle}
+				>
+					Очистить слой
+				</Button> : null 
+			}
 			{kmlType && (
 				<Button
 					type="text"
