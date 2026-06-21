@@ -126,7 +126,11 @@ export function useDrawGeometry({ map }) {
 			const geometryType = convertGeometryType(layer.geometryType);
 
 			clearInteractions();
-
+			currentFeatureRef.current = null;
+			setCanReset(false);
+			setShowUndoButton(false);
+			setAcceptButtonDisabled(true);
+	
 			const draw = new Draw({ source, type: geometryType, stopClick: true });
 
 			draw.set('layer', layer);

@@ -124,6 +124,7 @@ const MapComponent = () => {
 		cancel: cancelEditing,
 		layer,
 		rejectCurrentFeature,
+		restartDrawing,
 	} = useDraw({ map, setCurrentFeature });
 
 	const handleCancelLayerSelector = () => {
@@ -134,6 +135,14 @@ const MapComponent = () => {
 		rejectCurrentFeature();
 		setCurrentFeature(null);
 		cancelEditing();
+	};
+
+	// Called after a new feature is saved — close the attribute panel and
+	// immediately restart drawing on the same layer so the user can add
+	// the next object without re-opening the draw panel.
+	const handleAfterSave = () => {
+		setCurrentFeature(null);
+		restartDrawing();
 	};
 
 	const toggleFullscreen = () => {
@@ -206,13 +215,14 @@ const MapComponent = () => {
 				/>
 
 				{currentFeature && layer && (
-					<InfoAttributeView
-						featureId={currentFeature.get('id') || currentFeature.ol_uid}
-						layer={layer}
-						onClose={handleCloseAttributeView}
-						initialFeature={currentFeature}
-					/>
-				)}
+						<InfoAttributeView
+							featureId={currentFeature.get('id') || currentFeature.ol_uid}
+							layer={layer}
+							onClose={handleCloseAttributeView}
+							onAfterSave={handleAfterSave}
+							initialFeature={currentFeature}
+						/>
+					)}
 				{!isMapReady ? <div className="map-loading">Загрузка карты...</div> : null}
 			</div>
 		</div>

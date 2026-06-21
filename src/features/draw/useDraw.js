@@ -113,8 +113,22 @@ export function useDraw({ map, setCurrentFeature }) {
 		const feature = finishEditing();
 		if (feature) {
 			setCurrentFeature(feature);
+			// Restart drawing on the same layer so the panel stays open
+			// and the user can immediately draw the next object
+			const layer = layerRef.current;
+			if (layer) {
+				startDrawingGeometry(layer);
+			}
+		} else {
+			changeInteractionMode(DEFAULT_INTERACTION);
 		}
-		changeInteractionMode(DEFAULT_INTERACTION);
+	};
+
+	const restartDrawing = () => {
+		const layer = layerRef.current;
+		if (layer) {
+			startDrawingGeometry(layer);
+		}
 	};
 
 	const handleFinishGeometryEdit = () => {
@@ -194,6 +208,7 @@ export function useDraw({ map, setCurrentFeature }) {
 		isModifyingGeometry: isModifying,
 		layer: layerRef.current,
 		rejectCurrentFeature,
+		restartDrawing,
 	};
 }
 

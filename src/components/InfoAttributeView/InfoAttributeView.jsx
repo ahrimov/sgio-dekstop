@@ -96,6 +96,7 @@ export function InfoAttributeView({
 	featureId,
 	layer,
 	onClose,
+	onAfterSave = null,
 	featuresByLayer = null,
 	initialFeature = null,
 	clickCoordinate = null
@@ -181,7 +182,8 @@ export function InfoAttributeView({
 		onClose,
 		handleCancelEditGeometry,
 		isGeometryEditing,
-		messageApi
+		messageApi,
+		onAfterSave
 	);
 
 	useEffect(() => {

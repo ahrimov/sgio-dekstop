@@ -20,7 +20,8 @@ export function useFeatureActions(
 	onClose,
 	handleCancelEditGeometry,
 	isGeometryEditing,
-	messageApi
+	messageApi,
+	onAfterSave = null
 ) {
 	const handleShowOnMap = useCallback(() => {
 		showOnMap({ featureId, layer });
@@ -93,13 +94,17 @@ export function useFeatureActions(
 				});
 
 				if (isNewFeature) {
-					await addNewFeature(layer, feature);
-					setFeatureData(prev => ({
-						...prev,
-						...processedValues,
-					}));
-					messageApi.success('Объект успешно создан');
-					onClose();
+						await addNewFeature(layer, feature);
+						setFeatureData(prev => ({
+							...prev,
+							...processedValues,
+						}));
+						messageApi.success('Объект успешно создан');
+						if (onAfterSave) {
+							onAfterSave();
+						} else {
+							onClose();
+						}
 				} else {
 					updateFeatureAttributes(
 						layer,
@@ -135,6 +140,7 @@ export function useFeatureActions(
 		setLoading,
 		onClose,
 		messageApi,
+		onAfterSave,
 	]);
 
 	const handleExportKML = useCallback(async () => {
