@@ -295,7 +295,7 @@ export const ILIImportDialog = ({ dbPath }) => {
 										value: p.route_id,
 										label: formatPipelineLabel(p),
 									}))}
-									style={{ color: MEDIUM_DARK_BLUE }}
+									style={{ color: MEDIUM_DARK_BLUE, width: '330px' }}
 								/>
 							</Form.Item>
 						</InlineRow>

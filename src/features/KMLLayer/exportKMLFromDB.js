@@ -53,11 +53,14 @@ export async function exportKMLFromDB(layerId) {
                     props[atrib.name] = value;
                 }
             }
-            
-            const dataId = layer.atribs && layer.atribs[0] ? row[layer.atribs[0].name] : row.ID;
-            
+
+            // Fix: use layer.primaryKey to look up the correct row ID,
+            // not atribs[0].name which may point to a non-PK field (e.g. ili_inspection_id).
+            const pk = layer.primaryKey || 'id';
+            const dataId = row[pk] ?? row.id ?? row.ID;
+
             const feature = findFeatureByID(layer, dataId);
-            
+
             if (feature) {
                 const clonedFeature = feature.clone();
                 
@@ -107,9 +110,13 @@ export async function exportKMLFromDB(layerId) {
 }
 
 function findFeatureByID(layer, id) {
+    const pk = layer.primaryKey || 'id';
     const features = layer.getSource().getFeatures();
     return features.find(feature => {
-        const featureId = feature.get('ID') || feature.id;
+        // feature.id is set by getDataLayerFromBD to the PK value.
+        // feature.get(pk) is the same value stored as a property.
+        // Avoid feature.get('ID') — the PK column is rarely named 'ID'.
+        const featureId = feature.id ?? feature.get(pk);
         return featureId == id;
     });
 }
