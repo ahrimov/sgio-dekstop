@@ -190,8 +190,16 @@ export function FeatureTable({ layer }) {
 				columnWidth = 150;
 			}
 
+			console.log(
+				`[FeatureTable] label="${atrib.label}" codes:`,
+				[...atrib.label].map(c => c.charCodeAt(0))
+			);
 			const base = {
-				title: atrib.label,
+				title: atrib.label.includes('\\n')
+					? atrib.label.split('\\n').map((part, i, arr) => (
+						<React.Fragment key={i}>{part.trim()}{i < arr.length - 1 && <br />}</React.Fragment>
+					))
+					: atrib.label,
 				dataIndex: atrib.name,
 				align: 'center',
 				width: columnWidth,
@@ -614,7 +622,6 @@ const TableWrapper = styled.div`
 
 	.ant-table-thead th {
 		white-space: normal !important;
-		word-break: break-word;
 	}
 
 	.ant-table-thead > tr > th:hover::after {
@@ -668,17 +675,15 @@ const TableWrapper = styled.div`
 		transition: background-color 0.2s ease-in-out;
 	}
 
-	/* Перенос текста в заголовках */
+	/* Перенос текста в заголовках — максимум 3 строки с ellipsis */
 	.ant-table-thead > tr > th .ant-table-column-title {
+		display: -webkit-box !important;
+		-webkit-line-clamp: 3 !important;
+		-webkit-box-orient: vertical !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
 		white-space: normal !important;
-		word-wrap: break-word !important;
-		word-break: normal !important;
-	}
-
-	.ant-table-thead > tr > th .ant-table-cell-ellipsis {
-		overflow: visible !important;
-		text-overflow: clip !important;
-		white-space: normal !important;
+		word-break: break-word !important;
 	}
 
 	/* Уменьшение высоты строк */

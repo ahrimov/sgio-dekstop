@@ -21,7 +21,8 @@
         </attribute>
 		 <attribute type="STRING">
           <id>weld_number</id>
-          <label>Номер шва</label>
+          <label>Номер 
+          \n шва</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>

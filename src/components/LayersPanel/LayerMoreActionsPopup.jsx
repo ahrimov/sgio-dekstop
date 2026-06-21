@@ -30,8 +30,6 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 	const buttonStyle = { color: MEDIUM_DARK_BLUE, textAlign: 'left', display: 'inline' };
 
 	const showBtn = (id) => !layer.showButtons || layer.showButtons.includes(id);
-	console.log('layer.id: ', layer.id);
-	console.log('layer.showButtons: ', layer.showButtons);
 
 	const kmlType = layer.get('kmlType');
 	const content = (

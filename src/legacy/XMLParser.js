@@ -286,7 +286,6 @@ export function configParser(data) {
 		const geometryColumnEl = layerDbEl ? layerDbEl.getElementsByTagName('geometry_column').item(0) : null;
 		layer.geometryColumn = geometryColumnEl ? geometryColumnEl.textContent.trim() : 'AsText(Geometry) as geom';
 		const showButtonsEl = layerDbEl ? layerDbEl.getElementsByTagName('show_buttons').item(0) ?? null : null;
-		console.log('[DEBUG show_buttons] layerId:', layer.id, '| layerDbEl:', layerDbEl, '| showButtonsEl:', showButtonsEl, '| textContent:', showButtonsEl?.textContent);
 		layer.showButtons = showButtonsEl
 			? showButtonsEl.textContent.split(',').map(s => s.trim()).filter(Boolean)
 			: null;
