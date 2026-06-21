@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { getAppDataPath, getResourcesPath, getSourcePath } from './ipc/pathHandlers.js';
+import { getAppDataPath, getResourcesPath } from './ipc/pathHandlers.js';
 import path from 'path';
 
 export async function ensureProjectResources() {
@@ -58,7 +58,7 @@ function getResourceInfo(dirPath) {
 	let totalSize = 0;
 	let fileCount = 0;
 
-	function scanDir(dir) {
+	function scanDir(dir, rootDir) {
 		const items = fs.readdirSync(dir);
 
 		for (const item of items) {
@@ -66,7 +66,12 @@ function getResourceInfo(dirPath) {
 			const stat = fs.statSync(itemPath);
 
 			if (stat.isDirectory()) {
-				scanDir(itemPath);
+				// Mirror the same exclusion used in copyRecursiveAsync so that
+				// fileCount stays consistent with what is actually copied.
+				if (dir === rootDir && EXCLUDED_PROJECT_DIRS.has(item)) {
+					continue;
+				}
+				scanDir(itemPath, rootDir);
 			} else {
 				fileCount++;
 				totalSize += stat.size;
@@ -77,14 +82,23 @@ function getResourceInfo(dirPath) {
 		}
 	}
 
-	scanDir(dirPath);
+	scanDir(dirPath, dirPath);
 	return { latestModTime, totalSize, fileCount };
 }
 
-async function copyRecursiveAsync(src, dest) {
+// Directories inside Project/ that must NOT be copied to sgio-data/Project/.
+// The 'db' folder contains only the seed default.db which is read directly
+// from the app bundle by initialDB() — copying it would create an unused
+// duplicate at sgio-data/Project/db/default.db.
+const EXCLUDED_PROJECT_DIRS = new Set(['db']);
+
+async function copyRecursiveAsync(src, dest, rootSrc = null) {
 	if (!fs.existsSync(dest)) {
 		fs.mkdirSync(dest, { recursive: true });
 	}
+
+	// Track the root source so we can apply top-level exclusions only.
+	if (rootSrc === null) rootSrc = src;
 
 	const files = fs.readdirSync(src);
 
@@ -95,7 +109,12 @@ async function copyRecursiveAsync(src, dest) {
 		const stat = fs.statSync(srcPath);
 
 		if (stat.isDirectory()) {
-			await copyRecursiveAsync(srcPath, destPath);
+			// Skip excluded top-level subdirectories of the Project folder.
+			if (src === rootSrc && EXCLUDED_PROJECT_DIRS.has(file)) {
+				console.log(`Skipping excluded project directory: ${file}`);
+				continue;
+			}
+			await copyRecursiveAsync(srcPath, destPath, rootSrc);
 		} else {
 			fs.copyFileSync(srcPath, destPath);
 		}

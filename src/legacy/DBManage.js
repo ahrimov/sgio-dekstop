@@ -45,11 +45,10 @@ async function openDB(filename, name, sourceDirName) {
 	}
 }
 
-export async function initialDB(sourceDirName, dbName, name) {
+export async function initialDB(_sourceDirName, dbName, name) {
 	try {
 		const appDataPath = await electronAPI.getAppDataPath();
 		const targetDBPath = `${appDataPath}/database/${dbName}`;
-		const sourceDBPath = `${sourceDirName}${dbName}`;
 
 		if (dbLoadState.onProgress) {
 			dbLoadState.onProgress('Инициализация базы данных...');
@@ -58,13 +57,17 @@ export async function initialDB(sourceDirName, dbName, name) {
 		await electronAPI.mkdir(`${appDataPath}/database`);
 
 		try {
-			const sourceExists = await electronAPI.exists(targetDBPath);
-			if (!sourceExists) {
+			const targetExists = await electronAPI.exists(targetDBPath);
+			if (!targetExists) {
 				if (dbLoadState.onProgress) {
 					dbLoadState.onProgress('Копирование базы данных...');
 				}
-				await electronAPI.copyFile(sourceDBPath, targetDBPath);
-				console.log('Database copied from resources');
+				// Seed DB is stored in the app bundle under resources/Project/db/
+				// and is never copied to sgio-data/Project/db/ anymore.
+				const resourcePath = await electronAPI.getResourcePath();
+				const seedDBPath = `${resourcePath}/Project/db/${dbName}`;
+				await electronAPI.copyFile(seedDBPath, targetDBPath);
+				console.log('Database copied from bundle resources');
 			}
 		} catch (err) {
 			console.log('No source database found, will create new one: ' + err);
