@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Progress, Typography, Space, Alert } from 'antd';
 import { useUnit } from 'effector-react';
 import { $iliImportState, resetIliImport } from '../../store/iliImport';
+import { MEDIUM_DARK_BLUE } from '../../consts/style';
 
 const { Text, Title } = Typography;
 
@@ -39,7 +40,7 @@ export const ILIImportProgress = () => {
 			}}
 		>
 			<Space orientation="vertical" style={{ width: '100%' }} size="middle">
-				<Title level={4} style={{ margin: 0, textAlign: 'center' }}>
+				<Title level={4} style={{ margin: 0, textAlign: 'center', color: MEDIUM_DARK_BLUE }}>
 					Импорт ВТД
 				</Title>
 
@@ -53,21 +54,21 @@ export const ILIImportProgress = () => {
 				) : (
 					<>
 						<Progress
-							style={{ textAlign: 'center', display: 'block', width: '100%' }}
+							style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', width: '100%' }}
 							percent={percent}
 							status={percent < 100 ? 'active' : 'success'}
 							type="circle"
 						/>
 
 						<Text
-							style={{ fontSize: '12px', textAlign: 'center', display: 'block' }}
+							style={{ fontSize: '12px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
 						>
 							{message || 'Подготовка...'}
 						</Text>
 
 						<Text
 							type="secondary"
-							style={{ fontSize: '11px', textAlign: 'center', display: 'block' }}
+							style={{ fontSize: '11px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
 						>
 							Шаг {currentStep} из {totalSteps}
 						</Text>

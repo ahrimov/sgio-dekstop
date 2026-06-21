@@ -132,13 +132,6 @@ export function AttributeComparisonDialog({
 					pagination={false}
 					size="small"
 					scroll={{ y: 400 }}
-					// styles={{
-					// 	body: {
-					// 		row: {
-					// 			height: 28
-					// 		}
-					// 	},
-					// }}
 					showHeader={false}
 				/>
 			</TableWrapper>

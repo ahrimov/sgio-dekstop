@@ -8,7 +8,7 @@ export function ILIImportButton() {
 		openIliImportDialog();
 	};
 
-	const titleText = 'Импорт ВТД (XML)';
+	const titleText = 'Импорт отчетов ВТД';
 	return (
 		<BaseMapButton
 			active={false}

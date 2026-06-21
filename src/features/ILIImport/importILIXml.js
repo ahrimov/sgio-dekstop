@@ -132,3 +132,22 @@ export async function loadRoutes(dbPath) {
 		return [];
 	}
 }
+
+/**
+ * Load available routes from the database filtered by route type.
+ * Query: SELECT description, station_begin, station_end FROM pods_route
+ *        WHERE type_cl = ? ORDER BY description, station_begin
+ *
+ * @param {string} dbPath - Path to the Spatialite database
+ * @param {string} typeCl - Route type classifier (e.g. 'ROUTE_TYPE_10')
+ * @returns {Promise<Array<{route_id: number, description: string, station_begin: number, station_end: number}>>}
+ */
+export async function loadRoutesByType(dbPath, typeCl) {
+	try {
+		const routes = await window.electronAPI.iliGetRoutesByType(dbPath, typeCl);
+		return routes || [];
+	} catch (err) {
+		console.error('Failed to load routes by type:', err);
+		return [];
+	}
+}

@@ -161,6 +161,36 @@ export function registerIliImportIpc() {
 	});
 
 	/**
+	 * IPC: ili-get-routes-by-type
+	 * Get available routes filtered by type_cl for the import dialog.
+	 * Query: SELECT description, station_begin, station_end FROM pods_route
+	 *        WHERE type_cl = ? ORDER BY description, station_begin
+	 *
+	 * @param {string} dbPath - Path to the Spatialite database
+	 * @param {string} typeCl - Route type classifier (e.g. 'ROUTE_TYPE_10')
+	 * @returns {Promise<Array<{route_id: number, description: string, station_begin: number, station_end: number}>>}
+	 */
+	ipcMain.handle('ili-get-routes-by-type', async (event, dbPath, typeCl) => {
+		const db = await getDatabase(dbPath);
+		return new Promise((resolve, reject) => {
+			db.all(
+				`SELECT id AS route_id,
+				 COALESCE(description, 'Route ' || id) AS description,
+				 station_begin,
+				 station_end
+				 FROM pods_route
+				 WHERE type_cl = ?
+				 ORDER BY description, station_begin`,
+				[typeCl],
+				(err, rows) => {
+					if (err) reject(err);
+					else resolve(rows || []);
+				}
+			);
+		});
+	});
+
+	/**
 	 * IPC: ili-check-existing
 	 * Check if ILI inspection data already exists for a given route.
 	 * Returns an array of existing inspections (empty if none).

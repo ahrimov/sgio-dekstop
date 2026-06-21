@@ -134,7 +134,7 @@ const AppContent = () => {
 	const menuItems = [
 		{
 			key: 'ili-import',
-			label: 'Импорт ВТД (XML)',
+			label: 'Импорт отчетов XML',
 			onClick: openIliImportDialog,
 		},
 		{

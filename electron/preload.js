@@ -33,6 +33,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	// ILI Import
 	iliImportXml: (dbPath, params) => ipcRenderer.invoke('ili-import-xml', dbPath, params),
 	iliGetRoutes: (dbPath) => ipcRenderer.invoke('ili-get-routes', dbPath),
+	iliGetRoutesByType: (dbPath, typeCl) => ipcRenderer.invoke('ili-get-routes-by-type', dbPath, typeCl),
 	iliCheckExisting: (dbPath, routeId) => ipcRenderer.invoke('ili-check-existing', dbPath, routeId),
 	iliDeleteInspection: (dbPath, inspectionId) => ipcRenderer.invoke('ili-delete-inspection', dbPath, inspectionId),
 	iliDeleteAll: (dbPath) => ipcRenderer.invoke('ili-delete-all', dbPath),
