@@ -47,6 +47,9 @@ import {
 import { ILIImportDialog } from './components/ILIImport/ILIImportDialog.jsx';
 import { ILIImportProgress } from './components/ILIImport/ILIImportProgress.jsx';
 import { openIliImportDialog } from './store/iliImport.js';
+import { ILIReverseDialog } from './components/ILIReverse/ILIReverseDialog.jsx';
+import { ILIReverseProgress } from './components/ILIReverse/ILIReverseProgress.jsx';
+import { openIliReverseDialog } from './store/iliReverse.js';
 import { getDbPath } from './legacy/DBManage.js';
 
 const AppContent = () => {
@@ -136,6 +139,11 @@ const AppContent = () => {
 			key: 'ili-import',
 			label: 'Импорт отчетов XML',
 			onClick: openIliImportDialog,
+		},
+		{
+			key: 'ili-reverse',
+			label: 'Разворот отчета ВТД',
+			onClick: openIliReverseDialog,
 		},
 		{
 			key: 'about',
@@ -264,6 +272,9 @@ const AppContent = () => {
 
 					<ILIImportDialog dbPath={getDbPath()} />
 					<ILIImportProgress />
+	
+					<ILIReverseDialog dbPath={getDbPath()} />
+					<ILIReverseProgress />
 	
 					<ModalDialog />
 				</div>

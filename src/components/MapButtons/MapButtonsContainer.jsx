@@ -10,10 +10,12 @@ import { SaveMapImageButton } from './SaveMapImageButton.jsx';
 import { PrintMapButton } from './PrintMapButton.jsx';
 import { ShowEditingGeometryPanelControl } from '../EditGeometryPanel/ShowEditingPanelButton.jsx';
 import { ILIImportButton } from './IliImportButton.jsx';
+import { ILIReverseButton } from './IliReverseButton.jsx';
 
 export function MapButtonsContainer() {
 	return (
 		<Flex gap={0} style={{ position: 'absolute', top: '20px', right: '60px' }}>
+			<ILIReverseButton />
 			<ILIImportButton />
 			<ShowEditingGeometryPanelControl />
 			<InfoButton />

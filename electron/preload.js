@@ -51,6 +51,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
 		ipcRenderer.on('ili-calc-progress', handler);
 		return () => ipcRenderer.removeListener('ili-calc-progress', handler);
 	},
+
+	// ILI Report Reversal
+	iliReverseReport: (dbPath, params) => ipcRenderer.invoke('ili-reverse-report', dbPath, params),
+	onIliReverseProgress: (callback) => {
+		const handler = (_event, data) => callback(data);
+		ipcRenderer.on('ili-reverse-progress', handler);
+		return () => ipcRenderer.removeListener('ili-reverse-progress', handler);
+	},
 });
 
 window.addEventListener('contextmenu', e => {

@@ -437,4 +437,64 @@
 	</insert>
 </data>
 
+<!-- ==================== VTD REPORT REVERSAL QUERIES ==================== -->
+
+<!-- Reverse ILI data odometers (step 1 of 2) -->
+<data id="VTD_CORR_REVERSE_1" comment="Reverse ILI data odometers" schema="UTE" table="VTD_CORR">
+	<insert>
+		<dbCommand>
+		<var name="ILI_INSPECTION_ID" type="Decimal"/>
+			<query>
+			UPDATE sgio_ili_data SET
+				absolute_odometer = ABS(COALESCE(absolute_odometer, 0) - (SELECT MAX(absolute_odometer) FROM sgio_ili_data WHERE ili_inspection_id = {ILI_INSPECTION_ID})),
+				us_weld_odometer  = ABS(COALESCE(us_weld_odometer, 0)  - (SELECT MAX(absolute_odometer) FROM sgio_ili_data WHERE ili_inspection_id = {ILI_INSPECTION_ID})),
+				ds_weld_odometer  = ABS(COALESCE(ds_weld_odometer, 0)  - (SELECT MAX(absolute_odometer) FROM sgio_ili_data WHERE ili_inspection_id = {ILI_INSPECTION_ID}))
+			WHERE ili_inspection_id = {ILI_INSPECTION_ID}
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<!-- Reverse pipe length odometers + swap start/end coordinates (step 2 of 2) -->
+<data id="VTD_CORR_REVERSE_2" comment="Reverse pipe length odometers and swap coordinates" schema="UTE" table="VTD_CORR">
+	<insert>
+		<dbCommand>
+		<var name="ILI_INSPECTION_ID" type="Decimal"/>
+			<query>
+			UPDATE sgio_ili_pipe_length SET
+				start_odometer = ABS(COALESCE(start_odometer, 0) - (SELECT MAX(absolute_odometer) FROM sgio_ili_data WHERE ili_inspection_id = {ILI_INSPECTION_ID})),
+				end_odometer   = ABS(COALESCE(end_odometer, 0)   - (SELECT MAX(absolute_odometer) FROM sgio_ili_data WHERE ili_inspection_id = {ILI_INSPECTION_ID})),
+				x_coord_start  = x_coord_end,
+				y_coord_start  = y_coord_end,
+				x_coord_end    = x_coord_start,
+				y_coord_end    = y_coord_start
+			WHERE ili_inspection_id = {ILI_INSPECTION_ID}
+			</query>
+		</dbCommand>
+	</insert>
+</data>
+
+<!-- Get list of inspections for the reversal dialog -->
+<data id="VTD_GET_INSPECTIONS" comment="Get all ILI inspections for reversal dialog" schema="UTE" table="VTD_CORR">
+	<select>
+		<dbQuery>
+			<query>
+			SELECT
+				i.ili_inspection_id "ILI_INSPECTION_ID",
+				i.description "DESCRIPTION",
+				i.comments "COMMENTS",
+				i.begin_date "BEGIN_DATE",
+				i.tool_vendor_cl "COMPANY",
+				i.model "MODEL",
+				i.route_id "ROUTE_ID",
+				r.description "ROUTE_DESCRIPTION",
+				(SELECT COUNT(*) FROM sgio_ili_data d WHERE d.ili_inspection_id = i.ili_inspection_id) "DEFECT_COUNT"
+			FROM sgio_ili_inspection i
+			LEFT JOIN pods_route r ON r.id = i.route_id
+			ORDER BY i.ili_inspection_id DESC
+			</query>
+		</dbQuery>
+	</select>
+</data>
+
 </root>

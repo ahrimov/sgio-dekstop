@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 import path from 'path';
 import { runCoordinateCalc } from '../iliCalc/coordinateCalcService.js';
+import { runReverseReport } from '../iliCalc/reverseReportService.js';
 import { getAppDataPath } from './pathHandlers.js';
 import { getOpenDatabase } from './dbHandlers.js';
 
@@ -66,5 +67,38 @@ export function registerIliCalcIpc() {
 				}
 			);
 		});
+	});
+
+	/**
+	 * IPC: ili-reverse-report
+	 * Reverses odometer values for an ILI inspection report and recalculates coordinates.
+	 *
+	 * @param {string} dbPath - Path to the Spatialite database
+	 * @param {object} params
+	 *   - inspectionId: number - ILI inspection ID to reverse
+	 * @returns {Promise<{success: boolean, message: string, inspectionId: number}>}
+	 */
+	ipcMain.handle('ili-reverse-report', async (event, dbPath, params) => {
+		console.log('[ILI Reverse IPC] Starting report reversal...');
+		console.log('[ILI Reverse IPC] DB:', dbPath);
+		console.log('[ILI Reverse IPC] Inspection ID:', params.inspectionId);
+
+		const db = getOpenDatabase(dbPath);
+		if (!db) {
+			throw new Error('Database not open. Please open the project first.');
+		}
+
+		const sqlQueriesDir = path.join(getAppDataPath(), 'Project', 'SqlQueries');
+
+		const result = await runReverseReport(db, params, sqlQueriesDir, (step, message, percent) => {
+			try {
+				event.sender.send('ili-reverse-progress', { step, message, percent });
+			} catch {
+				// Sender may be destroyed if window was closed
+			}
+		});
+
+		console.log('[ILI Reverse IPC] Reversal complete:', result);
+		return result;
 	});
 }

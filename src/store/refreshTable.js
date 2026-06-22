@@ -1,5 +1,6 @@
 import { createEvent, createStore } from 'effector';
 import { iliImportComplete } from './iliImport.js';
+import { iliReverseComplete } from './iliReverse.js';
 import { reloadLayersByIds } from '../legacy/DBManage.js';
 import { layers } from '../legacy/globals.js';
 import { showMultipleOnMap } from './showOnMap.js';
@@ -45,6 +46,13 @@ function zoomToIliLayer() {
 iliImportComplete.watch(() => {
   reloadLayersByIds(ILI_LAYER_IDS, layers).then(() => {
     // Give the map a moment to render the new features before zooming
+    setTimeout(zoomToIliLayer, 500);
+  });
+});
+
+// Reload ILI layers after report reversal so the map reflects reversed coordinates
+iliReverseComplete.watch(() => {
+  reloadLayersByIds(ILI_LAYER_IDS, layers).then(() => {
     setTimeout(zoomToIliLayer, 500);
   });
 });
