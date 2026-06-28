@@ -1,8 +1,4 @@
 <root version="sqlite">
-
-<!-- ==================== ILI IMPORT XML QUERIES (SQLite adapted) ==================== -->
-
-<!-- Load anomaly type dictionary -->
 <data id="ILI_ILI_ZIP_IMP_C_55_9" comment="Load anomaly types dictionary" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<select>
 		<dbQuery>
@@ -19,7 +15,6 @@
 	</select>
 </data>
 
-<!-- Get route_id by inspection_id -->
 <data id="ILI_ILI_ZIP_IMP_C_55_0" comment="Get route_id by inspection" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<select>
 		<dbQuery>
@@ -32,7 +27,6 @@
 	</select>
 </data>
 
-<!-- Fill ANOMALY_EXTENSION_CL -->
 <data id="ILI_ILI_ZIP_IMP_C_55_1" comment="Fill anomaly_extension_cl" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<update>
 		<dbCommand>
@@ -50,7 +44,6 @@
 	</update>
 </data>
 
-<!-- Set weld distances (old method via SQL) -->
 <data id="ILI_ILI_ZIP_IMP_C_55_4" comment="Set weld distances via SQL" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<update>
 		<dbCommand>
@@ -63,7 +56,6 @@
 	</update>
 </data>
 
-<!-- Set weld distances part 2 -->
 <data id="ILI_ILI_ZIP_IMP_C_55_4b" comment="Set weld distances part 2" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<update>
 		<dbCommand>
@@ -88,7 +80,6 @@
 	</update>
 </data>
 
-<!-- Prepare pipe lengths -->
 <data id="ILI_ILI_ZIP_IMP_C_55_5" comment="Insert pipe lengths from weld data" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<update>
 		<dbCommand>
@@ -107,7 +98,6 @@
 	</update>
 </data>
 
-<!-- Create inspection report record -->
 <data id="ILI_ILI_ZIP_IMP_C_55_7" comment="Create inspection report" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<update>
 		<dbCommand>
@@ -140,7 +130,6 @@
 	</update>
 </data>
 
-<!-- Get last inserted inspection ID -->
 <data id="ILI_ILI_ZIP_IMP_C_55_7_ID" comment="Get last inserted inspection ID" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<select>
 		<dbQuery>
@@ -151,7 +140,6 @@
 	</select>
 </data>
 
-<!-- Insert defect row -->
 <data id="ILI_ILI_ZIP_IMP_C_55_8" comment="Insert ILI data row" schema="UTE" table="ILI_ILI_ZIP_IMP_C_55">
 	<insert>
 		<dbCommand>
@@ -226,8 +214,6 @@
 		</dbCommand>
 	</insert>
 </data>
-
-<!-- ==================== CALC / LINK REPERS QUERIES ==================== -->
 
 <data id="CALC_CALC_DEF_1" comment="Get ILI data for calculation" schema="UTE" table="CALC_CALC_DEF">
 	<select>
@@ -358,8 +344,6 @@
 	</select>
 </data>
 
-<!-- ==================== COORDINATE CALC HELPER QUERIES ==================== -->
-
 <data id="CALC_ROUTE_GEOMETRY" comment="Load route geometry WKT for JS processing" schema="UTE" table="CALC_ROUTE">
 	<select>
 		<dbQuery>
@@ -373,7 +357,6 @@
 	</select>
 </data>
 
-<!-- station_id renamed to id -->
 <data id="CALC_MARKERS_FOR_ROUTE" comment="Load all markers for reper matching" schema="UTE" table="CALC_MARKERS">
 	<select>
 		<dbQuery>
@@ -436,10 +419,6 @@
 		</dbCommand>
 	</insert>
 </data>
-
-<!-- ==================== VTD REPORT REVERSAL QUERIES ==================== -->
-
-<!-- Reverse ILI data odometers (step 1 of 2) -->
 <data id="VTD_CORR_REVERSE_1" comment="Reverse ILI data odometers" schema="UTE" table="VTD_CORR">
 	<insert>
 		<dbCommand>
@@ -454,8 +433,6 @@
 		</dbCommand>
 	</insert>
 </data>
-
-<!-- Reverse pipe length odometers + swap start/end coordinates (step 2 of 2) -->
 <data id="VTD_CORR_REVERSE_2" comment="Reverse pipe length odometers and swap coordinates" schema="UTE" table="VTD_CORR">
 	<insert>
 		<dbCommand>
@@ -473,8 +450,6 @@
 		</dbCommand>
 	</insert>
 </data>
-
-<!-- Get list of inspections for the reversal dialog -->
 <data id="VTD_GET_INSPECTIONS" comment="Get all ILI inspections for reversal dialog" schema="UTE" table="VTD_CORR">
 	<select>
 		<dbQuery>
