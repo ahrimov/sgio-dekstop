@@ -163,9 +163,15 @@ export function getDataLayerFromBD(layer) {
 		let selectTypeQuery = '';
 		let selectLabelQuery = '';
 
-		const atribType = layer.atribs.filter(atrib => atrib.name === layer.styleTypeColumn);
-		if (atribType.length > 0) {
-			selectTypeQuery = ` ${layer.styleTypeColumn} as type, `;
+		// If layer has a style_clause (computed SQL expression for type), use it directly.
+		// Otherwise fall back to styleTypeColumn (simple column name).
+		if (layer.styleClause) {
+			selectTypeQuery = ` (${layer.styleClause}) as type, `;
+		} else {
+			const atribType = layer.atribs.filter(atrib => atrib.name === layer.styleTypeColumn);
+			if (atribType.length > 0) {
+				selectTypeQuery = ` ${layer.styleTypeColumn} as type, `;
+			}
 		}
 
 		const atribDescription = layer.atribs.filter(atrib => atrib.name === layer.labelColumn);
@@ -176,9 +182,11 @@ export function getDataLayerFromBD(layer) {
 		const whereClause = layer.whereClause ? ` WHERE ${layer.whereClause}` : '';
 		const pk = layer.primaryKey || 'id';
 		const geomExpr = layer.geometryColumn || 'AsText(Geometry) as geom';
+		// When style_clause is present we need a table alias 'd' since the expression may reference 'd.column'
+		const tableRef = layer.styleClause ? `${layer.table} d` : layer.table;
 		const query =
 			`SELECT ${pk} as id,${selectTypeQuery} ${selectLabelQuery} ${geomExpr} FROM ` +
-			layer.table + whereClause;
+			tableRef + whereClause;
 
 		requestToDB(
 			query,

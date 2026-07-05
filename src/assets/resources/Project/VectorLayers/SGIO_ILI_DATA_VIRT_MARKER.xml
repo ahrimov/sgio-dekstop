@@ -4,50 +4,100 @@
     <layerDb enabled="true">
       <id>SGIO_ILI_DATA_VIRT_MARKER</id>
       <label>ВТД. Виртуальные маркеры</label>
-	  <table>sgio_ili_data</table>
-	  <primary>ili_data_id</primary>
-	  <where_clause> anomaly_type_cl in (1004,1003)</where_clause>
-     <show_buttons>import,export</show_buttons>
-	  <geometry_column>AsText(GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326)) geom</geometry_column>
+      <table>sgio_ili_data</table>
+      <primary>ili_data_id</primary>
+      <where_clause> anomaly_type_cl in (1004,1003)</where_clause>
+      <style_clause>ANOMALY_TYPE_CL||CASE WHEN ref_event_id is not null THEN '_LNK' ELSE '_NOTLNK' END</style_clause>
+      <show_buttons>add,import,export</show_buttons>
+      <geometry_column>AsText(GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326)) geom</geometry_column>
       <encoding>UTF-8</encoding>
       <crs>3857</crs>
       <geometry>MULTIPOINT</geometry>
       <attributes>
-		 <attribute type="DOUBLE">
+        <attribute type="DOUBLE">
           <id>ili_data_id</id>
           <label>Идентификатор</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		<attribute type="DOUBLE">
-          <id>station</id>
-          <label>Км. устан.</label>
-          <required>0</required>
-          <editable>0</editable>
+        <attribute type="ENUM">
+          <id>anomaly_type_cl</id>
+          <label>Тип репера</label>
+          <required>1</required>
+          <editable>1</editable>
+          <default>1003</default>
+          <options>1003#Виртуальный репер (1003)|1004#Репер кранового узла (1004)</options>
         </attribute>
-		 <attribute type="DOUBLE">
+        <attribute type="STRING">
+          <id>weld_number</id>
+          <label>Номер шва</label>
+          <required>0</required>
+          <editable>1</editable>
+        </attribute>
+        <attribute type="STRING">
+          <id>description</id>
+          <label>Описание</label>
+          <required>0</required>
+          <editable>1</editable>
+        </attribute>
+        <attribute type="DOUBLE">
           <id>absolute_odometer</id>
-          <label>Одом. дист. м</label>
+          <label>Дистанция по одометру</label>
+          <required>0</required>
+          <editable>1</editable>
+        </attribute>
+        <attribute type="DOUBLE">
+          <id>calibrated_measure</id>
+          <label>Геодезич. линейная дист.</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		 <attribute type="DOUBLE">
-          <id>calibrated_measure</id>
-          <label>Геодезич.линейная дист.</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>		
-		 <attribute type="STRING">
+        <attribute type="STRING">
           <id>feature_description</id>
           <label>Идентификация</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
-
+        <attribute type="DOUBLE">
+          <id>station</id>
+          <label>Км. устан.</label>
+          <required>0</required>
+          <editable>0</editable>
+        </attribute>
       </attributes>
-      <attrPrimary>test</attrPrimary>
+      <attrPrimary>weld_number</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
+      <styles>
+        <Style>
+          <value>1003_LNK</value>
+          <IconStyle>
+            <href>assets/1003_LNK.png</href>
+            <size>24</size>
+          </IconStyle>
+        </Style>
+        <Style>
+          <value>1003_NOTLNK</value>
+          <IconStyle>
+            <href>assets/1003_NOTLNK.png</href>
+            <size>24</size>
+          </IconStyle>
+        </Style>
+        <Style>
+          <value>1004_LNK</value>
+          <IconStyle>
+            <href>assets/1004_LNK.png</href>
+            <size>24</size>
+          </IconStyle>
+        </Style>
+        <Style>
+          <value>1004_NOTLNK</value>
+          <IconStyle>
+            <href>assets/1004_NOTLNK.png</href>
+            <size>24</size>
+          </IconStyle>
+        </Style>
+      </styles>
       <geometryStyle>
         <colorFill>#FFC00000</colorFill>
         <colorBorder>#FF000000</colorBorder>

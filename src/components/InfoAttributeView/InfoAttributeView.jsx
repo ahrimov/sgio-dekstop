@@ -211,9 +211,19 @@ export function InfoAttributeView({
 		}
 	}, [onClose, isNewFeature, feature, activeLayer, isGeometryEditingRef, handleCancelEditGeometryRef]);
 
-	const visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(
+	const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
+	const VIRT_MARKER_NEW_FIELDS = ['weld_number', 'description', 'absolute_odometer'];
+
+	let visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(
 		atrib => atrib.visible !== false
 	);
+
+	// For virtual reper layer, show only editable fields per spec: "Номер шва", "Описание", "Дистанция по одометру"
+	if (activeLayer.id === VIRT_MARKER_LAYER_ID) {
+		visibleAtribs = visibleAtribs.filter(
+			atrib => VIRT_MARKER_NEW_FIELDS.includes(atrib.name)
+		);
+	}
 
 	const layerName = activeLayer.get ? activeLayer.get('descr') : (activeLayer.descr ?? 'Информация об объекте');
 	const coordinates = useMemo(() => getClickCoordinates(clickCoordinate), [clickCoordinate]);

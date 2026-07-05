@@ -3,10 +3,13 @@ import { showOnMap } from '../../../store/showOnMap.js';
 import { deleteFeature } from '../../../features/deleteFeature/deleteFeature.js';
 import { updateFeatureAttributes } from '../../../features/saveFeature/updateFeature.js';
 import { addNewFeature } from '../../../features/saveFeature/addNewFeature.js';
+import { editVirtMarker } from '../../../features/VirtMarker/editVirtMarker.js';
 import { filterSystemProperties } from '../../../utils/filterSystemProperties.js';
 import { showAlert, showConfirm } from '../../../store/modalDialog.js';
 import KML from 'ol/format/KML';
 import { map } from '../../../legacy/globals.js';
+
+const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
 
 export function useFeatureActions(
 	layer,
@@ -105,24 +108,39 @@ export function useFeatureActions(
 						} else {
 							onClose();
 						}
-				} else {
-					updateFeatureAttributes(
-						layer,
-						featureId,
-						processedValues,
-						() => {
-							setFeatureData(prev => ({
-								...prev,
-								...processedValues,
-							}));
-							messageApi.success('Изменения успешно сохранены');
-						},
-						error => {
-							console.log(`Ошибка сохранения: ${error.message}`);
-							messageApi.error(`Ошибка сохранения: ${error.message}`);
+				} else if (layer.id === VIRT_MARKER_LAYER_ID) {
+						// Virtual reper — re-project geometry onto route and update via IPC
+						try {
+							await editVirtMarker(layer, featureId, feature, processedValues);
+							setFeatureData(prev => ({ ...prev, ...processedValues }));
+							messageApi.success('Виртуальный репер обновлён');
+							if (onAfterSave) {
+								onAfterSave();
+							} else {
+								onClose();
+							}
+						} catch (err) {
+							console.error('[editVirtMarker] error:', err);
+							messageApi.error(`Ошибка обновления: ${err.message}`);
 						}
-					);
-				}
+					} else {
+						updateFeatureAttributes(
+							layer,
+							featureId,
+							processedValues,
+							() => {
+								setFeatureData(prev => ({
+									...prev,
+									...processedValues,
+								}));
+								messageApi.success('Изменения успешно сохранены');
+							},
+							error => {
+								console.log(`Ошибка сохранения: ${error.message}`);
+								messageApi.error(`Ошибка сохранения: ${error.message}`);
+							}
+						);
+					}
 			}
 		} catch (error) {
 			console.error('Error saving feature:', error);

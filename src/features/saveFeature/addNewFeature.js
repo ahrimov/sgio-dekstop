@@ -2,8 +2,21 @@ import { requestToDBPromise } from '../../legacy/DBManage.js';
 import { refreshFeatureTable } from '../../store/refreshTable.js';
 import { syncChangesWithKML } from '../KMLLayer/syncChangesWithKML.js';
 import { writeFeatureInKML } from './writeFeatureInKml.js';
+import { addVirtMarker } from '../VirtMarker/addVirtMarker.js';
+
+const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
 
 export async function addNewFeature(layer, feature) {
+	// Virtual reper — use specialised IPC flow (project onto route, insert via SQL)
+	if (layer.id === VIRT_MARKER_LAYER_ID) {
+		try {
+			await addVirtMarker(layer, feature);
+		} catch (error) {
+			alert(error.message || error);
+		}
+		return;
+	}
+
 	if (!feature.get('id')) {
 		feature.set('id', generateId(layer));
 	}

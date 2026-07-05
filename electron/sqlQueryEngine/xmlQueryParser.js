@@ -30,7 +30,9 @@ export function parseXmlQuery(fileRequest, sqlQueriesDir) {
 		throw new Error(`Invalid file request: ${fileRequest}`);
 	}
 
-	const [fileName, queryId] = fileRequest.split('#');
+	const firstHash = fileRequest.indexOf('#');
+	const fileName = firstHash >= 0 ? fileRequest.substring(0, firstHash) : '';
+	const queryId  = firstHash >= 0 ? fileRequest.substring(firstHash + 1) : '';
 	if (!fileName || !queryId) {
 		throw new Error(`Invalid file request format. Expected "FILE.xml#ID", got: ${fileRequest}`);
 	}

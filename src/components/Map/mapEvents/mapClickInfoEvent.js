@@ -57,7 +57,10 @@ async function collectAndShowFeatures(map, pixel, coordinate) {
 					layersMap.get(layer).push(feature);
 					totalFeatures++;
 				},
-				{ hitTolerance: 5 }
+				{
+					hitTolerance: 5,
+					layerFilter: (l) => l.get('title') !== '__showOnMapHighlight__',
+				}
 			);
 
 			// No features found
@@ -118,7 +121,10 @@ function handleMapClickEditEvent(map) {
 					}
 					layersMap.get(layer).push(feature);
 				},
-				{ hitTolerance: 5 }
+				{
+					hitTolerance: 5,
+					layerFilter: (l) => l.get('title') !== '__showOnMapHighlight__',
+				}
 			);
 
 			const featuresByLayer = Array.from(layersMap, ([layer, features]) => ({

@@ -1,6 +1,7 @@
 import { dbAll } from '../sqlQueryEngine/dbExecutor.js';
 import { processLinkRepers } from './linkRepersService.js';
 import { processIliInspCalc } from './iliInspCalcService.js';
+import { parseWKT, buildCumulativeDistances, projectPointOnLine, isMercator, mercatorToWgs84 } from './routeGeometry.js';
 
 
 /**
@@ -126,5 +127,130 @@ export async function runCoordinateCalc(db, params, sqlQueriesDir, onProgress) {
 	return {
 		success: true,
 		message: `Координаты рассчитаны для отчёта ${inspectionId}`,
+	};
+}
+
+/**
+	* Runs coordinate calculation WITHOUT the LinkRepers phase.
+	* Used after manual virtual reper add/edit/delete — user manages reper linking manually.
+	*
+	* @param {object} db - Spatialite database instance
+	* @param {object} params
+	* @param {number} params.inspectionId - ILI inspection ID
+	* @param {string} sqlQueriesDir - Path to SqlQueries directory
+	* @param {function} onProgress - Progress callback (step, message, percent)
+	* @returns {Promise<{success: boolean, message: string}>}
+	*/
+export async function runCoordinateCalcNoLink(db, params, sqlQueriesDir, onProgress) {
+	const { inspectionId } = params;
+
+	const progress = (step, message, percent) => {
+		console.log(`[CoordCalcNoLink] Step ${step}: ${message} (${percent}%)`);
+		if (onProgress) onProgress(step, message, percent);
+	};
+
+	console.log(`[CoordCalcNoLink] ▶ START — inspectionId=${inspectionId}`);
+	progress(1, 'Получение идентификатора маршрута...', 2);
+
+	const rows = await dbAll(
+		db,
+		`SELECT route_id FROM sgio_ili_inspection WHERE ili_inspection_id = ${inspectionId}`
+	);
+
+	if (!rows || rows.length === 0) {
+		throw new Error(`Inspection ${inspectionId} not found`);
+	}
+
+	const routeId = rows[0].route_id;
+	if (!routeId) {
+		throw new Error(`Inspection ${inspectionId} has no route_id`);
+	}
+
+	const routeGeomCheck = await dbAll(
+		db,
+		`SELECT station_begin FROM pods_route WHERE id = ${routeId}`
+	);
+	const routeStationBeginKm = routeGeomCheck[0]?.station_begin ?? null;
+
+	const calcParams = {
+		P_REPORT_ID: inspectionId,
+		P_ROUTE_ID: routeId,
+		INSPECTION_ID: inspectionId,
+		ROUTE_STATION_BEGIN_KM: routeStationBeginKm,
+	};
+
+	progress(2, 'Расчёт координат (без привязки реперов)...', 10);
+	await processIliInspCalc(db, calcParams, sqlQueriesDir, (message, pct) => {
+		progress(2, message, Math.round(10 + pct * 0.88));
+	});
+
+	progress(3, 'Расчёт координат завершён!', 100);
+	console.log(`[CoordCalcNoLink] ✔ COMPLETE — inspectionId=${inspectionId}`);
+
+	return {
+		success: true,
+		message: `Координаты пересчитаны для отчёта ${inspectionId} (без привязки реперов)`,
+	};
+}
+
+/**
+	* Projects a WGS84 point onto the route axis for a given inspection.
+	* Returns the geodetic measure (distance along route) and projected coordinates.
+	*
+	* @param {object} db - Spatialite database instance
+	* @param {object} params
+	* @param {number} params.x - Longitude in WGS84 (EPSG:4326)
+	* @param {number} params.y - Latitude in WGS84 (EPSG:4326)
+	* @returns {Promise<{measure: number, projectedLon: number, projectedLat: number, routeId: number, inspectionId: number}>}
+	*/
+export async function projectPointOnRoute(db, params) {
+	const { x, y } = params;
+
+	// Get the single inspection (always one in the DB)
+	const inspRows = await dbAll(
+		db,
+		`SELECT ili_inspection_id, route_id FROM sgio_ili_inspection LIMIT 1`
+	);
+	if (!inspRows || inspRows.length === 0) {
+		throw new Error('No ILI inspection found in database');
+	}
+	const { ili_inspection_id: inspectionId, route_id: routeId } = inspRows[0];
+	if (!routeId) {
+		throw new Error('Inspection has no route_id');
+	}
+
+	// Load route geometry WKT
+	const routeRows = await dbAll(
+		db,
+		`SELECT AsText(Geometry) AS geom FROM pods_route WHERE id = ${routeId}`
+	);
+	if (!routeRows || !routeRows[0]?.geom) {
+		throw new Error(`No route geometry for route_id=${routeId}`);
+	}
+
+	const routeWkt = routeRows[0].geom;
+	let routeCoords = parseWKT(routeWkt);
+	if (routeCoords.length < 2) {
+		throw new Error('Route geometry has fewer than 2 points');
+	}
+
+	// Convert Mercator → WGS84 if the route is stored in EPSG:3857
+	if (isMercator(routeCoords)) {
+		routeCoords = routeCoords.map(([mx, my]) => mercatorToWgs84(mx, my));
+	}
+
+	// x/y arrive as WGS84 degrees (transformed in addVirtMarker before IPC call)
+	const cumDists = buildCumulativeDistances(routeCoords);
+	const result = projectPointOnLine(x, y, routeCoords, cumDists);
+	if (!result) {
+		throw new Error('Failed to project point onto route');
+	}
+
+	return {
+		measure: result.measure,
+		projectedLon: result.lon,   // WGS84 longitude
+		projectedLat: result.lat,   // WGS84 latitude
+		routeId,
+		inspectionId,
 	};
 }

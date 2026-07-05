@@ -7,6 +7,7 @@ import { ensureProjectResources } from './resources.js';
 import { registerDialogIpc } from './ipc/dialogHandlers.js';
 import { registerIliImportIpc } from './ipc/iliImportHandlers.js';
 import { registerIliCalcIpc } from './ipc/iliCalcHandlers.js';
+import { registerVirtMarkerIpc } from './ipc/virtMarkerHandlers.js';
 
 app.whenReady().then(async () => {
 	await ensureProjectResources();
@@ -17,6 +18,7 @@ app.whenReady().then(async () => {
 	registerDialogIpc();
 	registerIliImportIpc();
 	registerIliCalcIpc();
+	registerVirtMarkerIpc();
 });
 
 app.on('window-all-closed', () => {

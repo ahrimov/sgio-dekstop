@@ -1,6 +1,8 @@
-import { requestToDB } from '../../legacy/DBManage';
-import { refreshFeatureTable } from '../../store/refreshTable';
+import { requestToDB, getDbPath } from '../../legacy/DBManage';
+import { refreshFeatureTable, refreshAfterVirtMarkerChange } from '../../store/refreshTable';
 import { syncChangesWithKML } from '../KMLLayer/syncChangesWithKML';
+
+const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
 
 export async function deleteFeature(featureId, layer, callback) {
 	const kmlType = layer.get('kmlType');
@@ -10,6 +12,22 @@ export async function deleteFeature(featureId, layer, callback) {
 		feature.deleted = true;
 		await syncChangesWithKML(layer.id);
 		if (callback) callback();
+		return;
+	}
+
+	// Virtual reper — soft delete via IPC (resets control_point_lf, does NOT physically delete)
+	if (layer.id === VIRT_MARKER_LAYER_ID) {
+		try {
+			const dbPath = getDbPath();
+			if (!dbPath) throw new Error('База данных не открыта');
+			await electronAPI.iliVirtMarkerDelete(dbPath, { id: featureId });
+			deleteFeatureFromLayer(featureId, layer);
+			await refreshAfterVirtMarkerChange();
+			if (callback) callback();
+		} catch (err) {
+			console.error('[deleteFeature] virtual reper soft-delete error:', err);
+			alert(`Ошибка удаления виртуального репера: ${err.message}`);
+		}
 		return;
 	}
 

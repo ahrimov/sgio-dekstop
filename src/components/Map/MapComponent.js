@@ -10,6 +10,7 @@ import { layers } from '../../legacy/globals.js';
 import { useDraw } from '../../features/draw/useDraw.js';
 import { InfoAttributeView } from '../InfoAttributeView/InfoAttributeView.jsx';
 import { $showOnMapFeatures, clearShowOnMap } from '../../store/showOnMap.js';
+import { $infoHighlightFeature } from '../../store/infoHighlightFeature.js';
 import { $showCrosshair } from '../../store/showCrosshair.js';
 import { MapButtonsContainer } from '../MapButtons/MapButtonsContainer.jsx';
 import { BottomLeftButtonsContainer } from '../MapButtons/BottomLeftButtonsContainer.jsx';
@@ -39,9 +40,10 @@ const MapComponent = () => {
 	}, [isMapReady, updateMapSize]);
 
 	const showOnMapFeatures = useUnit($showOnMapFeatures);
+	const infoHighlightFeature = useUnit($infoHighlightFeature);
 
-	// Apply highlight to features shown on map
-	useShowOnMapHighlight(map, showOnMapFeatures);
+	// Apply highlight to features shown on map and info-panel-selected features
+	useShowOnMapHighlight(map, showOnMapFeatures, infoHighlightFeature);
 
 	// Обработка показа объектов на карте (единая для одного и нескольких)
 	useEffect(() => {
@@ -85,7 +87,9 @@ const MapComponent = () => {
 		});
 
 		// Центрируем карту на всех объектах
-		if (combinedExtent) {
+		// Guard against NaN/Infinity extents that can arise from corrupted coordinates
+		const isValidExtent = combinedExtent && combinedExtent.every(v => isFinite(v));
+		if (isValidExtent) {
 			map.getView().fit(combinedExtent, {
 				duration: 200,
 				maxZoom: 18,

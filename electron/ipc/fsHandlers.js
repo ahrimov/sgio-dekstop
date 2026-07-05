@@ -80,6 +80,15 @@ export function registerFsIpc() {
 		});
 	});
 
+	ipcMain.handle('fs-readFileBase64', async (event, filePath) => {
+		return new Promise((resolve, reject) => {
+			fs.readFile(filePath, (err, data) => {
+				if (err) reject(err);
+				else resolve(data.toString('base64'));
+			});
+		});
+	});
+
 	ipcMain.handle('fs-writeFileBinary', async (event, filePath, base64Data) => {
 		return new Promise((resolve, reject) => {
 			const dir = path.dirname(filePath);

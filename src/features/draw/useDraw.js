@@ -40,7 +40,7 @@ export function useDraw({ map, setCurrentFeature }) {
 	const mapInteractionMode = useUnit($mapInteractionMode);
 
 	const closeControlPanel = async () => {
-		if (isDrawing || isModifying) {
+		if (canReset) {
 			const answer = await showConfirm('Подтверждение', 'На карте есть несохраненный объект. Если вы продолжите, то он будет потерян. Продолжить?');
 			if (!answer) {
 				return;

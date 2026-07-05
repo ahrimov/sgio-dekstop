@@ -113,7 +113,7 @@ function parseCoordString(str) {
  * @param {number} y - Northing in meters
  * @returns {[number, number]} [longitude, latitude]
  */
-function mercatorToWgs84(x, y) {
+export function mercatorToWgs84(x, y) {
 	const lon = (x / 20037508.342789244) * 180;
 	const lat = (Math.atan(Math.exp((y / 20037508.342789244) * Math.PI)) * 360) / Math.PI - 90;
 	return [lon, lat];
@@ -124,7 +124,7 @@ function mercatorToWgs84(x, y) {
  * @param {number[][]} coords
  * @returns {boolean}
  */
-function isMercator(coords) {
+export function isMercator(coords) {
 	if (!coords || coords.length === 0) return false;
 	return Math.abs(coords[0][0]) > 180 || Math.abs(coords[0][1]) > 90;
 }

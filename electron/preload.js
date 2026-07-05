@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
 	readFile: filePath => ipcRenderer.invoke('fs-readFile', filePath),
+	readFileBase64: filePath => ipcRenderer.invoke('fs-readFileBase64', filePath),
 	writeFile: (filePath, data) => ipcRenderer.invoke('fs-writeFile', filePath, data),
 	writeFileBinary: (filePath, base64Data) => ipcRenderer.invoke('fs-writeFileBinary', filePath, base64Data),
 	mkdir: dirPath => ipcRenderer.invoke('fs-mkdir', dirPath),
@@ -59,6 +60,20 @@ contextBridge.exposeInMainWorld('electronAPI', {
 		ipcRenderer.on('ili-reverse-progress', handler);
 		return () => ipcRenderer.removeListener('ili-reverse-progress', handler);
 	},
+
+	// ILI Coordinate Calculation without reper linking (used after virtual reper changes)
+	iliCalcCoordinatesNoLink: (dbPath, params) =>
+		ipcRenderer.invoke('ili-calc-coordinates-no-link', dbPath, params),
+
+	// Virtual reper (виртуальный репер) CRUD
+	iliProjectPointOnRoute: (dbPath, params) =>
+		ipcRenderer.invoke('ili-project-point-on-route', dbPath, params),
+	iliVirtMarkerInsert: (dbPath, params) =>
+		ipcRenderer.invoke('ili-virt-marker-insert', dbPath, params),
+	iliVirtMarkerUpdate: (dbPath, params) =>
+		ipcRenderer.invoke('ili-virt-marker-update', dbPath, params),
+	iliVirtMarkerDelete: (dbPath, params) =>
+		ipcRenderer.invoke('ili-virt-marker-delete', dbPath, params),
 });
 
 window.addEventListener('contextmenu', e => {

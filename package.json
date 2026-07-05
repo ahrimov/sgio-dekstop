@@ -99,6 +99,10 @@
 				"to": "resources/Project"
 			},
 			{
+				"from": "src/assets/resources/images",
+				"to": "resources/images"
+			},
+			{
 				"from": "src/assets/spatialite/",
 				"to": "spatialite"
 			}

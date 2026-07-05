@@ -15,6 +15,7 @@ import Stroke from 'ol/style/Stroke.js';
 import Circle from 'ol/style/Circle.js';
 import Text from 'ol/style/Text.js';
 import RegularShape from 'ol/style/RegularShape.js';
+import Icon from 'ol/style/Icon.js';
 import XYZ from 'ol/source/XYZ.js';
 import TileLayer from 'ol/layer/Tile.js';
 import { createXYZ } from 'ol/tilegrid.js';
@@ -289,6 +290,8 @@ export function configParser(data) {
 		layer.showButtons = showButtonsEl
 			? showButtonsEl.textContent.split(',').map(s => s.trim()).filter(Boolean)
 			: null;
+		const styleClauseEl = layerDbEl ? layerDbEl.getElementsByTagName('style_clause').item(0) : null;
+		layer.styleClause = styleClauseEl ? styleClauseEl.textContent.trim() : null;
 		layer.geometryType = geometryType;
 
 		let layerZoomMin = parseFloat(dom.getElementsByTagName('zoomMax').item(0)?.textContent);
@@ -410,34 +413,31 @@ export async function pointStyleParse(dom) {
 				const image = createImageStyleByForm(form, fill, imageSize, stroke);
 				style.setImage(image);
 			} else {
-				// let imageSize = iconStyle.getElementsByTagName('size').item(0)?.textContent || 16;
-				// href = href.replace('Public', '');
-				// const icon = await new Promise((resolve, reject) => {
-				// 	window.resolveLocalFileSystemURL(
-				// 		cordova.file.applicationDirectory + 'www/resources/images/' + href,
-				// 		fileEntry => {
-				// 			const img = new Image();
-				// 			img.onload = function () {
-				// 				const scaleX = imageSize / this.width;
-				// 				const scaleY = imageSize / this.height;
-				// 				const scale = scaleX < scaleY ? scaleX : scaleY;
-				// 				resolve(
-				// 					new Icon({
-				// 						src: fileEntry.toInternalURL(),
-				// 						scale: scale,
-				// 					})
-				// 				);
-				// 			};
-				// 			img.src = fileEntry.toInternalURL();
-				// 		},
-				// 		e => {
-				// 			console.log('Error while opening: ', href);
-				// 			resolve(null);
-				// 		}
-				// 	);
-				// });
-				// if (!icon) return null;
-				// style.setImage(icon);
+				// Electron desktop: load icon from bundled resources as base64 data URL
+				// (file:// URLs cause canvas tainting in modern Chromium/Electron)
+				try {
+					const resourcePath = await electronAPI.getResourcePath();
+					// href is relative, e.g. "assets/1003_LNK.png"
+					const iconPath = `${resourcePath}/images/${href}`;
+					const base64 = await electronAPI.readFileBase64(iconPath);
+					const ext = href.split('.').pop().toLowerCase();
+					const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : 'image/png';
+					const iconSrc = `data:${mime};base64,${base64}`;
+					const targetSize = parseInt(imageSize, 10) || 16;
+					const icon = new Icon({
+						src: iconSrc,
+						scale: targetSize / 32, // assume 32px base size
+					});
+					style.setImage(icon);
+				} catch (e) {
+					console.warn('[XMLParser] Failed to load icon from href:', href, e);
+					// Fall back to default circle
+					const defaultImage = new Circle({
+						fill: new Fill({ color: generateColor() }),
+						radius: 5,
+					});
+					style.setImage(defaultImage);
+				}
 			}
 		} else {
 			const defaultImage = new Circle({

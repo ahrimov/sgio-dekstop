@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import path from 'path';
-import { runCoordinateCalc } from '../iliCalc/coordinateCalcService.js';
+import { runCoordinateCalc, runCoordinateCalcNoLink, projectPointOnRoute } from '../iliCalc/coordinateCalcService.js';
 import { runReverseReport } from '../iliCalc/reverseReportService.js';
 import { getAppDataPath } from './pathHandlers.js';
 import { getOpenDatabase } from './dbHandlers.js';
@@ -99,6 +99,52 @@ export function registerIliCalcIpc() {
 		});
 
 		console.log('[ILI Reverse IPC] Reversal complete:', result);
+		return result;
+	});
+
+	/**
+	 * IPC: ili-calc-coordinates-no-link
+	 * Runs coordinate calculation WITHOUT the LinkRepers phase.
+	 * Used after manual virtual reper changes.
+	 */
+	ipcMain.handle('ili-calc-coordinates-no-link', async (event, dbPath, params) => {
+		console.log('[ILI Calc No-Link IPC] Starting coordinate calculation without reper linking...');
+		const db = getOpenDatabase(dbPath);
+		if (!db) {
+			throw new Error('Database not open. Please open the project first.');
+		}
+
+		const sqlQueriesDir = path.join(getAppDataPath(), 'Project', 'SqlQueries');
+
+		const result = await runCoordinateCalcNoLink(db, params, sqlQueriesDir, (step, message, percent) => {
+			try {
+				event.sender.send('ili-calc-progress', { step, message, percent });
+			} catch {
+				// Sender may be destroyed
+			}
+		});
+
+		console.log('[ILI Calc No-Link IPC] Calculation complete:', result);
+		return result;
+	});
+
+	/**
+	 * IPC: ili-project-point-on-route
+	 * Projects a WGS84 click point onto the route axis of the current inspection.
+	 * Returns the geodetic measure (distance along route) and projected coordinates.
+	 *
+	 * @param {string} dbPath
+	 * @param {{ x: number, y: number }} params - WGS84 longitude and latitude
+	 */
+	ipcMain.handle('ili-project-point-on-route', async (event, dbPath, params) => {
+		console.log('[ILI Project Point IPC] Projecting point onto route:', params);
+		const db = getOpenDatabase(dbPath);
+		if (!db) {
+			throw new Error('Database not open. Please open the project first.');
+		}
+
+		const result = await projectPointOnRoute(db, params);
+		console.log('[ILI Project Point IPC] Result:', result);
 		return result;
 	});
 }

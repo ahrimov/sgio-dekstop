@@ -190,10 +190,6 @@ export function FeatureTable({ layer }) {
 				columnWidth = 150;
 			}
 
-			console.log(
-				`[FeatureTable] label="${atrib.label}" codes:`,
-				[...atrib.label].map(c => c.charCodeAt(0))
-			);
 			const base = {
 				title: atrib.label.includes('\\n')
 					? atrib.label.split('\\n').map((part, i, arr) => (
@@ -320,7 +316,6 @@ export function FeatureTable({ layer }) {
 				title="Показать информацию по объекту"
 				onClick={e => {
 					e.stopPropagation();
-					console.log('record:', record);
 					showInfo({ featureId: record.id, layer });
 				}}
 				variant="text"

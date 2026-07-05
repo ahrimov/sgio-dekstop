@@ -2,12 +2,12 @@
 <template version="2">
   <layers>
     <layerDb enabled="true">
-      <id>SGIO_ILI_DATA_FEATURE</id>
-      <label>ВТД. Особенности трассы</label>
-	   <table>sgio_ili_data</table>
+      <id>SGIO_ILI_DATA_VIRT_MARKER</id>
+      <label>ВТД. Виртуальные маркеры</label>
+	  <table>sgio_ili_data</table>
 	  <primary>ili_data_id</primary>
-	  <where_clause> anomaly_type_cl in (select code from sgio_ILI_ANOMALY_TYPE_CL ia where ia.category_cl in  (2)) AND anomaly_type_cl NOT IN (1003, 1004)</where_clause>
-    <show_buttons>import,export</show_buttons>
+	  <where_clause> anomaly_type_cl in (1004,1003)</where_clause>
+     <show_buttons>import,export</show_buttons>
 	  <geometry_column>AsText(GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326)) geom</geometry_column>
       <encoding>UTF-8</encoding>
       <crs>3857</crs>
@@ -19,14 +19,7 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		 <attribute type="STRING">
-          <id>weld_number</id>
-          <label>Номер 
-          \n шва</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>
-        <attribute type="DOUBLE">
+		<attribute type="DOUBLE">
           <id>station</id>
           <label>Км. устан.</label>
           <required>0</required>
@@ -38,32 +31,25 @@
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		 <attribute type="ENUM">
-          <id>anomaly_type_cl</id>
-          <label>Тип аномалии</label>
+		 <attribute type="DOUBLE">
+          <id>calibrated_measure</id>
+          <label>Геодезич.линейная дист.</label>
           <required>0</required>
           <editable>0</editable>
-		  <default>0</default>
-		  <options>0#Неизвестно|1001#Отвод|1003#Кран|1005#Узел подключения технической перемычки|5016#Трубная арматура|5017#Урез воды|1006#Вход в патрон|1007#Секущий кран КЗ|1008#Секущий кран КП|1010#Выход из патрона|1011#Отметка оператора|1012#Окно|1013#Камера приема/запуска|1014#Неизвестный тип особенности|2003#одиночный|5009#Отвод (поворот) конец|1009#Тройник|5010#Отвод (поворот) начало|5011#Прямая врезка|5012#сегментная вставка|5013#Сегментный участок (конец)|5014#Сегментный участок (начало)|5018#Участок пригрузов конец|5019#Участок пригрузов начало|5020#Элемент обустройства|5021#Пригруз кольцевой|1004#Магнитный маркер</options>
-        </attribute>
+        </attribute>		
 		 <attribute type="STRING">
           <id>feature_description</id>
           <label>Идентификация</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
-		 <attribute type="STRING">
-          <id>description</id>
-          <label>Описание</label>
-          <required>0</required>
-          <editable>0</editable>
-        </attribute>		
+
       </attributes>
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
       <geometryStyle>
-        <colorFill>#FFFFFF00</colorFill>
+        <colorFill>#FFC00000</colorFill>
         <colorBorder>#FF000000</colorBorder>
         <sizePoint>5</sizePoint>
         <Rule>
@@ -71,7 +57,7 @@
             <Graphic>
               <Mark>
                 <Fill>
-                  <CssParameter name="fill">#FFFF00</CssParameter>
+                  <CssParameter name="fill">#FFC00000</CssParameter>
                   <CssParameter name="fill-opacity">1.0</CssParameter>
                 </Fill>
                 <Stroke>
