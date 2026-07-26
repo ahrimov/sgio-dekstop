@@ -27,7 +27,10 @@ import { BaseMapButton } from '../MapButtons/BaseMapButton.jsx';
 export function FeatureTable({ layer }) {
 	const [features, setFeatures] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [sorter, setSorter] = useState({});
+	const defaultSorter = layer.id === 'SGIO_ILI_DATA_VIRT_MARKER'
+		? { field: 'absolute_odometer', order: 'ASC' }
+		: {};
+	const [sorter, setSorter] = useState(defaultSorter);
 	const [antdFilters, setAntdFilters] = useState({});
 	const [pagination, setPagination] = useState({ current: 1, pageSize: 100, total: 0 });
 	const [selectedRowKeys, setSelectedRowKeys] = useState([]);
