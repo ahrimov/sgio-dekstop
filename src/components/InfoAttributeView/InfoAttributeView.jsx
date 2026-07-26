@@ -212,7 +212,7 @@ export function InfoAttributeView({
 	}, [onClose, isNewFeature, feature, activeLayer, isGeometryEditingRef, handleCancelEditGeometryRef]);
 
 	const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
-	const VIRT_MARKER_NEW_FIELDS = ['weld_number', 'description', 'absolute_odometer'];
+	const VIRT_MARKER_NEW_FIELDS = ['description', 'absolute_odometer'];
 
 	let visibleAtribs = filterSystemProperties(activeLayer.atribs, config).filter(
 		atrib => atrib.visible !== false

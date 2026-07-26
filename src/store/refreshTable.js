@@ -4,6 +4,7 @@ import { iliReverseComplete } from './iliReverse.js';
 import { getDbPath, reloadLayersByIds } from '../legacy/DBManage.js';
 import { layers } from '../legacy/globals.js';
 import { showMultipleOnMap } from './showOnMap.js';
+import { startVirtMarkerRecalc, updateVirtMarkerRecalc, finishVirtMarkerRecalc } from './virtMarkerRecalc';
 
 export const refreshFeatureTable = createEvent();
 
@@ -81,38 +82,49 @@ function getSgioLayerIds() {
  * @returns {Promise<void>}
  */
 export async function refreshAfterVirtMarkerChange() {
-  // 1. Run coordinate recalculation (no reper linking)
+  startVirtMarkerRecalc('Пересчёт координат...');
+
   try {
-    const dbPath = getDbPath();
-    if (dbPath) {
-      // Use a minimal query — iliGetInspections references columns that may not exist
-      const result = await electronAPI.executeSQL(
-        dbPath,
-        'SELECT ili_inspection_id FROM sgio_ili_inspection ORDER BY ili_inspection_id LIMIT 1'
-      );
-      const rows = result?.rows ?? [];
-      if (rows.length > 0) {
-        const inspectionId = rows[0].ili_inspection_id;
-        console.log('[refreshAfterVirtMarkerChange] Running iliCalcCoordinatesNoLink for inspectionId:', inspectionId);
-        await electronAPI.iliCalcCoordinatesNoLink(dbPath, { inspectionId });
-        console.log('[refreshAfterVirtMarkerChange] Recalculation complete');
-      } else {
-        console.warn('[refreshAfterVirtMarkerChange] No inspections found — skipping recalculation');
+    // 1. Run coordinate recalculation (no reper linking)
+    try {
+      const dbPath = getDbPath();
+      if (dbPath) {
+        updateVirtMarkerRecalc({ percent: 10, message: 'Поиск инспекции...' });
+        // Use a minimal query — iliGetInspections references columns that may not exist
+        const result = await electronAPI.executeSQL(
+          dbPath,
+          'SELECT ili_inspection_id FROM sgio_ili_inspection ORDER BY ili_inspection_id LIMIT 1'
+        );
+        const rows = result?.rows ?? [];
+        if (rows.length > 0) {
+          const inspectionId = rows[0].ili_inspection_id;
+          console.log('[refreshAfterVirtMarkerChange] Running iliCalcCoordinatesNoLink for inspectionId:', inspectionId);
+          updateVirtMarkerRecalc({ percent: 30, message: 'Пересчёт координат дефектов...' });
+          await electronAPI.iliCalcCoordinatesNoLink(dbPath, { inspectionId });
+          console.log('[refreshAfterVirtMarkerChange] Recalculation complete');
+          updateVirtMarkerRecalc({ percent: 70, message: 'Пересчёт завершён' });
+        } else {
+          console.warn('[refreshAfterVirtMarkerChange] No inspections found — skipping recalculation');
+        }
       }
+    } catch (err) {
+      console.error('[refreshAfterVirtMarkerChange] Coordinate recalculation failed:', err);
+      // Continue with layer reload even if recalculation fails
     }
-  } catch (err) {
-    console.error('[refreshAfterVirtMarkerChange] Coordinate recalculation failed:', err);
-    // Continue with layer reload even if recalculation fails
-  }
 
-  // 2. Reload all sgio_% layers (includes ILI_LAYER_IDS and any future sgio layers)
-  const sgioIds = getSgioLayerIds();
-  if (sgioIds.length > 0) {
-    await reloadLayersByIds(sgioIds, layers);
-  }
+    // 2. Reload all sgio_% layers (includes ILI_LAYER_IDS and any future sgio layers)
+    updateVirtMarkerRecalc({ percent: 75, message: 'Обновление слоёв карты...' });
+    const sgioIds = getSgioLayerIds();
+    if (sgioIds.length > 0) {
+      await reloadLayersByIds(sgioIds, layers);
+    }
 
-  // 3. Fire refreshFeatureTable so any open attribute tables update their data
-  refreshFeatureTable();
+    // 3. Fire refreshFeatureTable so any open attribute tables update their data
+    updateVirtMarkerRecalc({ percent: 95, message: 'Обновление таблиц...' });
+    refreshFeatureTable();
+  } finally {
+    finishVirtMarkerRecalc();
+  }
 }
 
 virtMarkerChanged.watch(() => {

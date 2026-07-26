@@ -50,6 +50,7 @@ import { openIliImportDialog } from './store/iliImport.js';
 import { ILIReverseDialog } from './components/ILIReverse/ILIReverseDialog.jsx';
 import { ILIReverseProgress } from './components/ILIReverse/ILIReverseProgress.jsx';
 import { openIliReverseDialog } from './store/iliReverse.js';
+import { VirtMarkerRecalcProgress } from './components/VirtMarker/VirtMarkerRecalcProgress.jsx';
 import { getDbPath } from './legacy/DBManage.js';
 
 const AppContent = () => {
@@ -269,10 +270,9 @@ const AppContent = () => {
 						currentFile={loadingState.currentFile}
 						message={loadingState.message}
 					/>
-
 					<ILIImportDialog dbPath={getDbPath()} />
 					<ILIImportProgress />
-	
+					<VirtMarkerRecalcProgress />
 					<ILIReverseDialog dbPath={getDbPath()} />
 					<ILIReverseProgress />
 	
