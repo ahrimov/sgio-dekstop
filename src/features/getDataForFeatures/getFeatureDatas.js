@@ -1,6 +1,21 @@
 import { requestToDB } from '../../legacy/DBManage';
 import { buildFilterClauses } from './utils';
 
+function roundNumericValue(value, atrib) {
+	if (
+		window.showAllPrecision ||
+		value === null ||
+		value === undefined ||
+		typeof value !== 'number'
+	) {
+		return value;
+	}
+	if (atrib.type === 'NUMBER' || atrib.type === 'FLOAT' || atrib.type === 'DOUBLE') {
+		return Number(value.toFixed(2));
+	}
+	return value;
+}
+
 export function getFeatureDatas(
 	layer,
 	{ offset = 0, limit = 100, filters = {}, sorter = {} },
@@ -45,6 +60,7 @@ export function getFeatureDatas(
 					const date = new Date(item[atrib.name]);
 					item[atrib.name] = date.toLocaleDateString('ru-RU');
 				}
+				item[atrib.name] = roundNumericValue(item[atrib.name], atrib);
 			});
 
 			data.push(item);

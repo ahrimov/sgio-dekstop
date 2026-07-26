@@ -1,5 +1,21 @@
 import { requestToDBPromise } from '../../legacy/DBManage';
 
+
+function roundNumericValue(value, atrib) {
+	if (
+		window.showAllPrecision ||
+		value === null ||
+		value === undefined ||
+		typeof value !== 'number'
+	) {
+		return value;
+	}
+	if (atrib.type === 'NUMBER' || atrib.type === 'FLOAT' || atrib.type === 'DOUBLE') {
+		return Number(value.toFixed(2));
+	}
+	return value;
+}
+
 export async function getFeatureAttributes(layer, featureId) {
 	if (featureId === undefined || featureId === null) {
 		console.warn(`getFeatureAttributes: featureId is ${featureId} for layer "${layer?.table}"`);
@@ -34,6 +50,7 @@ export async function getFeatureAttributes(layer, featureId) {
 				}
 			}
 		}
+		featureData[atrib.name] = roundNumericValue(featureData[atrib.name], atrib);
 	});
 
 	return featureData;

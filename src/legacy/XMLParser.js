@@ -83,9 +83,14 @@ export function configParser(data) {
 	const showSystemProperties = showSystemPropertiesElement
 		? showSystemPropertiesElement.textContent === 'true'
 		: false;
+
+	const showAllPrecisionElement = dom.getElementsByTagName('ShowAllPrecision').item(0);
+	const showAllPrecision = showAllPrecisionElement
+		? showAllPrecisionElement.textContent === 'true'
+		: false;
 	
 	if (configUpdateCallback) {
-		configUpdateCallback({ showSystemProperties });
+		configUpdateCallback({ showSystemProperties, showAllPrecision });
 	}
 
 	const centerLong = parseFloat(dom.getElementsByTagName('longitude').item(0).textContent);
@@ -132,6 +137,7 @@ export function configParser(data) {
 	if (typeof dom.getElementsByTagName('NumberNodesOnMap').item(0).textContent != 'undefined') {
 		window.numberNodesOnMap = dom.getElementsByTagName('NumberNodesOnMap').item(0).textContent;
 	}
+	window.showAllPrecision = showAllPrecision;
 
 	async function processLayersSerially() {
 		for (const layerName of layersName) {

@@ -1,48 +1,74 @@
-<?xml version="1.0" encoding="UTF-8"?><template>
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
 	<main>
+		<!-- Название проекта, отображается в заголовке окна -->
 		<Title>Карта_Общества</Title>
+		<!-- Название приложения, выводится в элемент #app-name (строка 44 XMLParser.js) -->
 		<AppName>СГИО.Десктоп, Версия 1.0.0 </AppName>
+		<!-- Версия конфигурации проекта -->
 		<version>0.1.0</version>
 	</main>
 	<MapView>
 		<center>
+			<!-- Долгота центра карты при инициализации (WGS84) -->
 			<longitude>54.2332</longitude>
+			<!-- Широта центра карты при инициализации (WGS84) -->
 			<latitude>56.6214</latitude>
 		</center>
+		<!-- Минимальный уровень зума -->
 		<MinZoom>0</MinZoom>
+		<!-- Максимальный уровень зума -->
 		<MaxZoom>25</MaxZoom>
+		<!-- Начальный уровень зума при загрузке -->
 		<zoom>5</zoom>
+		<!-- Проекция карты (0 = EPSG:3857 Web Mercator, зарезервировано) -->
 		<projection>0</projection>
 	</MapView>
 	<database>
+		<!-- Логическое имя базы данных SQLite/SpatiaLite -->
 		<NameDB>sample</NameDB>
+		<!-- Имя файла базы данных (например, default.db) -->
 		<FilenameDB>default.db</FilenameDB>
+		<!-- Путь к папке с БД относительно корня приложения -->
 		<PathToDB>db/</PathToDB>
 	</database>
+	<!-- Показывать ли системные атрибуты (id, lg_attach) в таблице атрибутов -->
 	<ShowSystemProperties>false</ShowSystemProperties>
+	<!-- Показывать все знаки после запятой для чисел (true) или округлять до 2 знаков (false) -->
+	<ShowAllPrecision>false</ShowAllPrecision>
 	<layers>
-
 		<VectorLayers>
+			<!-- Количество векторных слоёв (должно совпадать с числом файлов в LayersName) -->
 			<NumberOfLayers>16</NumberOfLayers>
+			<!-- Путь к папке с XML-файлами описания векторных слоёв -->
 			<PathToLayers>VectorLayers/</PathToLayers>
+			<!-- Список XML-файлов слоёв, разделённых | (вертикальная черта) -->
 			<LayersName>SGIO_ILI_DATA_VIRT_MARKER.xml|PODS_COMPRESSOR_STATION.xml|PODS_DISTRIBUTION_PLANT.xml|SGIO_ILI_DATA.xml|SGIO_ILI_DATA_FEATURE.xml|SGIO_ILI_PIPE_LENGTH.xml|PODS_RECTIFIER.xml|PODS_ANODE.xml|PODS_TEST_LEAD.xml|PODS_LAUNCHER_RECEIVER.xml|PODS_VALVE.xml|PODS_VENT_PIPE.xml|PODS_MARKER.xml|PODS_MARKER_KM.xml|PODS_MARKER_POINT.xml|PODS_STRUCTURE.xml|PODS_ROUTE.xml</LayersName>
 		</VectorLayers>
 		<RasterLayers>
+			<!-- 0 = использовать удалённые тайлы (из JSON), 1 = локальные тайлы -->
 			<IsLocalTiles>0</IsLocalTiles>
 			<LocalTiles>
+				<!-- Параметры загрузчика локальных тайлов -->
 				<TileLoaderOption/>
+				<!-- Путь к папке с локальными тайлами -->
 				<PathToTiles/>
 			</LocalTiles>
+			<!-- Путь к JSON-файлу с описанием базовых растровых слоёв (подложек) -->
 			<PathToBaseRasterLayers>rasterLayers.json</PathToBaseRasterLayers>
 		</RasterLayers>
 	</layers>
+	<!-- Максимальное количество отображаемых объектов на карте (умолчание: 10000) -->
 	<NumberNodesOnMap>100000</NumberNodesOnMap>
 	<storage>
 		<images>
+			<!-- Путь к хранилищу изображений (прикреплённых к объектам) -->
 			<PathToImageStorage>images/</PathToImageStorage>
 		</images>
 		<KML>
+			<!-- Путь к хранилищу KML-файлов -->
 			<PathToKMLStorage>KML/</PathToKMLStorage>
+			<!-- Список добавленных пользователем KML-слоёв (разделитель |), заполняется автоматически -->
 			<KMLFiles/>
 		</KML>
 	</storage>

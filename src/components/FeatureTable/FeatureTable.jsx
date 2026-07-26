@@ -123,7 +123,19 @@ export function FeatureTable({ layer }) {
 			const attrs = {};
 			const props = f.getProperties();
 
-			layer.atribs.forEach(a => (attrs[a.name] = props[a.name]));
+			layer.atribs.forEach(a => {
+				let value = props[a.name];
+				if (
+					!window.showAllPrecision &&
+					value !== null &&
+					value !== undefined &&
+					typeof value === 'number' &&
+					(a.type === 'NUMBER' || a.type === 'FLOAT' || a.type === 'DOUBLE')
+				) {
+					value = Number(value.toFixed(2));
+				}
+				attrs[a.name] = value;
+			});
 			attrs.key = f.id;
 			attrs.id = f.id;
 			return attrs;

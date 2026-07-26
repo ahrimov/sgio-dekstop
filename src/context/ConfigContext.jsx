@@ -5,6 +5,7 @@ const ConfigContext = createContext();
 export const ConfigProvider = ({ children }) => {
 	const [config, setConfig] = useState({
 		showSystemProperties: false,
+		showAllPrecision: false,
 	});
 
 	const updateConfig = (newConfig) => {
