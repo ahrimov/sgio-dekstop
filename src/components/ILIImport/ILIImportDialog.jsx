@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Modal, Form, Select, Space, Alert } from 'antd';
-import { ExclamationCircleOutlined, CloseOutlined, UploadOutlined } from '@ant-design/icons';
+import { CloseOutlined, UploadOutlined } from '@ant-design/icons';
 import { useUnit } from 'effector-react';
 import styled from 'styled-components';
 import {
@@ -11,9 +11,8 @@ import {
 import { runIliXmlImport, selectIliXmlFile, loadRoutesByType } from '../../features/ILIImport/importILIXml';
 import { DARK_BLUE, MEDIUM_DARK_BLUE } from '../../consts/style';
 import Checkbox from 'antd/es/checkbox/Checkbox';
+import { showConfirm } from '../../store/modalDialog';
 import '../ModalDialog/ModalDialog.css';
-
-const { confirm } = Modal;
 
 const ROUTE_TYPES = [
 	{ value: 'ROUTE_TYPE_02', label: 'Соединительная перемычка' },
@@ -120,28 +119,21 @@ export const ILIImportDialog = ({ dbPath }) => {
 				doCalcCoordinates: values.doCalcCoordinates !== false,
 			};
 
-			const modal = confirm({
-				title: <span style={{ color: MEDIUM_DARK_BLUE }}>Импорт отчетов из файла XML</span>,
-				icon: <ExclamationCircleOutlined />,
-				content: (
-					<div style={{ color: MEDIUM_DARK_BLUE }}>
-						<p>Все существующие данные ВТД (по всем маршрутам) будут удалены и заменены новым отчетом.</p>
-						<p style={{ marginTop: 8 }}>Продолжить?</p>
-					</div>
-				),
-				okText: 'Импортировать',
-				okType: 'danger',
-				cancelText: 'Отмена',
-				onOk: async () => {
-					modal.destroy();
-					try {
-						await deleteAllInspections(dbPath);
-						await executeImport(params);
-					} catch (err) {
-						iliImportError(err);
-					}
-				},
-			});
+			const confirmed = await showConfirm(
+				'Импорт отчетов из файла XML',
+				'Все существующие данные ВТД (по всем маршрутам) будут удалены и заменены новым отчетом.\n\nПродолжить?',
+				'Да',
+				'Нет'
+			);
+
+			if (confirmed) {
+				try {
+					await deleteAllInspections(dbPath);
+					await executeImport(params);
+				} catch (err) {
+					iliImportError(err);
+				}
+			}
 		} catch (err) {
 			if (err?.errorFields) {
 				return;
