@@ -116,7 +116,7 @@ export function useDraw({ map, setCurrentFeature }) {
 			// Restart drawing on the same layer so the panel stays open
 			// and the user can immediately draw the next object
 			const layer = layerRef.current;
-			if (layer) {
+			if (layer && layer.id !== 'SGIO_ILI_DATA_VIRT_MARKER') {
 				startDrawingGeometry(layer);
 			}
 		} else {
@@ -126,7 +126,7 @@ export function useDraw({ map, setCurrentFeature }) {
 
 	const restartDrawing = () => {
 		const layer = layerRef.current;
-		if (layer) {
+		if (layer && layer.id !== 'SGIO_ILI_DATA_VIRT_MARKER') {
 			startDrawingGeometry(layer);
 		}
 	};
