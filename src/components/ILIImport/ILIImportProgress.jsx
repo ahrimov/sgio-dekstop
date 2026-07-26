@@ -1,10 +1,11 @@
 import React from 'react';
 import { Modal, Progress, Typography, Space, Alert } from 'antd';
 import { useUnit } from 'effector-react';
+import styled from 'styled-components';
 import { $iliImportState, resetIliImport } from '../../store/iliImport';
-import { MEDIUM_DARK_BLUE } from '../../consts/style';
+import { DARK_BLUE, MEDIUM_DARK_BLUE } from '../../consts/style';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 /**
  * ILI XML Import progress modal.
@@ -23,7 +24,7 @@ export const ILIImportProgress = () => {
 	};
 
 	return (
-		<Modal
+		<StyledModal
 			open={visible}
 			closable={!isRunning}
 			onCancel={handleClose}
@@ -33,17 +34,12 @@ export const ILIImportProgress = () => {
 			mask={true}
 			maskClosable={false}
 			zIndex={1001}
-			styles={{
-				mask: {
-					backgroundColor: 'rgba(0, 0, 0, 0.7)',
-				},
-			}}
 		>
-			<Space orientation="vertical" style={{ width: '100%' }} size="middle">
-				<Title level={4} style={{ margin: 0, textAlign: 'center', color: MEDIUM_DARK_BLUE }}>
-					Импорт ВТД
-				</Title>
+			<CustomHeader>
+				<HeaderTitle>Импорт ВТД</HeaderTitle>
+			</CustomHeader>
 
+			<BodyWrapper>
 				{error ? (
 					<Alert
 						message="Ошибка импорта"
@@ -52,12 +48,17 @@ export const ILIImportProgress = () => {
 						showIcon
 					/>
 				) : (
-					<>
+					<Space direction="vertical" style={{ width: '100%' }} size="middle">
 						<Progress
 							style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', width: '100%' }}
 							percent={percent}
 							status={percent < 100 ? 'active' : 'success'}
 							type="circle"
+							strokeColor={DARK_BLUE}
+							strokeWidth={8}
+							format={(p) => (
+								<span style={{ color: DARK_BLUE, fontWeight: 600 }}>{p}%</span>
+							)}
 						/>
 
 						<Text
@@ -70,11 +71,48 @@ export const ILIImportProgress = () => {
 							type="secondary"
 							style={{ fontSize: '11px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
 						>
-							Шаг {currentStep} из {totalSteps}
+							{currentStep} из {totalSteps}
 						</Text>
-					</>
+					</Space>
 				)}
-			</Space>
-		</Modal>
+			</BodyWrapper>
+		</StyledModal>
 	);
 };
+
+const StyledModal = styled(Modal)`
+	.ant-modal-content {
+		overflow: hidden;
+		border-radius: 8px;
+		padding: 0;
+		color: ${MEDIUM_DARK_BLUE} !important;
+	}
+
+	.ant-modal-body {
+		padding: 0;
+	}
+
+	.ant-modal-container {
+		padding: 0 !important;
+	}
+`;
+
+const CustomHeader = styled.div`
+	background-color: ${DARK_BLUE};
+	padding: 16px 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 8px 8px 0 0;
+`;
+
+const HeaderTitle = styled.h3`
+	margin: 0;
+	color: white;
+	font-size: 16px;
+	font-weight: 500;
+`;
+
+const BodyWrapper = styled.div`
+	padding: 24px;
+`;

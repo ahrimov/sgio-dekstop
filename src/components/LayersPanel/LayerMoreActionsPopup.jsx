@@ -57,7 +57,7 @@ export function LayerMoreActionsPopup({ layer, onProps, parentScrollRef }) {
 					}}
 					style={buttonStyle}
 				>
-					Создать объект
+					{layer.id === 'SGIO_ILI_DATA_VIRT_MARKER' ? 'Добавить репер' : 'Создать объект'}
 				</Button> : null
 			}
 			{!kmlType && (
