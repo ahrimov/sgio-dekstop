@@ -6,7 +6,7 @@
       <label>ВТД. Виртуальные маркеры</label>
       <table>sgio_ili_data</table>
       <primary>ili_data_id</primary>
-      <where_clause> anomaly_type_cl in (1004,1003)</where_clause>
+      <where_clause> anomaly_type_cl in (1004,1003) AND control_point_lf = 'Y'</where_clause>
       <style_clause>ANOMALY_TYPE_CL||CASE WHEN ref_event_id is not null THEN '_LNK' ELSE '_NOTLNK' END</style_clause>
       <show_buttons>add,import,export</show_buttons>
       <geometry_column>AsText(GeomFromText('POINT('||x_coord||' '||y_coord||')', 4326)) geom</geometry_column>

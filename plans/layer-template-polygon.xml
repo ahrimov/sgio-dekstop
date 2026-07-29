@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  ЭТАЛОННЫЙ ШАБЛОН — ПЛОЩАДНОЙ СЛОЙ (MULTIPOLYGON)              ║
+  ║  Все теги снабжены XML-комментариями для конфигураторов.        ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<layer>
+
+  <!-- ═══════════════════════════════════════════════
+       ИДЕНТИФИКАЦИЯ СЛОЯ
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Уникальный идентификатор слоя.
+       Должен совпадать с именем файла (без .xml) и именем таблицы в БД. -->
+  <id>zones</id>
+
+  <!-- Отображаемое название слоя в панели слоёв. -->
+  <label>Охранные зоны</label>
+
+  <!-- Тип геометрии. Возможные значения:
+       MULTIPOLYGON    — площадные объекты
+       MULTILINESTRING — линейные объекты
+       MULTIPOINT      — точечные объекты -->
+  <geometry>MULTIPOLYGON</geometry>
+
+
+  <!-- ═══════════════════════════════════════════════
+       ВИДИМОСТЬ СЛОЯ ПО МАСШТАБУ
+       Значения задаются в метрах масштаба карты.
+       ⚠️ Инверсия: <zoomMax> = мелкий план (большое число),
+                    <zoomMin> = крупный план (малое число).
+       Слой виден когда: zoomMin ≤ текущий масштаб ≤ zoomMax.
+       Ориентиры: 500000=1:500k, 100000=1:100k, 10000=1:10k,
+                  2000=1:2k, 500=1:500.
+       Значения ≤ 50 воспринимаются как прямой OL zoom-уровень (0–19).
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Слой НЕ показывать мельче этого масштаба. -->
+  <zoomMax>500000</zoomMax>
+
+  <!-- Слой НЕ показывать крупнее этого масштаба. -->
+  <zoomMin>100</zoomMin>
+
+
+  <!-- ═══════════════════════════════════════════════
+       ПРИВЯЗКА К БАЗЕ ДАННЫХ
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Блок настроек подключения к таблице БД.
+       Атрибут enabled="true"/"false" — включить/выключить загрузку слоя. -->
+  <layerDb enabled="true">
+
+    <!-- Имя таблицы в SQLite-базе. Если отсутствует — берётся значение <id>. -->
+    <table>zones</table>
+
+    <!-- Первичный ключ таблицы. По умолчанию "id". -->
+    <primary>id</primary>
+
+    <!-- SQL-выражение для получения геометрии.
+         По умолчанию: AsText(Geometry) as geom -->
+    <geometry_column>AsText(Geometry) as geom</geometry_column>
+
+    <!-- Необязательный SQL WHERE-фильтр.
+         Пример: zone_type != 'archived'
+         Оставить пустым, чтобы загружать все объекты. -->
+    <where_clause></where_clause>
+
+    <!-- Кнопки действий в карточке объекта (через запятую). Пример: edit,delete -->
+    <show_buttons></show_buttons>
+
+    <!-- SQL-выражение для вычисления класса стиля объекта (feature.type).
+         Используется вместо <StyleTypeColumn>, когда класс нужно вычислить.
+         Пример: CASE WHEN radius <= 25 THEN 'narrow' ELSE 'wide' END
+         Алиас таблицы "d" доступен: d.radius, d.zone_type и т.д.
+         Если задан — <StyleTypeColumn> игнорируется. -->
+    <style_clause></style_clause>
+
+  </layerDb>
+
+
+  <!-- ═══════════════════════════════════════════════
+       НАСТРОЙКА СТИЛЕЙ И ПОДПИСЕЙ
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Колонка в БД, значение которой определяет класс стиля объекта.
+       Сравнивается с тегом <value> в каждом блоке <Style>.
+       По умолчанию: "type_cl". -->
+  <StyleTypeColumn>type_cl</StyleTypeColumn>
+
+  <!-- Колонка в БД, значение которой становится подписью объекта на карте.
+       "none" или отсутствие тега — подписи отключены. -->
+  <LabelColumn>name</LabelColumn>
+
+
+  <!-- ═══════════════════════════════════════════════
+       АТРИБУТЫ (колонки таблицы, видимые в карточке объекта)
+  ═══════════════════════════════════════════════ -->
+
+  <!-- type: STRING | INTEGER | FLOAT | DATE | ENUM -->
+
+  <attribute type="INTEGER">
+    <id>id</id>
+    <label>ID</label>
+    <visible>false</visible>
+    <width>60</width>
+  </attribute>
+
+  <attribute type="STRING">
+    <id>name</id>
+    <label>Наименование</label>
+    <visible>true</visible>
+    <width>200</width>
+  </attribute>
+
+  <attribute type="ENUM">
+    <id>type_cl</id>
+    <label>Тип зоны</label>
+    <visible>true</visible>
+    <!-- Формат: ключ#Отображаемый_текст|ключ2#Текст2|
+         Если ключ и текст совпадают: значение|значение2| -->
+    <options>protection#Охранная|sanitary#Санитарная|restricted#Запретная|</options>
+    <width>130</width>
+  </attribute>
+
+  <attribute type="FLOAT">
+    <id>area_ha</id>
+    <label>Площадь, га</label>
+    <visible>true</visible>
+    <width>100</width>
+  </attribute>
+
+
+  <!-- ═══════════════════════════════════════════════
+       СТИЛИ ПО КЛАССАМ
+       Каждый блок <Style> задаёт оформление для одного значения type_cl.
+       Движок ищет styles[feature.type]; если класс не найден — берёт "default".
+       "UNKNOWN" автоматически становится псевдонимом "default".
+  ═══════════════════════════════════════════════ -->
+
+  <styles>
+
+    <!-- ─── Стиль по умолчанию (fallback) ─── -->
+    <Style>
+      <!-- "default" применяется, если feature.type не совпал ни с одним другим. -->
+      <value>default</value>
+
+      <!-- Диапазон масштабов видимости ЭТОГО КЛАССА (в метрах, опционально). -->
+      <zoomMax>500000</zoomMax>
+      <zoomMin>100</zoomMin>
+
+      <!-- Настройки заливки полигона. -->
+      <PolyStyle>
+        <!-- Цвет заливки (hex #RRGGBB или AABBGGRR).
+             Формат AABBGGRR позволяет управлять прозрачностью через AA:
+             ff = непрозрачный, 80 = 50% прозрачный, 40 = 75% прозрачный. -->
+        <color>80808080</color>  <!-- серый, 50% прозрачность -->
+
+        <!-- 1 — закрасить полигон, 0 — только контур (заливки нет). -->
+        <fill>1</fill>
+
+        <!-- 1 — рисовать контур полигона, 0 — без контура. -->
+        <outline>1</outline>
+      </PolyStyle>
+
+      <!-- Оформление контура полигона (используется только если <outline>1</outline>). -->
+      <LineStyle>
+        <!-- Цвет контура. -->
+        <color>ff000000</color>  <!-- чёрный -->
+        <!-- Толщина контура в пикселях. -->
+        <width>1</width>
+      </LineStyle>
+
+      <!-- Подпись объекта (текст из колонки <LabelColumn>).
+           Для полигонов подпись размещается в центре объекта. -->
+      <LabelStyle>
+        <color>000000</color>
+        <fontSize>10</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <!-- Диапазон масштабов видимости подписи. -->
+        <zoomMax>50000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "protection" (охранная зона) ─── -->
+    <Style>
+      <value>protection</value>
+      <zoomMax>500000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <PolyStyle>
+        <color>400000ff</color>  <!-- синий, 75% прозрачность -->
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+      <LineStyle>
+        <color>ff0000cc</color>  <!-- тёмно-синий контур -->
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>0000aa</color>
+        <fontSize>11</fontSize>
+        <bold>1</bold>
+        <italic>0</italic>
+        <zoomMax>100000</zoomMax>
+        <zoomMin>500</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "sanitary" (санитарная зона, только контур) ─── -->
+    <Style>
+      <value>sanitary</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <PolyStyle>
+        <color>ff00ff00</color>  <!-- зелёный (fill=0 — заливка не используется) -->
+        <fill>0</fill>           <!-- без заливки -->
+        <outline>1</outline>
+      </PolyStyle>
+      <LineStyle>
+        <color>ff009900</color>  <!-- зелёный контур -->
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>006600</color>
+        <fontSize>10</fontSize>
+        <bold>0</bold>
+        <italic>1</italic>
+        <zoomMax>50000</zoomMax>
+        <zoomMin>200</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "restricted" (запретная зона, штриховка через прозрачность) ─── -->
+    <Style>
+      <value>restricted</value>
+      <zoomMax>100000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <PolyStyle>
+        <color>60ff0000</color>  <!-- красный, ~62% прозрачность -->
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+      <LineStyle>
+        <color>ffcc0000</color>  <!-- тёмно-красный контур -->
+        <width>3</width>
+      </LineStyle>
+      <!-- LabelStyle не указан — подписей для этого класса нет -->
+    </Style>
+
+  </styles>
+
+</layer>

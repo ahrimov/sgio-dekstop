@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  ЭТАЛОННЫЙ ШАБЛОН — ТОЧЕЧНЫЙ СЛОЙ (MULTIPOINT)                 ║
+  ║  Все теги снабжены XML-комментариями для конфигураторов.        ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<layer>
+
+  <!-- ═══════════════════════════════════════════════
+       ИДЕНТИФИКАЦИЯ СЛОЯ
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Уникальный идентификатор слоя.
+       Должен совпадать с именем файла (без .xml) и именем таблицы в БД. -->
+  <id>virt_markers</id>
+
+  <!-- Отображаемое название слоя в панели слоёв. -->
+  <label>Виртуальные реперы</label>
+
+  <!-- Тип геометрии. Возможные значения:
+       MULTIPOINT      — точечные объекты
+       MULTILINESTRING — линейные объекты
+       MULTIPOLYGON    — площадные объекты -->
+  <geometry>MULTIPOINT</geometry>
+
+
+  <!-- ═══════════════════════════════════════════════
+       ВИДИМОСТЬ СЛОЯ ПО МАСШТАБУ
+       Значения задаются в метрах масштаба карты.
+       ⚠️ Инверсия: <zoomMax> = мелкий план (большое число),
+                    <zoomMin> = крупный план (малое число).
+       Слой виден когда: zoomMin ≤ текущий масштаб ≤ zoomMax.
+       Ориентиры: 500000=1:500k, 100000=1:100k, 10000=1:10k,
+                  2000=1:2k, 500=1:500.
+       Значения ≤ 50 воспринимаются как прямой OL zoom-уровень (0–19).
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Слой НЕ показывать мельче этого масштаба. -->
+  <zoomMax>50000</zoomMax>
+
+  <!-- Слой НЕ показывать крупнее этого масштаба. -->
+  <zoomMin>100</zoomMin>
+
+
+  <!-- ═══════════════════════════════════════════════
+       ПРИВЯЗКА К БАЗЕ ДАННЫХ
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Блок настроек подключения к таблице БД.
+       Атрибут enabled="true"/"false" — включить/выключить загрузку слоя. -->
+  <layerDb enabled="true">
+
+    <!-- Имя таблицы в SQLite-базе. Если отсутствует — берётся значение <id>. -->
+    <table>virt_markers</table>
+
+    <!-- Первичный ключ таблицы. По умолчанию "id". -->
+    <primary>id</primary>
+
+    <!-- SQL-выражение для получения геометрии.
+         По умолчанию: AsText(Geometry) as geom -->
+    <geometry_column>AsText(Geometry) as geom</geometry_column>
+
+    <!-- Необязательный SQL WHERE-фильтр.
+         Пример: status = 'active'
+         Оставить пустым, чтобы загружать все объекты. -->
+    <where_clause></where_clause>
+
+    <!-- Кнопки действий в карточке объекта (через запятую). Пример: edit,delete -->
+    <show_buttons></show_buttons>
+
+    <!-- SQL-выражение для вычисления класса стиля объекта (feature.type).
+         Используется вместо <StyleTypeColumn>, когда класс нужно вычислить.
+         Пример: CASE WHEN type_id = 1 THEN 'repere' ELSE 'marker' END
+         Алиас таблицы "d" доступен: d.type_id, d.status и т.д.
+         Если задан — <StyleTypeColumn> игнорируется. -->
+    <style_clause></style_clause>
+
+  </layerDb>
+
+
+  <!-- ═══════════════════════════════════════════════
+       НАСТРОЙКА СТИЛЕЙ И ПОДПИСЕЙ
+  ═══════════════════════════════════════════════ -->
+
+  <!-- Колонка в БД, значение которой определяет класс стиля объекта.
+       Сравнивается с тегом <value> в каждом блоке <Style>.
+       По умолчанию: "type_cl". -->
+  <StyleTypeColumn>type_cl</StyleTypeColumn>
+
+  <!-- Колонка в БД, значение которой становится подписью объекта на карте.
+       "none" или отсутствие тега — подписи отключены. -->
+  <LabelColumn>name</LabelColumn>
+
+
+  <!-- ═══════════════════════════════════════════════
+       АТРИБУТЫ (колонки таблицы, видимые в карточке объекта)
+  ═══════════════════════════════════════════════ -->
+
+  <!-- type: STRING | INTEGER | FLOAT | DATE | ENUM -->
+
+  <attribute type="INTEGER">
+    <id>id</id>
+    <label>ID</label>
+    <visible>false</visible>
+    <width>60</width>
+  </attribute>
+
+  <attribute type="STRING">
+    <id>name</id>
+    <label>Наименование</label>
+    <visible>true</visible>
+    <width>200</width>
+  </attribute>
+
+  <attribute type="ENUM">
+    <id>type_cl</id>
+    <label>Тип</label>
+    <visible>true</visible>
+    <!-- Формат: ключ#Отображаемый_текст|ключ2#Текст2|
+         Если ключ и текст совпадают: значение|значение2| -->
+    <options>repere#Репер|marker#Маркер|node#Узловая точка|</options>
+    <width>130</width>
+  </attribute>
+
+  <attribute type="FLOAT">
+    <id>elevation</id>
+    <label>Высота, м</label>
+    <visible>true</visible>
+    <width>100</width>
+  </attribute>
+
+
+  <!-- ═══════════════════════════════════════════════
+       СТИЛИ ПО КЛАССАМ
+       Каждый блок <Style> задаёт оформление для одного значения type_cl.
+       Движок ищет styles[feature.type]; если класс не найден — берёт "default".
+       "UNKNOWN" автоматически становится псевдонимом "default".
+  ═══════════════════════════════════════════════ -->
+
+  <styles>
+
+    <!-- ─── Стиль по умолчанию (fallback) ─── -->
+    <Style>
+      <!-- "default" применяется, если feature.type не совпал ни с одним другим. -->
+      <value>default</value>
+
+      <!-- Диапазон масштабов видимости ЭТОГО КЛАССА (в метрах, опционально). -->
+      <zoomMax>50000</zoomMax>
+      <zoomMin>100</zoomMin>
+
+      <!-- Настройки значка точечного объекта. -->
+      <IconStyle>
+        <!-- Размер иконки в пикселях. -->
+        <size>10</size>
+
+        <!-- Форма значка (если не используется картинка <href>).
+             Возможные значения: circle | square | triangle -->
+        <form>circle</form>
+
+        <!-- Цвет заливки значка (hex или AABBGGRR). -->
+        <color>ff808080</color>
+
+        <!-- 1 — рисовать обводку, 0 — без обводки. -->
+        <outline>1</outline>
+
+        <!-- Тег <href> — путь к PNG-иконке относительно папки images/ в ресурсах.
+             Если задан, параметры <form>, <color>, <outline> игнорируются.
+             Пример: <href>assets/1003_LNK.png</href>
+             Если не нужен — удалить тег или оставить пустым. -->
+        <!-- <href>assets/MY_ICON.png</href> -->
+      </IconStyle>
+
+      <!-- Обводка значка (используется только если <outline>1</outline>). -->
+      <LineStyle>
+        <color>ff000000</color>  <!-- чёрная обводка -->
+        <width>1</width>
+      </LineStyle>
+
+      <!-- Подпись объекта (текст из колонки <LabelColumn>). -->
+      <LabelStyle>
+        <color>000000</color>
+        <fontSize>10</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <!-- Диапазон масштабов видимости подписи. -->
+        <zoomMax>20000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "repere" (реперы) ─── -->
+    <Style>
+      <value>repere</value>
+      <zoomMax>50000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <IconStyle>
+        <size>14</size>
+        <form>square</form>       <!-- квадрат -->
+        <color>ff0000ff</color>   <!-- синий -->
+        <outline>1</outline>
+      </IconStyle>
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>0000cc</color>
+        <fontSize>12</fontSize>
+        <bold>1</bold>
+        <italic>0</italic>
+        <zoomMax>30000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "marker" с PNG-иконкой ─── -->
+    <Style>
+      <value>marker</value>
+      <zoomMax>30000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <IconStyle>
+        <size>24</size>
+        <!-- При наличии <href> — форма и цвет игнорируются.
+             Путь относительно папки images/ в ресурсах приложения. -->
+        <href>assets/marker_icon.png</href>
+      </IconStyle>
+      <LabelStyle>
+        <color>333333</color>
+        <fontSize>10</fontSize>
+        <bold>0</bold>
+        <italic>1</italic>
+        <zoomMax>15000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "node" (треугольник) ─── -->
+    <Style>
+      <value>node</value>
+      <zoomMax>20000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <IconStyle>
+        <size>12</size>
+        <form>triangle</form>
+        <color>ff00aa00</color>   <!-- зелёный -->
+        <outline>0</outline>
+      </IconStyle>
+      <!-- LabelStyle не указан — подписей для этого класса нет -->
+    </Style>
+
+  </styles>
+
+</layer>

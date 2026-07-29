@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer>
+  <id>pipeline_main</id>
+  <!-- Отображаемое название слоя в панели слоёв. -->
+  <label>Главные трубопроводы</label>
+  <geometry>MULTILINESTRING</geometry>
+
+  <!-- Слой НЕ показывать мельче этого масштаба. -->
+  <zoomMax>200000</zoomMax>
+
+  <!-- Слой НЕ показывать крупнее этого масштаба. -->
+  <zoomMin>100</zoomMin>
+
+  <layerDb enabled="true">
+
+    <!-- Имя таблицы в SQLite-базе. -->
+    <table>pipeline_main</table>
+
+    <!-- Первичный ключ таблицы. -->
+    <primary>id</primary>
+
+    <!-- SQL-выражение для получения геометрии -->
+    <geometry_column>AsText(Geometry) as geom</geometry_column>
+
+    <!-- Необязательный SQL WHERE-фильтр для ограничения загружаемых объектов -->
+    <where_clause></where_clause>
+
+    <!-- Кнопки действий в карточке объекта. -->
+    <show_buttons></show_buttons>
+
+    <!-- SQL-выражение, вычисляющее класс стиля объекта (feature.type). -->
+    <style_clause></style_clause>
+
+  </layerDb>
+
+  <!-- Колонка в БД, значение которой определяет класс стиля объекта.
+       По умолчанию: "type_cl".
+       Игнорируется, если задан <style_clause> в <layerDb>. -->
+  <StyleTypeColumn>type_cl</StyleTypeColumn>
+
+  <!-- Колонка в БД, значение которой становится подписью объекта на карте.
+       Значение "none" или отсутствие тега — подписи отключены. -->
+  <LabelColumn>name</LabelColumn>
+
+  <attribute type="INTEGER">
+    <id>id</id>
+    <label>ID</label>
+    <visible>false</visible>
+    <!-- Ширина колонки в таблице (px) -->
+    <width>60</width>
+  </attribute>
+
+  <attribute type="STRING">
+    <id>name</id>
+    <label>Наименование</label>
+    <visible>true</visible>
+    <width>200</width>
+  </attribute>
+
+  <attribute type="INTEGER">
+    <id>diameter</id>
+    <label>Диаметр, мм</label>
+    <visible>true</visible>
+    <width>100</width>
+  </attribute>
+
+  <attribute type="ENUM">
+    <id>type_cl</id>
+    <label>Класс</label>
+    <visible>true</visible>
+    <options>main#Главный|secondary#Вторичный|bypass#Перемычка|</options>
+    <width>120</width>
+  </attribute>
+
+  <attribute type="DATE">
+    <id>install_date</id>
+    <label>Дата прокладки</label>
+    <visible>true</visible>
+  </attribute>
+
+
+  <!-- ═══════════════════════════════════════════════
+       СТИЛИ ПО КЛАССАМ
+       Каждый блок <Style> задаёт оформление для одного значения type_cl.
+  ═══════════════════════════════════════════════ -->
+
+  <styles>
+
+    <!-- ─── Стиль по умолчанию (fallback) ─── -->
+    <Style>
+      <!-- Значение, которое должно лежать в колонке type_cl для этого стиля.
+           "default" — применяется, когда класс объекта не совпал ни с одним другим. -->
+      <value>default</value>
+
+      <!-- Диапазон масштабов видимости ЭТОГО КЛАССА (в метрах).
+           Применяется дополнительно к диапазону видимости всего слоя. -->
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+
+      <!-- Оформление линии. -->
+      <LineStyle>
+        <!-- Цвет линии. Формат AABBGGRR (KML-нотация) или #RRGGBB -->
+        <color>ff808080</color>
+        <!-- Толщина линии в пикселях. -->
+        <width>2</width>
+      </LineStyle>
+
+      <!-- Подпись объекта. Текст берётся из колонки <LabelColumn> -->
+      <LabelStyle>
+        <!-- Цвет текста подписи в формате hex (#RRGGBB) или AABBGGRR. -->
+        <color>000000</color>
+        <!-- Размер шрифта в пикселях. Шрифт всегда Arial Narrow. -->
+        <fontSize>10</fontSize>
+        <!-- 1 = жирный, 0 = обычный. -->
+        <bold>0</bold>
+        <!-- 1 = курсив, 0 = прямой. -->
+        <italic>0</italic>
+        <!-- Диапазон масштабов видимости подписи (в метрах) -->
+        <zoomMax>50000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+
+
+    <!-- ─── Стиль для класса "main"─── -->
+    <Style>
+      <value>main</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff0000ff</color>
+        <width>4</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>0000cc</color>
+        <fontSize>12</fontSize>
+        <bold>1</bold>
+        <italic>0</italic>
+        <zoomMax>100000</zoomMax>
+        <zoomMin>200</zoomMin>
+      </LabelStyle>
+    </Style>
+
+  </styles>
+
+</layer>
