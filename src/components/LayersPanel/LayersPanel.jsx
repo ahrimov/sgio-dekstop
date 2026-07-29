@@ -230,7 +230,14 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }
 	};
 
 	const handleAddLayerClick = useCallback(async () => {
-		const fileName = await electronAPI.openFileDialog();
+		const fileName = await electronAPI.openFileDialog({
+			title: 'Выберите KML файл для добавления слоя',
+			filters: [
+				{ name: 'KML файлы', extensions: ['kml'] },
+				{ name: 'Все файлы', extensions: ['*'] },
+			],
+			properties: ['openFile'],
+		});
 		addNewLayer(fileName);
 	}, []);
 
