@@ -11,6 +11,7 @@ import { addLayerToMap } from '../../store/updateMapLayers';
 import { showAlert, showConfirm } from '../../store/modalDialog';
 
 export async function addNewLayer(fullPath) {
+	if (!fullPath) return;
 	const answer = await showConfirm(
 		'Внимание',
 		'Если Вы будете вносить изменения в добавляемый слой, то, для получения измененного файла, необходимо использовать функцию "Экспорт kml".',
