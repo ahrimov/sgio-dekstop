@@ -1,10 +1,11 @@
 import React from 'react';
-import { Modal, Progress, Typography, Space, Alert } from 'antd';
+import { Modal, Progress, Typography, Alert } from 'antd';
 import { useUnit } from 'effector-react';
+import styled from 'styled-components';
 import { $iliReverseState, resetIliReverse } from '../../store/iliReverse';
-import { MEDIUM_DARK_BLUE } from '../../consts/style';
+import { DARK_BLUE, MEDIUM_DARK_BLUE } from '../../consts/style';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 /**
  * ILI report reversal progress modal.
@@ -12,7 +13,7 @@ const { Text, Title } = Typography;
  * Subscribes to the $iliReverseState Effector store for updates.
  */
 export const ILIReverseProgress = () => {
-	const { isRunning, percent, message, error, currentStep, totalSteps } = useUnit($iliReverseState);
+	const { isRunning, percent, message, error } = useUnit($iliReverseState);
 
 	const visible = isRunning || !!error;
 
@@ -23,7 +24,7 @@ export const ILIReverseProgress = () => {
 	};
 
 	return (
-		<Modal
+		<StyledModal
 			open={visible}
 			closable={!isRunning}
 			onCancel={handleClose}
@@ -33,17 +34,12 @@ export const ILIReverseProgress = () => {
 			mask={true}
 			maskClosable={false}
 			zIndex={1001}
-			styles={{
-				mask: {
-					backgroundColor: 'rgba(0, 0, 0, 0.7)',
-				},
-			}}
 		>
-			<Space orientation="vertical" style={{ width: '100%' }} size="middle">
-				<Title level={4} style={{ margin: 0, textAlign: 'center', color: MEDIUM_DARK_BLUE }}>
-					Разворот отчёта ВТД
-				</Title>
+			<CustomHeader>
+				<HeaderTitle>Разворот отчёта ВТД</HeaderTitle>
+			</CustomHeader>
 
+			<BodyWrapper>
 				{error ? (
 					<Alert
 						message="Ошибка разворота"
@@ -58,23 +54,56 @@ export const ILIReverseProgress = () => {
 							percent={percent}
 							status={percent < 100 ? 'active' : 'success'}
 							type="circle"
+							strokeColor={DARK_BLUE}
+							strokeWidth={8}
+							format={(p) => (
+								<span style={{ color: DARK_BLUE, fontWeight: 600 }}>{p}%</span>
+							)}
 						/>
-
-						<Text
-							style={{ fontSize: '12px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
-						>
+	
+						<Text style={{ fontSize: '12px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}>
 							{message || 'Подготовка...'}
-						</Text>
-
-						<Text
-							type="secondary"
-							style={{ fontSize: '11px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
-						>
-							Шаг {currentStep} из {totalSteps}
 						</Text>
 					</>
 				)}
-			</Space>
-		</Modal>
+			</BodyWrapper>
+		</StyledModal>
 	);
 };
+
+const StyledModal = styled(Modal)`
+	.ant-modal-content {
+		overflow: hidden;
+		border-radius: 8px;
+		padding: 0;
+		color: ${MEDIUM_DARK_BLUE} !important;
+	}
+
+	.ant-modal-body {
+		padding: 0;
+	}
+
+	.ant-modal-container {
+		padding: 0 !important;
+	}
+`;
+
+const CustomHeader = styled.div`
+	background-color: ${DARK_BLUE};
+	padding: 16px 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 8px 8px 0 0;
+`;
+
+const HeaderTitle = styled.h3`
+	margin: 0;
+	color: white;
+	font-size: 16px;
+	font-weight: 500;
+`;
+
+const BodyWrapper = styled.div`
+	padding: 24px;
+`;

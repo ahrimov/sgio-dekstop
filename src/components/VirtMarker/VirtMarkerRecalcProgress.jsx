@@ -43,12 +43,12 @@ export const VirtMarkerRecalcProgress = () => {
 					)}
 				/>
 
-				<div style={{ marginTop: 16 }}>
-					<Text style={{ color: MEDIUM_DARK_BLUE, fontSize: '13px', textAlign: 'center', display: 'block' }}>
-						{message}
-					</Text>
-				</div>
 			</BodyWrapper>
+			<div style={{ marginTop: 16 }}>
+				<Text style={{ color: MEDIUM_DARK_BLUE, fontSize: '13px', textAlign: 'center', display: 'block' }}>
+					{message}
+				</Text>
+			</div>
 		</StyledModal>
 	);
 };

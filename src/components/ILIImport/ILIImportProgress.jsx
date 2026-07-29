@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { $iliImportState, resetIliImport } from '../../store/iliImport';
 import { DARK_BLUE, MEDIUM_DARK_BLUE } from '../../consts/style';
 
+
 const { Text } = Typography;
 
 /**
@@ -13,7 +14,7 @@ const { Text } = Typography;
  * Subscribes to the $iliImportState Effector store for updates.
  */
 export const ILIImportProgress = () => {
-	const { isRunning, percent, message, error, currentStep, totalSteps } = useUnit($iliImportState);
+	const { isRunning, percent, message, error } = useUnit($iliImportState);
 
 	const visible = isRunning || !!error;
 
@@ -61,19 +62,10 @@ export const ILIImportProgress = () => {
 							)}
 						/>
 
-						<Text
-							style={{ fontSize: '12px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
-						>
-							{message || 'Подготовка...'}
-						</Text>
-
-						<Text
-							type="secondary"
-							style={{ fontSize: '11px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}
-						>
-							{currentStep} из {totalSteps}
-						</Text>
-					</Space>
+					<Text style={{ fontSize: '12px', textAlign: 'center', display: 'block', color: MEDIUM_DARK_BLUE }}>
+						{message || 'Подготовка...'}
+					</Text>
+				</Space>
 				)}
 			</BodyWrapper>
 		</StyledModal>
