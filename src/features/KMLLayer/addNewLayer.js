@@ -12,6 +12,7 @@ import { showAlert } from '../../store/modalDialog';
 
 export async function addNewLayer(fullPath) {
 	if (!fullPath) return;
+	try {
 	await showAlert(
 		'Внимание',
 		'Если Вы будете вносить изменения в добавляемый слой, то, для получения измененного файла, необходимо использовать функцию "Экспорт kml".',
@@ -88,10 +89,15 @@ export async function addNewLayer(fullPath) {
 
 	newLayer.id = innerLayerId;
 	newLayer.label = descrLayerId;
-	const geometryType = features[0].getGeometry().getType();
+	const firstGeometry = features[0].getGeometry();
+	if (!firstGeometry) {
+		showAlert('Ошибка', 'Не удалось определить тип геометрии первого объекта в файле.');
+		return;
+	}
+	const geometryType = firstGeometry.getType();
 	newLayer.geometryType = geometryType;
 	for (let i = 0; i < features.length; i++) {
-		if (features[i]?.getGeometry().getType() !== geometryType) {
+		if (features[i]?.getGeometry()?.getType() !== geometryType) {
 			const topology = convertGeomtetryTypeName(geometryType);
 			showAlert(
 				'Внимание',
@@ -161,16 +167,21 @@ export async function addNewLayer(fullPath) {
 		path,
 		kmlFileName,
 		text_,
-		() => { },
+		() => {
+			addLayerToMap(newLayer);
+			addLayerToList(newLayer);
+			addKMLLayerFileToConfig(innerLayerId);
+			showAlert('Слой добавлен', `Слой «${descrLayerId}» успешно добавлен на карту.`);
+		},
 		onError
 	);
-	addLayerToMap(newLayer);
-	addLayerToList(newLayer);
-	addKMLLayerFileToConfig(innerLayerId);
-	showAlert('Слой добавлен', `Слой «${descrLayerId}» успешно добавлен на карту.`);
 
 	function onError() {
-		showAlert('Ошибка', 'Произошла ошибка при чтении файла.');
+		showAlert('Ошибка', 'Не удалось сохранить файл слоя. Слой не добавлен.');
+	}
+	} catch (e) {
+		console.error('addNewLayer error:', e);
+		showAlert('Ошибка', 'Не удалось добавить слой: ' + (e?.message || String(e)));
 	}
 }
 
