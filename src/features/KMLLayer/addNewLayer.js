@@ -167,6 +167,7 @@ export async function addNewLayer(fullPath) {
 	addLayerToMap(newLayer);
 	addLayerToList(newLayer);
 	addKMLLayerFileToConfig(innerLayerId);
+	showAlert('Слой добавлен', `Слой «${descrLayerId}» успешно добавлен на карту.`);
 
 	function onError() {
 		showAlert('Ошибка', 'Произошла ошибка при чтении файла.');
@@ -214,7 +215,8 @@ function addMissingIdsToKml(kmlContent, features) {
 
 	let schema = xmlDoc.querySelector('Schema');
 	if (!schema) {
-		const document = xmlDoc.querySelector('Document');
+		const document = xmlDoc.querySelector('Document') || xmlDoc.documentElement;
+		if (!document) return kmlContent;
 		schema = xmlDoc.createElement('Schema');
 		schema.setAttribute('name', 'DefaultSchema');
 		schema.setAttribute('id', 'DefaultSchema');

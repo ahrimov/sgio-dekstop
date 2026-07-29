@@ -16,6 +16,7 @@ export function deleteLayer(layerID) {
         deleteLayerFromMap(layer);
         deleteLayerFromList(layerID);
         refreshFeatureTable();
+        showAlert('Слой удалён', `Слой успешно удалён.`);
     }).catch(error => {
         console.log('Не удалось удалить файл: ' + layerID + ' ошибка: ' + error);
         showAlert('Ошибка', 'Не удалось удалить файл: ' + layerID);
