@@ -8,15 +8,14 @@ import { app_device_directory } from '../../legacy/initial';
 import { generateColor } from '../../utils/colorGenerator';
 import { saveFile } from '../../legacy/FileManage';
 import { addLayerToMap } from '../../store/updateMapLayers';
-import { showAlert, showConfirm } from '../../store/modalDialog';
+import { showAlert } from '../../store/modalDialog';
 
 export async function addNewLayer(fullPath) {
 	if (!fullPath) return;
-	const answer = await showConfirm(
+	await showAlert(
 		'Внимание',
 		'Если Вы будете вносить изменения в добавляемый слой, то, для получения измененного файла, необходимо использовать функцию "Экспорт kml".',
 	);
-	if (!answer) return;
 	let text = await electronAPI.readFile(fullPath);
 	const mapProjection = map.getView().getProjection().getCode();
 	const format = new KML();
