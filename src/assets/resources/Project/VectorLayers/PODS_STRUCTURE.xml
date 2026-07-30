@@ -34,17 +34,17 @@
       <attrSecondary></attrSecondary>
       <labelsOnMap />
       <geometryStyle>
-        <colorFill>#FFFFFFFF</colorFill>
-        <colorBorder>#FF4D4D4D</colorBorder>
+        <colorFill>#FF000000</colorFill>
+        <colorBorder>#7FFFFFFF</colorBorder>
         <widthBorder>1</widthBorder>
         <Rule>
           <PolygonSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
             <Fill>
-              <CssParameter name="fill">#FFFFFF</CssParameter>
+              <CssParameter name="fill">#FF000000</CssParameter>
               <CssParameter name="fill-opacity">1.0</CssParameter>
             </Fill>
             <Stroke>
-              <CssParameter name="stroke">#4D4D4D</CssParameter>
+              <CssParameter name="stroke">#FFFFFF</CssParameter>
               <CssParameter name="stroke-width">2.00</CssParameter>
               <CssParameter name="stroke-opacity">1.0</CssParameter>
             </Stroke>

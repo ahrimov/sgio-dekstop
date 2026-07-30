@@ -24,6 +24,14 @@
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
+      <styles>
+        <Style>
+          <IconStyle>
+            <href>assets/MARKER_MARKER_TYPE_05.png</href>
+            <size>35</size>
+          </IconStyle>
+        </Style>
+      </styles>
       <geometryStyle>
         <colorFill>#FFFFFFFF</colorFill>
         <colorBorder>#FF000000</colorBorder>

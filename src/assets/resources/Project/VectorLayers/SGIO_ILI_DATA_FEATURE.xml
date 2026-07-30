@@ -21,8 +21,7 @@
         </attribute>
 		 <attribute type="STRING">
           <id>weld_number</id>
-          <label>Номер 
-          \n шва</label>
+          <label>Номер шва</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
@@ -63,27 +62,27 @@
       <attrSecondary></attrSecondary>
       <labelsOnMap />
       <geometryStyle>
-        <colorFill>#FFFFFF00</colorFill>
+        <colorFill>#FFBB00</colorFill>
         <colorBorder>#FF000000</colorBorder>
-        <sizePoint>5</sizePoint>
+        <sizePoint>6</sizePoint>
         <Rule>
           <PointSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
             <Graphic>
               <Mark>
                 <Fill>
-                  <CssParameter name="fill">#FFFF00</CssParameter>
+                  <CssParameter name="fill">#FFBB00</CssParameter>
                   <CssParameter name="fill-opacity">1.0</CssParameter>
                 </Fill>
                 <Stroke>
                   <CssParameter name="stroke">#000000</CssParameter>
-                  <CssParameter name="stroke-width">2.00</CssParameter>
+                  <CssParameter name="stroke-width">1.00</CssParameter>
                   <CssParameter name="stroke-opacity">1.0</CssParameter>
                 </Stroke>
-                <WellKnownName>circle</WellKnownName>
+                <WellKnownName>triangle</WellKnownName>
               </Mark>
-              <Size>5.00</Size>
+              <Size>6.00</Size>
               <Opacity>1.00</Opacity>
-              <Rotation>0.00</Rotation>
+              <Rotation>45.00</Rotation>
             </Graphic>
           </PointSymbolizer>
         </Rule>

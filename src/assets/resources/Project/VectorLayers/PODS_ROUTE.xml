@@ -7,6 +7,11 @@
       <encoding>UTF-8</encoding>
       <crs>3857</crs>
       <geometry>MULTILINESTRING</geometry>
+  </layerDb>
+  <zoomMax>200000</zoomMax>
+  <zoomMin>100</zoomMin>
+  <StyleTypeColumn>type_cl</StyleTypeColumn>
+  <LabelColumn>description</LabelColumn>
       <attributes>
         <attribute type="DOUBLE">
           <id>id</id>
@@ -42,22 +47,219 @@
         </attribute>	
 
       </attributes>
-      <attrPrimary>test</attrPrimary>
-      <attrSecondary></attrSecondary>
-      <labelsOnMap />
-      <geometryStyle>
-        <colorFill>#FFFF0000</colorFill>
-        <widthLine>2</widthLine>
-        <Rule>
-          <LineSymbolizer uom="http://www.opengeospatial.org/se/units/pixel">
-            <Stroke>
-              <CssParameter name="stroke">#FF0000</CssParameter>
-              <CssParameter name="stroke-width">2.00</CssParameter>
-              <CssParameter name="stroke-opacity">1.0</CssParameter>
-            </Stroke>
-          </LineSymbolizer>
-        </Rule>
-      </geometryStyle>
-    </layerDb>
+	  
+  <styles>
+
+
+    <Style>
+      <value>default</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff000000</color>
+
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>2000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_01</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff000000</color>
+        <width>1</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff000000</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>2000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_04</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff660099</color>
+        <width>3</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff660099</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>2000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_06</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff342dff</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff342dff</color>
+        <fontSize>10</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_07</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff008000</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff008000</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_08</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff660099</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff660099</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_09</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff660099</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff660099</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_10</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff660099</color>
+        <width>3</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff660099</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_11</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff008000</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff008000</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_13</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff660099</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff660099</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <Style>
+      <value>ROUTE_TYPE_02</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff660099</color>
+        <width>2</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>ff660099</color>
+        <fontSize>13</fontSize>
+        <bold>0</bold>
+        <italic>0</italic>
+        <zoomMax>200000</zoomMax>
+        <zoomMin>100</zoomMin>
+      </LabelStyle>
+    </Style>
+    <!-- ─── Стиль для класса "main"─── -->
+    <Style>
+      <value>main</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ff0000ff</color>
+        <width>4</width>
+      </LineStyle>
+      <LabelStyle>
+        <color>0000cc</color>
+        <fontSize>12</fontSize>
+        <bold>1</bold>
+        <italic>0</italic>
+        <zoomMax>100000</zoomMax>
+        <zoomMin>200</zoomMin>
+      </LabelStyle>
+    </Style>
+
+  </styles>
+	  
+
+
   </layers>
 </template>

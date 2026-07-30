@@ -40,6 +40,14 @@
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
+      <styles>
+        <Style>
+          <IconStyle>
+            <href>assets/VALVE.png</href>
+            <size>25</size>
+          </IconStyle>
+        </Style>
+      </styles>
       <geometryStyle>
         <colorFill>#FFFF0000</colorFill>
         <colorBorder>#FF000000</colorBorder>

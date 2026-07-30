@@ -24,6 +24,14 @@
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
+      <styles>
+        <Style>
+          <IconStyle>
+            <href>assets/COMPRESSOR_STATION.png</href>
+            <size>30</size>
+          </IconStyle>
+        </Style>
+      </styles>	
       <geometryStyle>
         <colorFill>#FFFF0000</colorFill>
         <colorBorder>#FFFF0000</colorBorder>

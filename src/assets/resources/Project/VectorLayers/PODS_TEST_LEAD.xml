@@ -26,6 +26,14 @@
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
+      <styles>
+        <Style>
+          <IconStyle>
+            <href>assets/TEST_LEAD.png</href>
+            <size>35</size>
+          </IconStyle>
+        </Style>
+      </styles>
       <geometryStyle>
         <colorFill>#FF0070C0</colorFill>
         <colorBorder>#FF8DB4E3</colorBorder>

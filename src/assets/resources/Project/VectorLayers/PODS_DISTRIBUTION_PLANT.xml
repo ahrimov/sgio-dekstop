@@ -4,6 +4,7 @@
     <layerDb enabled="true">
       <id>PODS_DISTRIBUTION_PLANT</id>
       <label>ГРС</label>
+	        <style_clause>TYPE_CL</style_clause>
       <encoding>UTF-8</encoding>
       <crs>3857</crs>
       <geometry>MULTIPOINT</geometry>
@@ -34,6 +35,14 @@
       <attrPrimary>test</attrPrimary>
       <attrSecondary></attrSecondary>
       <labelsOnMap />
+      <styles>
+        <Style>
+          <IconStyle>
+            <href>assets/DISTR_PLANT.png</href>
+            <size>30</size>
+          </IconStyle>
+        </Style>
+      </styles>	  
       <geometryStyle>
         <colorFill>#FF0070C0</colorFill>
         <sizePoint>7</sizePoint>
