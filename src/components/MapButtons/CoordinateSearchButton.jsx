@@ -6,6 +6,7 @@ import { MEDIUM_BLUE, MEDIUM_DARK_BLUE, ORANGE } from '../../consts/style.js';
 import showOnMapIcon from '../../assets/resources/images/assets/showOnMap.png';
 import { Button } from 'antd';
 import { SearchByWGSCoordinatesForm } from '../CoordinateSearch/SearchByWGSCoordinatesForm.jsx';
+import { constructZoomFromDistance } from '../../utils/coordinateTransformations.js';
 
 export function CoordinateSearchButton() {
 	const windowId = useMemo(() => 'coordinate-search', []);
@@ -14,6 +15,7 @@ export function CoordinateSearchButton() {
 	const [latitude, setLatitude] = useState('');
 	const [longitude, setLongitude] = useState('');
 	const [zoom, setZoom] = useState(13);
+	const [scaleDistance, setScaleDistance] = useState(500000);
 
 	const initialPosition = useMemo(() => {
 		if (typeof window === 'undefined') return { x: 100, y: 100 };
@@ -71,13 +73,15 @@ export function CoordinateSearchButton() {
 		const yMercator = (y * 20037508.34) / 180;
 
 		if (window.map) {
+			const targetCenter = [x, yMercator];
+			const targetZoom = constructZoomFromDistance(scaleDistance, window.map, targetCenter);
 			window.map.getView().animate({
-				center: [x, yMercator],
-				zoom: zoom,
+				center: targetCenter,
+				zoom: targetZoom === -1 || !Number.isFinite(targetZoom) ? zoom : targetZoom,
 				duration: 300,
 			});
 		}
-	}, [latitude, longitude, zoom]);
+	}, [latitude, longitude, scaleDistance, zoom]);
 
 	const handleClose = useCallback(() => {
 		setIsDialogOpen(false);
@@ -111,6 +115,7 @@ export function CoordinateSearchButton() {
 								onLatitudeChange={setLatitude}
 								onLongitudeChange={setLongitude}
 								onZoomChange={setZoom}
+								onScaleDistanceChange={setScaleDistance}
 							/>
 
 							<ButtonGroup>

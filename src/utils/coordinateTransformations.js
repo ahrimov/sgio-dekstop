@@ -1,3 +1,5 @@
+import { getPointResolution } from 'ol/proj.js';
+
 /**
  * Filters a string to allow only valid float number characters.
  * Removes everything except digits and dots, and ensures only one dot is present.
@@ -17,61 +19,48 @@ export function isNumber(value) {
 	return typeof value === 'number' && isFinite(value);
 }
 
-/** Pixels per centimeter at 96 DPI */
-const PIXELS_IN_SM = 37.795;
+/** CSS pixels per centimeter at 96 DPI. */
+export const PIXELS_PER_CENTIMETER = 96 / 2.54;
 
 /**
- * Predefined metric scale array (in cm) used for snapping custom distance
- * to the nearest standard scale level.
+ * Returns the ground distance represented by one CSS centimeter on the map.
+ *
+ * @param {import('ol/Map').default} map - OpenLayers map instance
+ * @param {number[]} [coordinate] - Coordinate in the view projection
+ * @returns {number} - Ground distance in meters
  */
-const METRIC_ARRAY = [
-	20000000, 10000000, 8000000, 4000000, 2000000, 1000000, 500000, 200000, 100000, 50000, 25000,
-	10000, 5000, 2500, 1500, 1000, 500, 200,
-];
+export function getGroundDistancePerCentimeter(map, coordinate) {
+	if (!map) return 0;
+
+	const view = map.getView();
+	const resolution = view.getResolution();
+	const targetCoordinate = coordinate ?? view.getCenter();
+	if (resolution == null || !targetCoordinate) return 0;
+
+	return (
+		getPointResolution(view.getProjection(), resolution, targetCoordinate, 'm') *
+		PIXELS_PER_CENTIMETER
+	);
+}
 
 /**
  * Converts a custom distance (scale denominator in cm, i.e. "1 cm = X cm")
  * to an OpenLayers zoom level using the map's view resolution.
  *
- * The algorithm:
- * 1. Finds the closest standard metric scale from METRIC_ARRAY
- * 2. Builds a resolutions array where the matched index uses the custom distance
- * 3. Computes resolution as distance / 50 / PIXELS_IN_SM
- * 4. Uses map.getView().getZoomForResolution() to get the zoom level
- *
- * @param {number} replacedMetric - The custom distance in cm
+ * @param {number} distanceInCentimeters - The custom distance in cm
  * @param {import('ol/Map').default} map - OpenLayers map instance
+ * @param {number[]} [coordinate] - Target coordinate in the view projection
  * @returns {number} - The zoom level for the given distance
  */
-export function constructZoomFromDistance(replacedMetric, map) {
-	let res;
-	const resolutions = [];
-	let index = -1;
+export function constructZoomFromDistance(distanceInCentimeters, map, coordinate) {
+	if (!map || !Number.isFinite(distanceInCentimeters) || distanceInCentimeters <= 0) return -1;
 
-	for (let i = 0; i < METRIC_ARRAY.length; i++) {
-		if (i + 1 !== METRIC_ARRAY.length) {
-			if (METRIC_ARRAY[i] > replacedMetric && replacedMetric > METRIC_ARRAY[i + 1]) {
-				const middle = (METRIC_ARRAY[i] + METRIC_ARRAY[i + 1]) / 2;
-				if (replacedMetric <= middle) index = i + 1;
-				else index = i;
-			}
-			if (METRIC_ARRAY[i] === replacedMetric) index = i;
-		}
-	}
+	const view = map.getView();
+	const projection = view.getProjection();
+	const targetCoordinate = coordinate ?? view.getCenter();
+	const groundMetersPerPixel = distanceInCentimeters / 100 / PIXELS_PER_CENTIMETER;
+	const groundMetersPerProjectionUnit = getPointResolution(projection, 1, targetCoordinate, 'm');
+	const resolution = groundMetersPerPixel / groundMetersPerProjectionUnit;
 
-	// Check edge cases: greater than max or less than min
-	if (replacedMetric > METRIC_ARRAY[0]) index = 0;
-	if (replacedMetric < METRIC_ARRAY[METRIC_ARRAY.length - 1]) index = METRIC_ARRAY.length - 1;
-
-	if (index !== -1) {
-		for (let i = 0; i < METRIC_ARRAY.length; i++) {
-			if (i === index) resolutions.push(replacedMetric / 50 / PIXELS_IN_SM);
-			else resolutions.push(METRIC_ARRAY[i] / 50 / PIXELS_IN_SM);
-		}
-	}
-
-	if (index !== -1) res = resolutions[index];
-	else res = -1;
-
-	return map.getView().getZoomForResolution(res);
+	return view.getZoomForResolution(resolution);
 }

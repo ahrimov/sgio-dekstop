@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import {
 	convertStrToFloat,
@@ -11,14 +11,14 @@ import { TEXT_COLOR, MEDIUM_BLUE } from '../../consts/style.js';
  * Each entry maps a zoom level to a human-readable distance string.
  */
 const DEFAULT_DISTANCES = [
-	{ zoom: 5, distance: '500 км' },
-	{ zoom: 7, distance: '100 км' },
-	{ zoom: 9, distance: '50 км' },
-	{ zoom: 11, distance: '10 км' },
-	{ zoom: 13, distance: '5 км' },
-	{ zoom: 15, distance: '1 км' },
-	{ zoom: 17, distance: '500 м' },
-	{ zoom: 18, distance: '100 м' },
+	{ zoom: 5, distance: '500 км', distanceInCentimeters: 50000000 },
+	{ zoom: 7, distance: '100 км', distanceInCentimeters: 10000000 },
+	{ zoom: 9, distance: '50 км', distanceInCentimeters: 5000000 },
+	{ zoom: 11, distance: '10 км', distanceInCentimeters: 1000000 },
+	{ zoom: 13, distance: '5 км', distanceInCentimeters: 500000 },
+	{ zoom: 15, distance: '1 км', distanceInCentimeters: 100000 },
+	{ zoom: 17, distance: '500 м', distanceInCentimeters: 50000 },
+	{ zoom: 18, distance: '100 м', distanceInCentimeters: 10000 },
 ];
 
 /**
@@ -33,6 +33,7 @@ const DEFAULT_DISTANCES = [
  * @param {function} props.onLatitudeChange - Callback when latitude changes
  * @param {function} props.onLongitudeChange - Callback when longitude changes
  * @param {function} props.onZoomChange - Callback when zoom changes
+ * @param {function} props.onScaleDistanceChange - Callback with the scale distance in cm
  */
 export function SearchByWGSCoordinatesForm({
 	latitude,
@@ -41,11 +42,22 @@ export function SearchByWGSCoordinatesForm({
 	onLatitudeChange,
 	onLongitudeChange,
 	onZoomChange,
+	onScaleDistanceChange,
 }) {
 	const distances = DEFAULT_DISTANCES;
 	const [customInput, setCustomInput] = useState(false);
 	const [customDistance, setCustomDistance] = useState('1000');
 	const map = window.map;
+
+	useEffect(() => {
+		if (customInput) return;
+
+		const closestDistance = distances.reduce((closest, item) =>
+			Math.abs(item.zoom - zoom) < Math.abs(closest.zoom - zoom) ? item : closest
+		);
+		onScaleDistanceChange(closestDistance.distanceInCentimeters);
+		if (closestDistance.zoom !== zoom) onZoomChange(closestDistance.zoom);
+	}, [customInput, distances, onScaleDistanceChange, onZoomChange, zoom]);
 
 	const handleLatDecimalChange = useCallback(
 		e => {
@@ -66,9 +78,11 @@ export function SearchByWGSCoordinatesForm({
 	const handleZoomFromList = useCallback(
 		e => {
 			const newZoom = parseInt(e.target.value, 10);
+			const selectedDistance = distances.find(item => item.zoom === newZoom);
+			onScaleDistanceChange(selectedDistance.distanceInCentimeters);
 			onZoomChange(newZoom);
 		},
-		[onZoomChange]
+		[distances, onScaleDistanceChange, onZoomChange]
 	);
 
 	const handleCustomDistanceChange = useCallback(
@@ -79,14 +93,25 @@ export function SearchByWGSCoordinatesForm({
 			// Convert custom distance (cm) to zoom level using the map
 			const distanceNum = parseInt(val, 10);
 			if (distanceNum > 0 && map) {
+				onScaleDistanceChange(distanceNum);
 				const newZoom = constructZoomFromDistance(distanceNum, map);
 				if (newZoom !== -1 && !isNaN(newZoom)) {
 					onZoomChange(newZoom);
 				}
 			}
 		},
-		[map, onZoomChange]
+		[map, onScaleDistanceChange, onZoomChange]
 	);
+
+	const handleCustomInputSelect = useCallback(() => {
+		setCustomInput(true);
+		const distanceNum = parseInt(customDistance, 10);
+		if (distanceNum > 0) onScaleDistanceChange(distanceNum);
+	}, [customDistance, onScaleDistanceChange]);
+
+	const handleListInputSelect = useCallback(() => {
+		setCustomInput(false);
+	}, []);
 
 	return (
 		<Form>
@@ -137,7 +162,7 @@ export function SearchByWGSCoordinatesForm({
 								id="choose-scale-list"
 								value="list"
 								checked={!customInput}
-								onChange={() => setCustomInput(false)}
+								onChange={handleListInputSelect}
 							/>
 							<label htmlFor="choose-scale-list">Из списка</label>
 						</RadioButton>
@@ -167,7 +192,7 @@ export function SearchByWGSCoordinatesForm({
 								id="choose-scale-custom"
 								value="custom"
 								checked={customInput}
-								onChange={() => setCustomInput(true)}
+								onChange={handleCustomInputSelect}
 							/>
 							<label htmlFor="choose-scale-custom">Пользовательский</label>
 						</RadioButton>

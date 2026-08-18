@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-
-const PIXELS_PER_CM = 43;
-
+import { getGroundDistancePerCentimeter } from '../../../utils/coordinateTransformations.js';
 
 function formatDistance(meters) {
 	if (meters >= 1000) {
 		const km = meters / 1000;
+		const roundedKm = km >= 10 ? Math.round(km) : Number(km.toFixed(1));
 
-		return `${Math.ceil(km)} км`;
+		return `${roundedKm} км`;
 	}
 	if (meters >= 1) {
 		return `${Math.round(meters)} м`;
@@ -24,13 +23,8 @@ export function useScaleText(map) {
 	const updateScale = useCallback(() => {
 		if (!map) return;
 
-		const view = map.getView();
-		if (!view) return;
-
-		const resolution = view.getResolution();
-		if (resolution == null) return;
-
-		const metersPerCm = resolution * PIXELS_PER_CM;
+		const metersPerCm = getGroundDistancePerCentimeter(map);
+		if (!metersPerCm) return;
 
 		setDistanceText(formatDistance(metersPerCm));
 	}, [map]);
@@ -42,11 +36,13 @@ export function useScaleText(map) {
 
 		const view = map.getView();
 		view.on('change:resolution', updateScale);
+		view.on('change:center', updateScale);
 
 		map.on('change:view', updateScale);
 
 		return () => {
 			view.un('change:resolution', updateScale);
+			view.un('change:center', updateScale);
 			map.un('change:view', updateScale);
 		};
 	}, [map, updateScale]);
