@@ -4,20 +4,25 @@ import { iliReverseComplete } from './iliReverse.js';
 import { getDbPath, reloadLayersByIds } from '../legacy/DBManage.js';
 import { layers } from '../legacy/globals.js';
 import { showMultipleOnMap } from './showOnMap.js';
-import { startVirtMarkerRecalc, updateVirtMarkerRecalc, finishVirtMarkerRecalc } from './virtMarkerRecalc';
+import { showAlert } from './modalDialog.js';
+import {
+	startVirtMarkerRecalc,
+	updateVirtMarkerRecalc,
+	finishVirtMarkerRecalc,
+} from './virtMarkerRecalc';
 
 export const refreshFeatureTable = createEvent();
 
 export const $tableRefreshTrigger = createStore(0)
-  .on(refreshFeatureTable, (count) => (count + 1) % 100)
-  .on(iliImportComplete, (count) => (count + 1) % 100);
+	.on(refreshFeatureTable, count => (count + 1) % 100)
+	.on(iliImportComplete, count => (count + 1) % 100);
 
 // ILI layer IDs that must be refreshed after every VTD import
 const ILI_LAYER_IDS = [
-  'SGIO_ILI_DATA',
-  'SGIO_ILI_DATA_FEATURE',
-  'SGIO_ILI_DATA_VIRT_MARKER',
-  'SGIO_ILI_PIPE_LENGTH',
+	'SGIO_ILI_DATA',
+	'SGIO_ILI_DATA_FEATURE',
+	'SGIO_ILI_DATA_VIRT_MARKER',
+	'SGIO_ILI_PIPE_LENGTH',
 ];
 
 /**
@@ -32,36 +37,36 @@ export const virtMarkerChanged = createEvent();
  * Called after ILI import completes and layers are reloaded.
  */
 function zoomToIliLayer() {
-  try {
-    const iliLayer = layers.find(l => l.id === 'SGIO_ILI_DATA');
-    if (!iliLayer) return;
+	try {
+		const iliLayer = layers.find(l => l.id === 'SGIO_ILI_DATA');
+		if (!iliLayer) return;
 
-    const source = iliLayer.getSource?.();
-    if (!source) return;
+		const source = iliLayer.getSource?.();
+		if (!source) return;
 
-    const features = source.getFeatures();
-    const featuresWithGeom = features.filter(f => f.getGeometry() != null);
-    if (featuresWithGeom.length === 0) return;
+		const features = source.getFeatures();
+		const featuresWithGeom = features.filter(f => f.getGeometry() != null);
+		if (featuresWithGeom.length === 0) return;
 
-    const featureIds = featuresWithGeom.map(f => f.id);
-    showMultipleOnMap({ layer: iliLayer, featureIds });
-  } catch (err) {
-    console.warn('[ILI] zoomToIliLayer failed:', err);
-  }
+		const featureIds = featuresWithGeom.map(f => f.id);
+		showMultipleOnMap({ layer: iliLayer, featureIds });
+	} catch (err) {
+		console.warn('[ILI] zoomToIliLayer failed:', err);
+	}
 }
 
 iliImportComplete.watch(() => {
-  reloadLayersByIds(ILI_LAYER_IDS, layers).then(() => {
-    // Give the map a moment to render the new features before zooming
-    setTimeout(zoomToIliLayer, 500);
-  });
+	reloadLayersByIds(ILI_LAYER_IDS, layers).then(() => {
+		// Give the map a moment to render the new features before zooming
+		setTimeout(zoomToIliLayer, 500);
+	});
 });
 
 // Reload ILI layers after report reversal so the map reflects reversed coordinates
 iliReverseComplete.watch(() => {
-  reloadLayersByIds(ILI_LAYER_IDS, layers).then(() => {
-    setTimeout(zoomToIliLayer, 500);
-  });
+	reloadLayersByIds(ILI_LAYER_IDS, layers).then(() => {
+		setTimeout(zoomToIliLayer, 500);
+	});
 });
 
 /**
@@ -69,9 +74,7 @@ iliReverseComplete.watch(() => {
  * This matches the spec requirement to reload "sgio_%" layers after recalculation.
  */
 function getSgioLayerIds() {
-  return layers
-    .filter(l => l.id && l.id.toUpperCase().startsWith('SGIO_'))
-    .map(l => l.id);
+	return layers.filter(l => l.id && l.id.toUpperCase().startsWith('SGIO_')).map(l => l.id);
 }
 
 /**
@@ -82,53 +85,67 @@ function getSgioLayerIds() {
  * @returns {Promise<void>}
  */
 export async function refreshAfterVirtMarkerChange() {
-  startVirtMarkerRecalc('Пересчёт координат...');
+	startVirtMarkerRecalc('Пересчёт координат...');
+	let reportRecalculated = false;
 
-  try {
-    // 1. Run coordinate recalculation (no reper linking)
-    try {
-      const dbPath = getDbPath();
-      if (dbPath) {
-        updateVirtMarkerRecalc({ percent: 10, message: 'Поиск инспекции...' });
-        // Use a minimal query — iliGetInspections references columns that may not exist
-        const result = await electronAPI.executeSQL(
-          dbPath,
-          'SELECT ili_inspection_id FROM sgio_ili_inspection ORDER BY ili_inspection_id LIMIT 1'
-        );
-        const rows = result?.rows ?? [];
-        if (rows.length > 0) {
-          const inspectionId = rows[0].ili_inspection_id;
-          console.log('[refreshAfterVirtMarkerChange] Running iliCalcCoordinatesNoLink for inspectionId:', inspectionId);
-          updateVirtMarkerRecalc({ percent: 30, message: 'Пересчёт координат дефектов...' });
-          await electronAPI.iliCalcCoordinatesNoLink(dbPath, { inspectionId });
-          console.log('[refreshAfterVirtMarkerChange] Recalculation complete');
-          updateVirtMarkerRecalc({ percent: 70, message: 'Пересчёт завершён' });
-        } else {
-          console.warn('[refreshAfterVirtMarkerChange] No inspections found — skipping recalculation');
-        }
-      }
-    } catch (err) {
-      console.error('[refreshAfterVirtMarkerChange] Coordinate recalculation failed:', err);
-      // Continue with layer reload even if recalculation fails
-    }
+	try {
+		// 1. Run coordinate recalculation (no reper linking)
+		try {
+			const dbPath = getDbPath();
+			if (dbPath) {
+				updateVirtMarkerRecalc({ percent: 10, message: 'Поиск инспекции...' });
+				// Use a minimal query — iliGetInspections references columns that may not exist
+				const result = await electronAPI.executeSQL(
+					dbPath,
+					'SELECT ili_inspection_id FROM sgio_ili_inspection ORDER BY ili_inspection_id LIMIT 1'
+				);
+				const rows = result?.rows ?? [];
+				if (rows.length > 0) {
+					const inspectionId = rows[0].ili_inspection_id;
+					console.log(
+						'[refreshAfterVirtMarkerChange] Running iliCalcCoordinatesNoLink for inspectionId:',
+						inspectionId
+					);
+					updateVirtMarkerRecalc({
+						percent: 30,
+						message: 'Пересчёт координат дефектов...',
+					});
+					await electronAPI.iliCalcCoordinatesNoLink(dbPath, { inspectionId });
+					reportRecalculated = true;
+					console.log('[refreshAfterVirtMarkerChange] Recalculation complete');
+					updateVirtMarkerRecalc({ percent: 70, message: 'Пересчёт завершён' });
+				} else {
+					console.warn(
+						'[refreshAfterVirtMarkerChange] No inspections found — skipping recalculation'
+					);
+				}
+			}
+		} catch (err) {
+			console.error('[refreshAfterVirtMarkerChange] Coordinate recalculation failed:', err);
+			// Continue with layer reload even if recalculation fails
+		}
 
-    // 2. Reload all sgio_% layers (includes ILI_LAYER_IDS and any future sgio layers)
-    updateVirtMarkerRecalc({ percent: 75, message: 'Обновление слоёв карты...' });
-    const sgioIds = getSgioLayerIds();
-    if (sgioIds.length > 0) {
-      await reloadLayersByIds(sgioIds, layers);
-    }
+		// 2. Reload all sgio_% layers (includes ILI_LAYER_IDS and any future sgio layers)
+		updateVirtMarkerRecalc({ percent: 75, message: 'Обновление слоёв карты...' });
+		const sgioIds = getSgioLayerIds();
+		if (sgioIds.length > 0) {
+			await reloadLayersByIds(sgioIds, layers);
+		}
 
-    // 3. Fire refreshFeatureTable so any open attribute tables update their data
-    updateVirtMarkerRecalc({ percent: 95, message: 'Обновление таблиц...' });
-    refreshFeatureTable();
-  } finally {
-    finishVirtMarkerRecalc();
-  }
+		// 3. Fire refreshFeatureTable so any open attribute tables update their data
+		updateVirtMarkerRecalc({ percent: 95, message: 'Обновление таблиц...' });
+		refreshFeatureTable();
+	} finally {
+		finishVirtMarkerRecalc();
+	}
+
+	if (reportRecalculated) {
+		showAlert('Виртуальный репер', 'Виртуальный репер добавлен, отчет ВТД успешно пересчитан');
+	}
 }
 
 virtMarkerChanged.watch(() => {
-  refreshAfterVirtMarkerChange().catch(err => {
-    console.error('[virtMarkerChanged] error:', err);
-  });
+	refreshAfterVirtMarkerChange().catch(err => {
+		console.error('[virtMarkerChanged] error:', err);
+	});
 });
