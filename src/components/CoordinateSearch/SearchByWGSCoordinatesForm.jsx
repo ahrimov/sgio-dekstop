@@ -4,7 +4,6 @@ import {
 	convertStrToFloat,
 	constructZoomFromDistance,
 } from '../../utils/coordinateTransformations.js';
-import { DMSCoordinateInput } from './DMSCoordinateInput.jsx';
 import { TEXT_COLOR, MEDIUM_BLUE } from '../../consts/style.js';
 
 /**
@@ -24,8 +23,8 @@ const DEFAULT_DISTANCES = [
 
 /**
  * Form for searching by WGS-84 coordinates.
- * Provides both decimal degree and DMS (degrees-minutes-seconds) inputs
- * for latitude and longitude, plus scale selection (from list or custom).
+ * Provides decimal degree inputs for latitude and longitude,
+ * plus scale selection (from list or custom).
  *
  * @param {Object} props
  * @param {string} props.latitude - Current latitude value (decimal string)
@@ -56,23 +55,9 @@ export function SearchByWGSCoordinatesForm({
 		[onLatitudeChange]
 	);
 
-	const handleLatDMSChange = useCallback(
-		newLat => {
-			onLatitudeChange(newLat);
-		},
-		[onLatitudeChange]
-	);
-
 	const handleLonDecimalChange = useCallback(
 		e => {
 			const newLon = convertStrToFloat(e.target.value);
-			onLongitudeChange(newLon);
-		},
-		[onLongitudeChange]
-	);
-
-	const handleLonDMSChange = useCallback(
-		newLon => {
 			onLongitudeChange(newLon);
 		},
 		[onLongitudeChange]
@@ -122,12 +107,6 @@ export function SearchByWGSCoordinatesForm({
 					autoFocus
 				/>
 
-				{/* Latitude - DMS */}
-				<InputLabel>
-					<TextInputLabel>ГГ°ММ&apos;СС.СС&apos;&apos;</TextInputLabel>
-				</InputLabel>
-				<DMSCoordinateInput value={latitude} handler={handleLatDMSChange} />
-
 				{/* Longitude - decimal */}
 				<InputLabel>
 					<TextInputLabel>
@@ -141,12 +120,6 @@ export function SearchByWGSCoordinatesForm({
 					onChange={handleLonDecimalChange}
 					placeholder="37.618423"
 				/>
-
-				{/* Longitude - DMS */}
-				<InputLabel>
-					<TextInputLabel>ГГ°ММ&apos;СС.СС&apos;&apos;</TextInputLabel>
-				</InputLabel>
-				<DMSCoordinateInput value={longitude} handler={handleLonDMSChange} />
 			</CoordinateBlock>
 
 			{/* Scale selection block */}
@@ -234,8 +207,9 @@ const Form = styled.div`
 const CoordinateBlock = styled.div`
 	margin-top: 1%;
 	margin-left: 1%;
+	width: 53%;
 	display: grid;
-	grid-template-columns: 22% 31% 22% 25%;
+	grid-template-columns: 22fr 31fr;
 	grid-row-gap: 5px;
 	align-items: center;
 `;

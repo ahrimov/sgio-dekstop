@@ -9,54 +9,6 @@ export function convertStrToFloat(value) {
 }
 
 /**
- * Returns the decimal portion of a float number.
- * @param {number} float - The input float
- * @returns {number} - The decimal portion (0.xxx)
- */
-function getDecimalPortion(float) {
-	let string = float.toFixed(12);
-	string = '0' + string.slice(string.indexOf('.'), string.length);
-	return parseFloat(string);
-}
-
-/**
- * Converts a decimal degree value to degrees, minutes, seconds format string.
- * Format: "DD° MM' SS.SS''"
- * @param {number|string} value - Decimal degrees
- * @returns {string} - Formatted DMS string
- */
-export function transformDecimalToMinutesAndSeconds(value) {
-	const numValue = Math.abs(parseFloat(value));
-	if (isNaN(numValue)) return "00° 00' 00.00''";
-
-	let degreesStr = Math.floor(numValue).toString();
-	const minutes = (getDecimalPortion(numValue) * 60).toFixed(5);
-	const seconds = (getDecimalPortion(parseFloat(minutes)) * 60).toFixed(2);
-
-	degreesStr = degreesStr.length === 1 ? '0' + degreesStr : degreesStr;
-	let minutesStr = Math.trunc(parseFloat(minutes)).toString();
-	minutesStr = minutesStr.length === 1 ? '0' + minutesStr : minutesStr;
-	let secondsStr = seconds;
-	secondsStr = secondsStr.length === 4 ? '0' + secondsStr : secondsStr;
-
-	return `${degreesStr}° ${minutesStr}' ${secondsStr}''`;
-}
-
-/**
- * Converts a DMS format string back to decimal degrees.
- * Expects format: "DD° MM' SS.SS''"
- * @param {string} value - DMS formatted string
- * @returns {string} - Decimal degrees as string with 10 decimal places
- */
-export function transformToDecimal(value) {
-	const degrees = parseFloat(value.slice(0, value.indexOf('°')));
-	const minutes = parseFloat(value.slice(value.indexOf('°') + 1, value.indexOf("'"))) / 60;
-	const seconds = parseFloat(value.slice(value.indexOf("' ") + 1, value.indexOf("''"))) / 3600;
-	const res = degrees + minutes + seconds;
-	return (Math.trunc(res * 1e10) / 1e10).toFixed(10);
-}
-
-/**
  * Checks if a value is a finite number.
  * @param {*} value - The value to check
  * @returns {boolean}
