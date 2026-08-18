@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { LoadingProvider, useLoading } from './components/LoadingScreen/LoadingContext.js';
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen.jsx';
 import { setProgressCallbacks, setConfigUpdateCallback } from './legacy/XMLParser.js';
@@ -58,6 +58,7 @@ const AppContent = () => {
 	const { updateConfig } = useConfig();
 	const [showLayersPanel, setShowLayersPanel] = useState(true);
 	const [activeLayer, setActiveLayer] = useState(null);
+	const tableWrapperRef = useRef(null);
 	const infoFeature = useUnit($infoFeature);
 	const featureSelectorData = useUnit($featureSelectorData);
 	const numberOfLayers = useUnit($numberOfLayers);
@@ -117,6 +118,22 @@ const AppContent = () => {
 
 	const handleFeaturesClick = layer => {
 		setActiveLayer(layer);
+		requestAnimationFrame(() => {
+			const tableWrapper = tableWrapperRef.current;
+			const scrollContainer = tableWrapper?.closest('.app-container');
+
+			if (!tableWrapper || !scrollContainer) return;
+
+			const tableTop =
+				tableWrapper.getBoundingClientRect().top -
+				scrollContainer.getBoundingClientRect().top +
+				scrollContainer.scrollTop;
+
+			scrollContainer.scrollTo({
+				top: tableTop - scrollContainer.clientHeight * 0.2,
+				behavior: 'smooth',
+			});
+		});
 	};
 
 	const handleAcceptKMLImport = async dict => {
@@ -202,7 +219,7 @@ const AppContent = () => {
 								</div>
 							</div>
 							{activeLayer && (
-								<div className="table-wrapper">
+								<div ref={tableWrapperRef} className="table-wrapper">
 									<FeatureTable key={activeLayer.id} layer={activeLayer} />
 								</div>
 							)}
@@ -241,7 +258,7 @@ const AppContent = () => {
 							}}
 						/>
 					</Dropdown>
-	
+
 					<Taskbar />
 					<InfoModal />
 
@@ -275,7 +292,7 @@ const AppContent = () => {
 					<VirtMarkerRecalcProgress />
 					<ILIReverseDialog dbPath={getDbPath()} />
 					<ILIReverseProgress />
-	
+
 					<ModalDialog />
 				</div>
 			</MessageProvider>

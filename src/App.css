@@ -109,6 +109,8 @@ body {
 	background: #fff;
 	border-radius: 14px;
 	box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.12);
+	min-height: 80%;
+	flex-shrink: 0;
 }
 
 .map-wrapper.with-panel {
