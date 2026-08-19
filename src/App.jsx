@@ -9,7 +9,6 @@ import { MessageProvider } from './context/MessageContext.jsx';
 import MapComponent from './components/Map/MapComponent.js';
 import LayersPanel from './components/LayersPanel/LayersPanel.jsx';
 import { layers } from './legacy/globals.js';
-import { baseRasterLayers } from './legacy/XMLParser.js';
 import { Button } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import './App.css';
@@ -205,7 +204,6 @@ const AppContent = () => {
 								{showLayersPanel && (
 									<div className="layers-panel-wrapper">
 										<LayersPanel
-											baseRasterLayers={baseRasterLayers}
 											layers={layers}
 											onClose={closeLayersPanel}
 											handleFeaturesClick={handleFeaturesClick}

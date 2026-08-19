@@ -10,16 +10,25 @@ import { MEDIUM_BLUE } from '../../consts/style.js';
 import { addNewLayer } from '../../features/KMLLayer/addNewLayer.js';
 import { useUnit } from 'effector-react';
 import { $layers } from '../../legacy/globals.js';
+import {
+	$rasterLayers,
+	reorderRasterLayers,
+	toggleRasterLayerVisibility,
+} from '../../store/rasterLayers.js';
 
 const { Text } = Typography;
 
 const RasterLayersList = ({ layers, moveLayer, toggleVisibility }) => {
-	const [visibleVectorLayers, setVisibleVectorLayers] = useState(layers);
+	const [sortableLayers, setSortableLayers] = useState(layers);
+
+	useEffect(() => {
+		setSortableLayers(layers);
+	}, [layers]);
 
 	return (
 		<ReactSortable
-			list={visibleVectorLayers}
-			setList={setVisibleVectorLayers}
+			list={sortableLayers}
+			setList={setSortableLayers}
 			style={{ overflow: 'auto', padding: 0 }}
 			tag="div"
 			animation={200}
@@ -30,7 +39,7 @@ const RasterLayersList = ({ layers, moveLayer, toggleVisibility }) => {
 				}
 			}}
 		>
-			{layers.map((layer, index) => (
+			{sortableLayers.map((layer, index) => (
 				<DraggableRasterLayer
 					key={layer.get('id')}
 					layer={layer}
@@ -165,23 +174,15 @@ const DraggableVectorLayer = ({
 	);
 };
 
-const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }) => {
-	const [rasterLayers, setRasterLayers] = useState(baseRasterLayers);
+const LayersPanel = ({ layers = [], handleFeaturesClick }) => {
+	const rasterLayers = useUnit($rasterLayers);
 	const [vectorLayers, setVectorLayers] = useState(layers);
 	const [currentElementWithActions, setCurrentElementWithActions] = useState(-1);
 	const scrollRef = useRef(null);
 
 	const toggleLayerVisibility = (layerId, isRaster = false) => {
 		if (isRaster) {
-			setRasterLayers(prev =>
-				prev.map(layer => {
-					if (layer?.get('id') === layerId) {
-						const newVisibility = !layer.getVisible();
-						layer.setVisible(newVisibility);
-					}
-					return layer;
-				})
-			);
+			toggleRasterLayerVisibility(layerId);
 		} else {
 			setVectorLayers(prev =>
 				prev.map(layer => {
@@ -204,16 +205,7 @@ const LayersPanel = ({ baseRasterLayers = [], layers = [], handleFeaturesClick }
 	};
 
 	const moveRasterLayer = (fromIndex, toIndex) => {
-		const newRasterLayers = [...rasterLayers];
-		const [movedItem] = newRasterLayers.splice(fromIndex, 1);
-		newRasterLayers.splice(toIndex, 0, movedItem);
-		setRasterLayers(newRasterLayers);
-
-		newRasterLayers.forEach((layer, index) => {
-			if (typeof layer.setZIndex === 'function') {
-				layer.setZIndex(newRasterLayers.length - index);
-			}
-		});
+		reorderRasterLayers({ fromIndex, toIndex });
 	};
 
 	const moveVectorLayer = (fromIndex, toIndex) => {

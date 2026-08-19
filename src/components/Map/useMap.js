@@ -8,7 +8,7 @@ import { Select } from 'ol/interaction.js';
 import DragBox from 'ol/interaction/DragBox.js';
 import { getCenter } from 'ol/extent.js';
 import { Style, Stroke, Fill, Circle } from 'ol/style.js';
-import { currentMapView, baseRasterLayers } from '../../legacy/XMLParser.js';
+import { currentMapView } from '../../legacy/XMLParser.js';
 import { layers } from '../../legacy/globals.js';
 import { useUnit } from 'effector-react';
 import {
@@ -31,11 +31,14 @@ import { useMeasureInteraction } from './useMeasureInteraction.js';
 import { useAreaMeasureInteraction } from './useAreaMeasureInteraction.js';
 import { MeasureControlPanel } from './MeasureControlPanel.jsx';
 import { AreaMeasureControlPanel } from './AreaMeasureControlPanel.jsx';
+import { $rasterLayers } from '../../store/rasterLayers.js';
 
 export const useMap = containerRef => {
 	const mapInstance = useRef(null);
+	const managedRasterLayers = useRef([]);
 	const [isMapReady, setIsMapReady] = useState(false);
 	const [mapStatus, setMapStatus] = useState('offline');
+	const rasterLayers = useUnit($rasterLayers);
 	const mapInteractionMode = useUnit($mapInteractionMode);
 	const newMapLayer = useUnit($newMapLayer);
 	const deletedMapLayer = useUnit($deletedMapLayer);
@@ -60,7 +63,7 @@ export const useMap = containerRef => {
 
 			mapInstance.current = new OlMap({
 				target: containerRef.current,
-				layers: [...baseRasterLayers, ...(layers || [])],
+				layers: [...rasterLayers, ...(layers || [])],
 				view:
 					currentMapView ||
 					new View({
@@ -74,6 +77,7 @@ export const useMap = containerRef => {
 					pinchRotate: false,
 				}),
 			});
+			managedRasterLayers.current = [...rasterLayers];
 
 			setTimeout(() => {
 				if (mapInstance.current) {
@@ -84,7 +88,6 @@ export const useMap = containerRef => {
 			mapInstance.current.on('moveend', handleMapMoveEnd);
 
 			saveMapPosition();
-			updateMapStatus();
 			addSelectInteraction();
 
 			window.map = mapInstance.current;
@@ -253,6 +256,32 @@ export const useMap = containerRef => {
 		}
 	}, [deletedMapLayer]);
 
+	useEffect(() => {
+		if (!mapInstance.current) return;
+
+		const nextRasterLayerSet = new Set(rasterLayers);
+		const currentRasterLayerSet = new Set(managedRasterLayers.current);
+
+		managedRasterLayers.current.forEach(layer => {
+			if (!nextRasterLayerSet.has(layer)) {
+				mapInstance.current.removeLayer(layer);
+			}
+		});
+
+		rasterLayers.forEach(layer => {
+			if (!currentRasterLayerSet.has(layer)) {
+				mapInstance.current.addLayer(layer);
+			}
+		});
+
+		managedRasterLayers.current = [...rasterLayers];
+	}, [rasterLayers]);
+
+	useEffect(() => {
+		const isOnline = rasterLayers.some(layer => layer.get('sourceType') === 'remoteXYZ');
+		setMapStatus(isOnline ? 'online' : 'offline');
+	}, [rasterLayers]);
+
 	const handleMapMoveEnd = () => {
 		if (!mapInstance.current) return;
 
@@ -281,15 +310,6 @@ export const useMap = containerRef => {
 				}
 			}
 		});
-	};
-
-	const updateMapStatus = () => {
-		const visibleBaseLayers = (window.baseRasterLayers || []).filter(layer =>
-			layer.get('visible')
-		);
-		const isOnline = visibleBaseLayers.some(layer => !layer.get('useLocalTiles'));
-
-		setMapStatus(isOnline ? 'online' : 'offline');
 	};
 
 	const saveMapPosition = () => {
@@ -403,6 +423,7 @@ export const useMap = containerRef => {
 			if (mapInstance.current) {
 				mapInstance.current.setTarget(null);
 				mapInstance.current = null;
+				managedRasterLayers.current = [];
 			}
 		};
 	}, []);

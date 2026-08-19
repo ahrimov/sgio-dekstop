@@ -1,6 +1,11 @@
 import { root_directory } from './initial.js';
 import { openFile } from './FileManage.js';
-import { setDBProgressCallbacks, setTotalLayersCount, initialDB, updateTotalLayersCount } from './DBManage.js';
+import {
+	setDBProgressCallbacks,
+	setTotalLayersCount,
+	initialDB,
+	updateTotalLayersCount,
+} from './DBManage.js';
 import { convertColorToHEX, getZoomFromMeters } from './converter.js';
 import { map, layers } from './globals.js';
 import { LayerAtribs } from './Map.js';
@@ -16,18 +21,16 @@ import Circle from 'ol/style/Circle.js';
 import Text from 'ol/style/Text.js';
 import RegularShape from 'ol/style/RegularShape.js';
 import Icon from 'ol/style/Icon.js';
-import XYZ from 'ol/source/XYZ.js';
-import TileLayer from 'ol/layer/Tile.js';
-import { createXYZ } from 'ol/tilegrid.js';
 import { setNumberOfLayers } from '../store/numberOfLayers.js';
 import { generateColor } from '../utils/colorGenerator.js';
 import { addExistingKMLLayers } from '../features/KMLLayer/addExistingLayer.js';
+import { createRasterLayers } from '../features/rasterLayers/createRasterLayers.js';
+import { setRasterLayers } from '../store/rasterLayers.js';
 
 let progressCallbacks = {};
 let configUpdateCallback = null;
 
 export let currentMapView = null;
-export let baseRasterLayers = [];
 
 export function setProgressCallbacks(callbacks) {
 	progressCallbacks = callbacks;
@@ -88,7 +91,7 @@ export function configParser(data) {
 	const showAllPrecision = showAllPrecisionElement
 		? showAllPrecisionElement.textContent === 'true'
 		: false;
-	
+
 	if (configUpdateCallback) {
 		configUpdateCallback({ showSystemProperties, showAllPrecision });
 	}
@@ -110,13 +113,16 @@ export function configParser(data) {
 	const pathToBaseRasterLayers = dom
 		.getElementsByTagName('PathToBaseRasterLayers')
 		?.item(0)?.textContent;
+	const rasterMode =
+		dom.getElementsByTagName('RasterMode')?.item(0)?.textContent?.trim().toLowerCase() ||
+		'offline';
 	if (typeof pathToBaseRasterLayers !== 'undefined') {
 		openFile(
 			root_directory + pathToBaseRasterLayers,
 			function (text) {
 				try {
 					const jsonArray = JSON.parse(text);
-					baseRasterLayers = parseBaseRasterLayers(jsonArray);
+					setRasterLayers(createRasterLayers(jsonArray, { mode: rasterMode }));
 				} catch (e) {
 					if (window.showAlert) {
 						window.showAlert(
@@ -168,7 +174,7 @@ export function configParser(data) {
 			case 'MULTIPOINT':
 				try {
 					styles = await pointStyleParse(dom);
-				} catch (e) {
+				} catch {
 					styles = {
 						default: new Style({
 							image: new Circle({
@@ -185,7 +191,7 @@ export function configParser(data) {
 			case 'MULTIPOLYGON':
 				try {
 					styles = polygonStyleParse(dom);
-				} catch (e) {
+				} catch {
 					styles = {
 						default: new Style({
 							fill: new Fill({
@@ -205,7 +211,7 @@ export function configParser(data) {
 			case 'MULTILINESTRING':
 				try {
 					styles = lineStyleParse(dom);
-				} catch (e) {
+				} catch {
 					styles = {
 						default: new Style({
 							stroke: new Stroke({
@@ -286,17 +292,30 @@ export function configParser(data) {
 		const layerDbEl = dom.getElementsByTagName('layerDb').item(0);
 		const tableEl = layerDbEl ? layerDbEl.getElementsByTagName('table').item(0) : null;
 		layer.table = tableEl ? tableEl.textContent : layer.id;
-		const whereClauseEl = layerDbEl ? layerDbEl.getElementsByTagName('where_clause').item(0) : null;
+		const whereClauseEl = layerDbEl
+			? layerDbEl.getElementsByTagName('where_clause').item(0)
+			: null;
 		layer.whereClause = whereClauseEl ? whereClauseEl.textContent.trim() : '';
 		const primaryEl = layerDbEl ? layerDbEl.getElementsByTagName('primary').item(0) : null;
 		layer.primaryKey = primaryEl ? primaryEl.textContent.trim() : 'id';
-		const geometryColumnEl = layerDbEl ? layerDbEl.getElementsByTagName('geometry_column').item(0) : null;
-		layer.geometryColumn = geometryColumnEl ? geometryColumnEl.textContent.trim() : 'AsText(Geometry) as geom';
-		const showButtonsEl = layerDbEl ? layerDbEl.getElementsByTagName('show_buttons').item(0) ?? null : null;
-		layer.showButtons = showButtonsEl
-			? showButtonsEl.textContent.split(',').map(s => s.trim()).filter(Boolean)
+		const geometryColumnEl = layerDbEl
+			? layerDbEl.getElementsByTagName('geometry_column').item(0)
 			: null;
-		const styleClauseEl = layerDbEl ? layerDbEl.getElementsByTagName('style_clause').item(0) : null;
+		layer.geometryColumn = geometryColumnEl
+			? geometryColumnEl.textContent.trim()
+			: 'AsText(Geometry) as geom';
+		const showButtonsEl = layerDbEl
+			? (layerDbEl.getElementsByTagName('show_buttons').item(0) ?? null)
+			: null;
+		layer.showButtons = showButtonsEl
+			? showButtonsEl.textContent
+					.split(',')
+					.map(s => s.trim())
+					.filter(Boolean)
+			: null;
+		const styleClauseEl = layerDbEl
+			? layerDbEl.getElementsByTagName('style_clause').item(0)
+			: null;
 		layer.styleClause = styleClauseEl ? styleClauseEl.textContent.trim() : null;
 		layer.geometryType = geometryType;
 
@@ -404,7 +423,7 @@ export async function pointStyleParse(dom) {
 					if (lineStyle) {
 						const lineColor = convertColorToHEX(
 							lineStyle.getElementsByTagName('color').item(0)?.textContent ||
-							'#000000'
+								'#000000'
 						);
 						const width =
 							parseInt(
@@ -427,7 +446,12 @@ export async function pointStyleParse(dom) {
 					const iconPath = `${resourcePath}/images/${href}`;
 					const base64 = await electronAPI.readFileBase64(iconPath);
 					const ext = href.split('.').pop().toLowerCase();
-					const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : 'image/png';
+					const mime =
+						ext === 'png'
+							? 'image/png'
+							: ext === 'jpg' || ext === 'jpeg'
+								? 'image/jpeg'
+								: 'image/png';
 					const iconSrc = `data:${mime};base64,${base64}`;
 					const targetSize = parseInt(imageSize, 10) || 16;
 					const icon = new Icon({
@@ -722,68 +746,4 @@ function parseEnum(options_string) {
 		options[key] = value;
 	}
 	return options;
-}
-
-function parseBaseRasterLayers(jsonArray) {
-	return jsonArray
-		.sort((a, b) => b.order - a.order)
-		.map((json, id) => {
-			let source;
-
-			if (json.projection === 'EPSG:3857') {
-				source = new XYZ({
-					projection: json.projection,
-					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
-					tileGrid: createXYZ({
-						extent: [
-							-20037508.342789244, -20037508.342789244, 20037508.342789244,
-							20037508.342789244,
-						],
-						maxZoom: 19,
-					}),
-					tileSize: json.tileSize || 256,
-					cacheSize: 40,
-					crossOrigin: 'anonymous',
-				});
-			} else if (json.projection === 'EPSG:3395') {
-				source = new XYZ({
-					projection: json.projection,
-					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
-					tileGrid: createXYZ({
-						extent: [
-							-20037508.342789244, -20037508.342789244, 20037508.342789244,
-							20037508.342789244,
-						],
-					}),
-					tileSize: json.tileSize,
-					cacheSize: 40,
-				});
-			} else {
-				source = new XYZ({
-					projection: json.projection,
-					url: json.useLocalTiles ? main_directory + json.local_path : json.remote_url,
-					tileSize: json.tileSize,
-					cacheSize: 40,
-				});
-			}
-			if (json.useLocalTiles) {
-				source.setTileLoadFunction(tileLoadFunctionLocal);
-			}
-			if (json.id === 'Rosreestr') {
-				rosreestr_url = json.remote_url;
-				source.setTileUrlFunction(rosreetrUrlFunction);
-			}
-			return new TileLayer({
-				id: json.id,
-				descr: json.descr,
-				visible: json.visible,
-				zIndex: parseInt(json.order) || id,
-				icon: json.icon,
-				maxZoom: 24,
-				useLocalTiles: json.useLocalTiles,
-				local_path: json.local_path,
-				remote_url: json.remote_url,
-				source: source,
-			});
-		});
 }

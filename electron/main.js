@@ -8,9 +8,13 @@ import { registerDialogIpc } from './ipc/dialogHandlers.js';
 import { registerIliImportIpc } from './ipc/iliImportHandlers.js';
 import { registerIliCalcIpc } from './ipc/iliCalcHandlers.js';
 import { registerVirtMarkerIpc } from './ipc/virtMarkerHandlers.js';
+import { registerTileProtocol, registerTileSchemePrivileges } from './tiles/tileProtocol.js';
+
+registerTileSchemePrivileges();
 
 app.whenReady().then(async () => {
 	await ensureProjectResources();
+	registerTileProtocol();
 	createMainWindow();
 	registerFsIpc();
 	registerPathIpc();

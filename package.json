@@ -12,6 +12,7 @@
 		"build-react": "node esbuild.config.js",
 		"dev-react": "node esbuild.config.js --dev",
 		"dev-full": "npm run dev-react & npm run electron-dev",
+		"test:offline-tiles": "node --test src/store/rasterLayers.test.js src/features/rasterLayers/createRasterLayers.test.js electron/tiles/tilePathResolver.test.js electron/tiles/tileProtocolHandler.test.js",
 		"build:rpm": "npm run build-react && electron-builder --linux rpm",
 		"build:tar": "electron-builder --linux tar.gz",
 		"clean": "rm -rf dist"
@@ -76,6 +77,11 @@
 		"directories": {
 			"output": "dist"
 		},
+		"files": [
+			"**/*",
+			"!src/assets/resources/tiletrees",
+			"!src/assets/resources/tiletrees/**/*"
+		],
 		"linux": {
 			"target": [
 				"tar.gz"
@@ -96,6 +102,10 @@
 			{
 				"from": "src/assets/resources/Project",
 				"to": "resources/Project"
+			},
+			{
+				"from": "src/assets/resources/tiletrees",
+				"to": "resources/tiletrees"
 			},
 			{
 				"from": "src/assets/resources/images",
