@@ -194,7 +194,7 @@ export function useDraw({ map, setCurrentFeature }) {
 						disabled={acceptButtonDisabled}
 					>
 						<CheckOutlined style={{ color: 'black' }} />
-						Завершить
+						Сохранить
 					</ControlButton>
 				</Flex>
 			</Flex>
