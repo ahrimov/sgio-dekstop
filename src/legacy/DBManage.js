@@ -1,9 +1,22 @@
 import { Vector } from 'ol/source.js';
 import WKT from 'ol/format/WKT.js';
 import Feature from 'ol/Feature.js';
-import { transform } from 'ol/proj.js';
 
 let db;
+
+const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
+const VIRT_MARKER_WHERE_CLAUSE = 'anomaly_type_cl in (1004,1003)';
+const VIRT_MARKER_STYLE_CLAUSE =
+	"ANOMALY_TYPE_CL||CASE WHEN control_point_lf = 'Y' THEN '_LNK' ELSE '_NOTLNK' END";
+
+function applyRuntimeLayerRules(layer) {
+	if (layer.id !== VIRT_MARKER_LAYER_ID) return;
+
+	// Project XML is copied into the application data directory and may already be cached
+	// by a running renderer. Keep the critical visibility/style rule current on every reload.
+	layer.whereClause = VIRT_MARKER_WHERE_CLAUSE;
+	layer.styleClause = VIRT_MARKER_STYLE_CLAUSE;
+}
 
 /**
  * Returns the current database file path, or null if DB is not initialized.
@@ -158,6 +171,8 @@ export function getDataLayerFromBD(layer) {
 				progress
 			);
 		}
+
+		applyRuntimeLayerRules(layer);
 
 		const source = new Vector();
 		let selectTypeQuery = '';

@@ -128,8 +128,8 @@ export function registerVirtMarkerIpc() {
 
 	/**
 	 * IPC: ili-virt-marker-delete
-	 * Soft-deletes a virtual reper: sets control_point_lf='N', clears
-	 * calibrated_measure and certainty_interval.
+	 * Soft-deletes a virtual reper: sets control_point_lf='N', clears its
+	 * reference event, calibrated measure, and certainty interval.
 	 * Does NOT physically delete the row.
 	 *
 	 * @param {string} dbPath
@@ -143,18 +143,38 @@ export function registerVirtMarkerIpc() {
 		if (!db) {
 			throw new Error('Database not open. Please open the project first.');
 		}
+		const markerId = Number(params.id);
+		if (!Number.isFinite(markerId)) {
+			throw new Error('Invalid virtual reper ID');
+		}
 
 		const sqlQueriesDir = path.join(getAppDataPath(), 'Project', 'SqlQueries');
 
-		await dbCommand(
+		const result = await dbCommand(
 			db,
 			'UTE_SEM.xml#SGIO_VIRT_MARKER#delete',
 			'update',
-			{ ID: params.id },
+			{ ID: markerId },
 			sqlQueriesDir
 		);
+		if (result.changes !== 1) {
+			throw new Error(`Virtual reper ${markerId} was not found`);
+		}
 
-		console.log('[VirtMarker IPC] DELETE (soft) done');
+		const rows = await dbAll(
+			db,
+			`SELECT control_point_lf, ref_event_id FROM sgio_ili_data WHERE ili_data_id = ${markerId}`
+		);
+		const deletedReper = rows[0];
+		if (
+			!deletedReper ||
+			deletedReper.control_point_lf !== 'N' ||
+			deletedReper.ref_event_id != null
+		) {
+			throw new Error(`Virtual reper ${markerId} was not detached`);
+		}
+
+		console.log('[VirtMarker IPC] DELETE (soft) done:', deletedReper);
 		return { success: true };
 	});
 }
