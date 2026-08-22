@@ -6,12 +6,12 @@
 	</main>
 	<MapView>
 		<center>
-			<longitude>30.588604</longitude>
-			<latitude>59.890109</latitude>
+			<longitude>55.008020</longitude>
+			<latitude>57.852900</latitude>
 		</center>
 		<MinZoom>0</MinZoom>
 		<MaxZoom>25</MaxZoom>
-		<zoom>10</zoom>
+		<zoom>6</zoom>
 		<projection>0</projection>
 	</MapView>
 	<database>

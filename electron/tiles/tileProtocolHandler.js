@@ -7,14 +7,17 @@ const IMMUTABLE_CACHE_HEADERS = {
 	'Cache-Control': 'public, max-age=31536000, immutable',
 };
 
-export function createTileProtocolHandler(resourcesPath) {
-	const emptyTilePromise = readFile(getEmptyTilePath(resourcesPath));
+export function createTileProtocolHandler(
+	tileResourcesPath,
+	fallbackResourcesPath = tileResourcesPath
+) {
+	const emptyTilePromise = readFile(getEmptyTilePath(fallbackResourcesPath));
 
 	return async request => {
 		let tile;
 
 		try {
-			tile = resolveTilePath(resourcesPath, request.url);
+			tile = resolveTilePath(tileResourcesPath, request.url);
 		} catch (error) {
 			const status = error instanceof TilePathError ? error.status : 400;
 			return new Response(error.message, {

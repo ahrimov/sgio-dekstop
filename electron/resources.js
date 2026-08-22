@@ -6,6 +6,8 @@ export async function ensureProjectResources() {
 	const appProjectPath = path.join(getAppDataPath(), 'Project');
 	const sourceProjectPath = path.join(getResourcesPath(), 'Project');
 	const infoFile = path.join(appProjectPath, '.resourceinfo');
+	const appTiletreesPath = path.join(appProjectPath, 'tiletrees');
+	const sourceTiletreesPath = path.join(getResourcesPath(), 'tiletrees');
 
 	if (!fs.existsSync(sourceProjectPath)) {
 		console.log('Source project resources not found:', sourceProjectPath);
@@ -28,7 +30,7 @@ export async function ensureProjectResources() {
 				savedInfo.latestModTime < sourceInfo.latestModTime ||
 				savedInfo.fileCount !== sourceInfo.fileCount;
 			console.log(savedInfo);
-		} catch (e) {
+		} catch {
 			needCopy = true;
 		}
 	}
@@ -37,7 +39,7 @@ export async function ensureProjectResources() {
 		console.log('Project resources need update');
 
 		if (fs.existsSync(appProjectPath)) {
-			fs.rmSync(appProjectPath, { recursive: true, force: true });
+			clearDirectoryExcept(appProjectPath, new Set(['tiletrees']));
 		}
 
 		await copyRecursiveAsync(sourceProjectPath, appProjectPath);
@@ -48,6 +50,51 @@ export async function ensureProjectResources() {
 		);
 	} else {
 		console.log('Project resources are up to date');
+	}
+
+	await ensureTileResources(sourceTiletreesPath, appTiletreesPath);
+}
+
+async function ensureTileResources(sourcePath, targetPath) {
+	if (!fs.existsSync(sourcePath)) {
+		console.log('Source tile resources not found:', sourcePath);
+		return;
+	}
+
+	const infoFile = path.join(targetPath, '.resourceinfo');
+	const sourceInfo = getResourceInfo(sourcePath);
+	let savedInfo = null;
+
+	if (fs.existsSync(infoFile)) {
+		try {
+			savedInfo = JSON.parse(fs.readFileSync(infoFile, 'utf8'));
+		} catch {
+			// A missing or damaged marker triggers a safe merge from bundled tiles.
+		}
+	}
+
+	if (
+		savedInfo?.latestModTime === sourceInfo.latestModTime &&
+		savedInfo?.fileCount === sourceInfo.fileCount &&
+		savedInfo?.totalSize === sourceInfo.totalSize
+	) {
+		console.log('Tile resources are up to date');
+		return;
+	}
+
+	console.log('Tile resources need update');
+	await copyRecursiveAsync(sourcePath, targetPath);
+	fs.writeFileSync(infoFile, JSON.stringify(sourceInfo, null, 2), 'utf8');
+	console.log(
+		`Tile resources updated. Files: ${sourceInfo.fileCount}, Size: ${(sourceInfo.totalSize / 1024 / 1024).toFixed(2)} MB`
+	);
+}
+
+function clearDirectoryExcept(dirPath, preservedNames) {
+	for (const name of fs.readdirSync(dirPath)) {
+		if (!preservedNames.has(name)) {
+			fs.rmSync(path.join(dirPath, name), { recursive: true, force: true });
+		}
 	}
 }
 

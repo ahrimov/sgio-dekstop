@@ -79,6 +79,8 @@
 		},
 		"files": [
 			"**/*",
+			"!src/assets/resources/Project/db/default.db",
+			"!src/assets/resources/Project/db/default_prod.db",
 			"!src/assets/resources/tiletrees",
 			"!src/assets/resources/tiletrees/**/*"
 		],
@@ -101,7 +103,15 @@
 		"extraResources": [
 			{
 				"from": "src/assets/resources/Project",
-				"to": "resources/Project"
+				"to": "resources/Project",
+				"filter": [
+					"**/*",
+					"!db/*.db"
+				]
+			},
+			{
+				"from": "src/assets/resources/Project/db/default_prod.db",
+				"to": "resources/Project/db/default.db"
 			},
 			{
 				"from": "src/assets/resources/tiletrees",

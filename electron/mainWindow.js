@@ -30,6 +30,7 @@ export function createMainWindow() {
 			nodeIntegration: true,
 			contextIsolation: true,
 			enableRemoteModule: true,
+			devTools: isDev,
 			webSecurity: false,
 			allowRunningInsecureContent: true,
 			preload: path.join(__dirname, 'preload.js'),
@@ -53,23 +54,29 @@ export function createMainWindow() {
 					{ label: 'Копировать', role: 'copy' },
 					...(params.isEditable ? [{ label: 'Вставить', role: 'paste' }] : []),
 				]
-			: [
-					{
-						label: 'Inspect Element',
-						click: () => {
-							mainWindow.webContents.inspectElement(params.x, params.y);
-							mainWindow.webContents.openDevTools();
+			: isDev
+				? [
+						{
+							label: 'Inspect Element',
+							click: () => {
+								mainWindow.webContents.inspectElement(params.x, params.y);
+								mainWindow.webContents.openDevTools();
+							},
 						},
-					},
-					{
-						label: 'Open DevTools',
-						click: () => mainWindow.webContents.openDevTools(),
-					},
-					{
-						label: 'Reload',
-						click: () => mainWindow.webContents.reload(),
-					},
-				];
+						{
+							label: 'Open DevTools',
+							click: () => mainWindow.webContents.openDevTools(),
+						},
+						{
+							label: 'Reload',
+							click: () => mainWindow.webContents.reload(),
+						},
+					]
+				: [];
+
+		if (template.length === 0) {
+			return;
+		}
 
 		const menu = Menu.buildFromTemplate(template);
 		menu.popup({ window: mainWindow });

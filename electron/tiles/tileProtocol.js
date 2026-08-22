@@ -1,6 +1,7 @@
 import { protocol } from 'electron';
+import path from 'path';
 
-import { getResourcesPath } from '../ipc/pathHandlers.js';
+import { getAppDataPath, getResourcesPath } from '../ipc/pathHandlers.js';
 import { TILE_SCHEME } from './tilePathResolver.js';
 import { createTileProtocolHandler } from './tileProtocolHandler.js';
 
@@ -18,7 +19,12 @@ export function registerTileSchemePrivileges() {
 	]);
 }
 
-export function registerTileProtocol() {
-	const resourcesPath = getResourcesPath();
-	protocol.handle(TILE_SCHEME, createTileProtocolHandler(resourcesPath));
+export function registerTileProtocol(
+	tileResourcesPath = path.join(getAppDataPath(), 'Project'),
+	fallbackResourcesPath = getResourcesPath()
+) {
+	protocol.handle(
+		TILE_SCHEME,
+		createTileProtocolHandler(tileResourcesPath, fallbackResourcesPath)
+	);
 }
