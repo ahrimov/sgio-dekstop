@@ -3,7 +3,7 @@ import { LoadingProvider, useLoading } from './components/LoadingScreen/LoadingC
 import { LoadingScreen } from './components/LoadingScreen/LoadingScreen.jsx';
 import { setProgressCallbacks, setConfigUpdateCallback } from './legacy/XMLParser.js';
 import { setDBProgressCallbacks, loadAllLayers } from './legacy/DBManage.js';
-import { ConfigProvider, Modal, Dropdown } from 'antd';
+import { ConfigProvider, Modal } from 'antd';
 import { ConfigProvider as AppConfigProvider, useConfig } from './context/ConfigContext.jsx';
 import { MessageProvider } from './context/MessageContext.jsx';
 import MapComponent from './components/Map/MapComponent.js';
@@ -22,7 +22,6 @@ import { $numberOfLayers } from './store/numberOfLayers.js';
 import { $infoFeature, showInfo } from './store/featuredInfoEvent.js';
 import { Taskbar } from './components/WindowControls/taskbar.jsx';
 import { InfoModal } from './components/InfoModal/InfoModal.jsx';
-import { openInfoModal } from './components/InfoModal/store.js';
 import { AttributeComparisonDialog } from './components/KMLImport/AttributeComparisonDialog.jsx';
 import {
 	$kmlImportDialogData,
@@ -45,10 +44,8 @@ import {
 } from './components/EditGeometryPanel/store.js';
 import { ILIImportDialog } from './components/ILIImport/ILIImportDialog.jsx';
 import { ILIImportProgress } from './components/ILIImport/ILIImportProgress.jsx';
-import { openIliImportDialog } from './store/iliImport.js';
 import { ILIReverseDialog } from './components/ILIReverse/ILIReverseDialog.jsx';
 import { ILIReverseProgress } from './components/ILIReverse/ILIReverseProgress.jsx';
-import { openIliReverseDialog } from './store/iliReverse.js';
 import { VirtMarkerRecalcProgress } from './components/VirtMarker/VirtMarkerRecalcProgress.jsx';
 import { getDbPath } from './legacy/DBManage.js';
 
@@ -151,24 +148,6 @@ const AppContent = () => {
 		await importKML(layerId, dict, features, loadingCallbacks);
 	};
 
-	const menuItems = [
-		{
-			key: 'ili-import',
-			label: 'Импорт отчетов XML',
-			onClick: openIliImportDialog,
-		},
-		{
-			key: 'ili-reverse',
-			label: 'Разворот отчета ВТД',
-			onClick: openIliReverseDialog,
-		},
-		{
-			key: 'about',
-			label: 'О приложении',
-			onClick: openInfoModal,
-		},
-	];
-
 	return (
 		<ConfigProvider
 			locale={ruRU}
@@ -243,19 +222,6 @@ const AppContent = () => {
 					{isEditGeometryPanelVisible && (
 						<EditGeometryPanel handleCloseButton={closeEditGeometryPanel} />
 					)}
-
-					<Dropdown menu={{ items: menuItems }} trigger={['click']} placement="topRight">
-						<Button
-							type="text"
-							icon={<MenuOutlined />}
-							style={{
-								position: 'fixed',
-								bottom: 40,
-								right: 8,
-								zIndex: 1000,
-							}}
-						/>
-					</Dropdown>
 
 					<Taskbar />
 					<InfoModal />

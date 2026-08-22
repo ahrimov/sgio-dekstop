@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, ipcMain, app } from 'electron';
+import { BrowserWindow, Menu, app } from 'electron';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -40,55 +40,40 @@ export function createMainWindow() {
 	if (isDev) {
 		mainWindow.loadFile('public/dist/dev/index.html');
 		mainWindow.webContents.on('did-finish-load', () => mainWindow.webContents.openDevTools());
-
-		ipcMain.on('show-context-menu', (event, data) => {
-			const template = [
-				{
-					label: 'Inspect Element',
-					click: () => {
-						mainWindow.webContents.inspectElement(data.x, data.y);
-						mainWindow.webContents.openDevTools();
-					},
-				},
-				{
-					label: 'Open DevTools',
-					click: () => mainWindow.webContents.openDevTools(),
-				},
-				{
-					label: 'Reload',
-					click: () => mainWindow.webContents.reload(),
-				},
-			];
-
-			const menu = Menu.buildFromTemplate(template);
-			menu.popup({ window: mainWindow });
-		});
 	} else {
 		mainWindow.loadFile('public/dist/prod/index.html');
-
-		ipcMain.on('show-context-menu', (event, data) => {
-			const template = [
-				{
-					label: 'Inspect Element',
-					click: () => {
-						mainWindow.webContents.inspectElement(data.x, data.y);
-						mainWindow.webContents.openDevTools();
-					},
-				},
-				{
-					label: 'Open DevTools',
-					click: () => mainWindow.webContents.openDevTools(),
-				},
-				{
-					label: 'Reload',
-					click: () => mainWindow.webContents.reload(),
-				},
-			];
-
-			const menu = Menu.buildFromTemplate(template);
-			menu.popup({ window: mainWindow });
-		});
 	}
+
+	mainWindow.webContents.on('context-menu', (_event, params) => {
+		const isTextField =
+			params.isEditable || Boolean(params.inputFieldType && params.inputFieldType !== 'none');
+		const template = isTextField
+			? [
+					...(params.isEditable ? [{ label: 'Вырезать', role: 'cut' }] : []),
+					{ label: 'Копировать', role: 'copy' },
+					...(params.isEditable ? [{ label: 'Вставить', role: 'paste' }] : []),
+				]
+			: [
+					{
+						label: 'Inspect Element',
+						click: () => {
+							mainWindow.webContents.inspectElement(params.x, params.y);
+							mainWindow.webContents.openDevTools();
+						},
+					},
+					{
+						label: 'Open DevTools',
+						click: () => mainWindow.webContents.openDevTools(),
+					},
+					{
+						label: 'Reload',
+						click: () => mainWindow.webContents.reload(),
+					},
+				];
+
+		const menu = Menu.buildFromTemplate(template);
+		menu.popup({ window: mainWindow });
+	});
 
 	Menu.setApplicationMenu(null);
 }
