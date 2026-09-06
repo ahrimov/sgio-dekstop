@@ -161,9 +161,11 @@ export function registerVirtMarkerIpc() {
 			throw new Error(`Virtual reper ${markerId} was not found`);
 		}
 
+		// Explicit aliases keep result keys stable for databases with uppercase column names.
 		const rows = await dbAll(
 			db,
-			`SELECT control_point_lf, ref_event_id FROM sgio_ili_data WHERE ili_data_id = ${markerId}`
+			`SELECT control_point_lf AS control_point_lf, ref_event_id AS ref_event_id
+			 FROM sgio_ili_data WHERE ili_data_id = ${markerId}`
 		);
 		const deletedReper = rows[0];
 		if (
