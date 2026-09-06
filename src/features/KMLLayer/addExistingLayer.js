@@ -1,3 +1,4 @@
+import { prepareKMLFeatures, getKMLAttributes } from './kmlDocument.js';
 import KML from 'ol/format/KML';
 import { layers, map } from '../../legacy/globals';
 import { pathToTempKMlStorage, root_directory } from '../../legacy/initial';
@@ -43,34 +44,11 @@ export async function addExistingKMLLayers(updateCounter, updateProgress) {
 						descrLayerId = schemaId;
 					}
 
-					const layerAtribs = [];
-
-					const schemaElements = xmlDoc.getElementsByTagName('Schema');
-
-					if (schemaElements.length > 0) {
-						const simpleFields = schemaElements[0].getElementsByTagName('SimpleField');
-						for (let i = 0; i < simpleFields.length; i++) {
-							const name = simpleFields[i].getAttribute('name');
-							if (name) {
-								layerAtribs.push({
-									name,
-									label: name,
-									visible: true,
-									type: 'STRING',
-								});
-							}
-						}
-					}
-
 					const regex = new RegExp(`^${descrLayerId}(_\\d)?`);
 					const similarLayers = layers.filter(layer => regex.test(layer.label));
 					if (similarLayers?.length) descrLayerId += '_' + similarLayers.length;
 
-					features.forEach(feature => {
-						feature.id = feature.get('ID');
-						feature.layerID = innerLayerId;
-						feature.type = 'default';
-					});
+					prepareKMLFeatures(features, innerLayerId, xmlDoc);
 					const newLayer = new VectorLayer({
 						id: innerLayerId,
 						descr: descrLayerId,
@@ -89,8 +67,8 @@ export async function addExistingKMLLayers(updateCounter, updateProgress) {
 						geometryType = geometryTypeField.getAttribute('actualType');
 					}
 
-					if (!geometryType && features[0].getGeometry()) {
-						geometryType = features[0].getGeometry().getType();
+					if (!geometryType && features[0]?.getGeometry()) {
+						geometryType = features[0]?.getGeometry().getType();
 					}
 
 					newLayer.geometryType = geometryType;
@@ -100,7 +78,7 @@ export async function addExistingKMLLayers(updateCounter, updateProgress) {
 					newLayer.set('fileUri', pathToTempKMlStorage + '/' + innerLayerId);
 					newLayer.visible = true;
 					newLayer.set('kmlType', true);
-					newLayer.atribs = layerAtribs;
+					newLayer.atribs = getKMLAttributes(features, xmlDoc);
 					newLayer.enabled = true;
 
 					layers.push(newLayer);

@@ -22,10 +22,17 @@ export async function updateFeatureAttributes(
 			feature.set(key, value);
 		});
 
+		if (layer.get('kmlType')) {
+			await syncChangesWithKML(layer.id);
+			refreshFeatureTable();
+			if (onSuccess) onSuccess(feature);
+			return;
+		}
+
 		const properties = feature.getProperties();
 
 		const filteredProps = Object.entries(properties)
-			.filter(([key, value]) => key !== 'geometry')
+			.filter(([key]) => key !== 'geometry')
 			.reduce((obj, [key, value]) => {
 				if (value !== undefined && value !== null && value !== '') {
 					obj[key] = value;
@@ -54,18 +61,12 @@ export async function updateFeatureAttributes(
 		}
 
 		const pk = layer.primaryKey || 'id';
-		const kmlType = layer.get('kmlType');
-		if (kmlType) {
-			feature.changed();
-			await syncChangesWithKML(layer.id);
-		} else {
-			const query = `
+		const query = `
 			UPDATE ${layer.table}
 			SET ${setClauses}${geometryUpdate}
 			WHERE ${pk} = ${featureId};
 		`;
-			await requestToDBPromise(query);
-		}
+		await requestToDBPromise(query);
 
 		feature.id = featureId;
 		feature.layerID = layer.id;

@@ -1,3 +1,4 @@
+import { prepareKMLFeatures, getKMLAttributes } from './kmlDocument.js';
 import { addLayerToList, layers, map } from '../../legacy/globals';
 import KML from 'ol/format/KML.js';
 import VectorLayer from 'ol/layer/Vector.js';
@@ -13,172 +14,150 @@ import { showAlert } from '../../store/modalDialog';
 export async function addNewLayer(fullPath) {
 	if (!fullPath) return;
 	try {
-	await showAlert(
-		'Внимание',
-		'Если Вы будете вносить изменения в добавляемый слой, то, для получения измененного файла, необходимо использовать функцию "Экспорт kml".',
-	);
-	let text = await electronAPI.readFile(fullPath);
-	const mapProjection = map.getView().getProjection().getCode();
-	const format = new KML();
-	const features = format.readFeatures(text, {
-		dataProjection: 'EPSG:4326',
-		featureProjection: mapProjection,
-	});
-	if (!features || !features.length) {
-		showAlert('Ошибка', 'Не найдено объектов в файле.');
-		return;
-	}
-
-	if (!features[0].get('ID')) {
-		text = addMissingIdsToKml(text, features);
-	}
-
-	const fileName = fullPath.split('/').pop();
-	const fileNameNoExt = fileName.replace(/\.kml$/i, '');
-
-	let descrLayerId = '';
-	let schemaName = '';
-	const parser = new DOMParser();
-	const xmlDoc = parser.parseFromString(text, 'application/xml');
-
-	const schemaElement = xmlDoc.querySelector('kml > Document > Schema');
-	if (schemaElement) {
-		schemaName = schemaElement.getAttribute('name');
-		if (schemaName) descrLayerId += `${schemaName}`;
-		else descrLayerId = fileNameNoExt;
-		schemaElement.setAttribute('name', descrLayerId);
-		const serializer = new XMLSerializer();
-		text = serializer.serializeToString(xmlDoc);
-	} else {
-		descrLayerId = fileNameNoExt;
-	}
-
-	const date = new Date();
-	const innerLayerId = descrLayerId + formatDate(date) + '.kml';
-
-	const regex = new RegExp(`^${descrLayerId}(_\\d)?`);
-	const similarLayers = layers.filter(layer => regex.test(layer.label));
-	if (similarLayers?.length) descrLayerId += '_' + similarLayers.length;
-
-	let innerFeatureId = 1;
-	features.forEach(feature => {
-		if (feature.get('ID')) {
-			feature.id = feature.get('ID');
-		} else {
-			const id = innerFeatureId;
-			feature.set('ID', id);
-			feature.id = id;
-			innerFeatureId += 1;
-		}
-		feature.layerID = innerLayerId;
-		feature.type = 'default';
-	});
-	const newLayer = new VectorLayer({
-		id: innerLayerId,
-		descr: descrLayerId,
-		source: new VectorSource({ features }),
-		zIndex: minZIndexForVectorLayers,
-	});
-
-	const pathToTempKMlStorage = app_device_directory + '/' + tempKMLDir;
-	console.log('pathToTempKMlStorage: ', pathToTempKMlStorage);
-	const exist = await electronAPI.exists(pathToTempKMlStorage);
-	if (!exist) {
-		await electronAPI.mkdir(pathToTempKMlStorage);
-	}
-
-	newLayer.id = innerLayerId;
-	newLayer.label = descrLayerId;
-	const firstGeometry = features[0].getGeometry();
-	if (!firstGeometry) {
-		showAlert('Ошибка', 'Не удалось определить тип геометрии первого объекта в файле.');
-		return;
-	}
-	const geometryType = firstGeometry.getType();
-	newLayer.geometryType = geometryType;
-	for (let i = 0; i < features.length; i++) {
-		if (features[i]?.getGeometry()?.getType() !== geometryType) {
-			const topology = convertGeomtetryTypeName(geometryType);
-			showAlert(
-				'Внимание',
-				`В загружаемых данных имеются объекты различных типов геометрии (топологии). Для объектов ${topology} топологии стиль будет предложено изменить вручную. Для остальных топологий будут использованы автоматически созданные стили.`
-			);
-			break;
-		}
-	}
-	newLayer.visible = true;
-	newLayer.set('kmlType', true);
-	newLayer.set('fileUri', pathToTempKMlStorage + '/' + innerLayerId);
-	let style = new Style({
-		stroke: new Stroke({
-			color: '#fa2375',
-			width: 3,
-		}),
-	});
-
-	switch (geometryType) {
-		case 'Point':
-			style = new Style({
-				image: new Circle({
-					fill: new Fill({ color: generateColor() }),
-					radius: 3,
-				}),
-			});
-			break;
-		case 'LineString':
-			style = new Style({
-				stroke: new Stroke({
-					color: generateColor(),
-					width: 2,
-				}),
-			});
-			break;
-		case 'Polygon':
-			style = new Style({
-				fill: new Fill({
-					color: generateColor(),
-				}),
-				stroke: new Stroke({
-					color: 'rgb(0,0,0)',
-					width: 1,
-				}),
-			});
-			break;
-	}
-
-	newLayer.setStyle(style);
-	features.forEach(feature => {
-		feature.setStyle(style);
-	});
-	const firstFeature = features[0];
-	const layerKeys = firstFeature.getKeys();
-	const layerAtribs = layerKeys
-		.filter(key => key !== 'geometry' && key !== 'styleUrl' && key !== 'name' && key !== 'description')
-		.map(key => {
-			return { name: key, label: key, visible: true, type: 'STRING' };
+		await showAlert(
+			'Внимание',
+			'Если Вы будете вносить изменения в добавляемый слой, то, для получения измененного файла, необходимо использовать функцию "Экспорт kml".'
+		);
+		let text = await electronAPI.readFile(fullPath);
+		const mapProjection = map.getView().getProjection().getCode();
+		const format = new KML();
+		const features = format.readFeatures(text, {
+			dataProjection: 'EPSG:4326',
+			featureProjection: mapProjection,
 		});
-	newLayer.atribs = layerAtribs;
-	newLayer.enabled = true;
+		if (!features || !features.length) {
+			showAlert('Ошибка', 'Не найдено объектов в файле.');
+			return;
+		}
 
-	const path = pathToTempKMlStorage + '/';
-	const kmlFileName = innerLayerId;
-	const text_ = text;
-	saveFile(
-		path,
-		kmlFileName,
-		text_,
-		() => {
-			addLayerToMap(newLayer);
-			addLayerToList(newLayer);
-			addKMLLayerFileToConfig(innerLayerId);
-			showAlert('Слой добавлен', `Слой «${descrLayerId}» успешно добавлен на карту.`);
-		},
-		onError
-	);
+		const fileName = fullPath.split('/').pop();
+		const fileNameNoExt = fileName.replace(/\.kml$/i, '');
 
-	function onError() {
-		showAlert('Ошибка', 'Не удалось сохранить файл слоя. Слой не добавлен.');
-	}
+		let descrLayerId = '';
+		let schemaName = '';
+		const parser = new DOMParser();
+		const xmlDoc = parser.parseFromString(text, 'application/xml');
+
+		const schemaElement = xmlDoc.querySelector('kml > Document > Schema');
+		if (schemaElement) {
+			schemaName = schemaElement.getAttribute('name');
+			if (schemaName) descrLayerId += `${schemaName}`;
+			else descrLayerId = fileNameNoExt;
+			schemaElement.setAttribute('name', descrLayerId);
+			const serializer = new XMLSerializer();
+			text = serializer.serializeToString(xmlDoc);
+		} else {
+			descrLayerId = fileNameNoExt;
+		}
+
+		const date = new Date();
+		const innerLayerId = descrLayerId + formatDate(date) + '.kml';
+
+		const regex = new RegExp(`^${descrLayerId}(_\\d)?`);
+		const similarLayers = layers.filter(layer => regex.test(layer.label));
+		if (similarLayers?.length) descrLayerId += '_' + similarLayers.length;
+
+		prepareKMLFeatures(features, innerLayerId, xmlDoc);
+		text = new XMLSerializer().serializeToString(xmlDoc);
+		const newLayer = new VectorLayer({
+			id: innerLayerId,
+			descr: descrLayerId,
+			source: new VectorSource({ features }),
+			zIndex: minZIndexForVectorLayers,
+		});
+
+		const pathToTempKMlStorage = app_device_directory + '/' + tempKMLDir;
+		console.log('pathToTempKMlStorage: ', pathToTempKMlStorage);
+		const exist = await electronAPI.exists(pathToTempKMlStorage);
+		if (!exist) {
+			await electronAPI.mkdir(pathToTempKMlStorage);
+		}
+
+		newLayer.id = innerLayerId;
+		newLayer.label = descrLayerId;
+		const firstGeometry = features[0].getGeometry();
+		if (!firstGeometry) {
+			showAlert('Ошибка', 'Не удалось определить тип геометрии первого объекта в файле.');
+			return;
+		}
+		const geometryType = firstGeometry.getType();
+		newLayer.geometryType = geometryType;
+		for (let i = 0; i < features.length; i++) {
+			if (features[i]?.getGeometry()?.getType() !== geometryType) {
+				const topology = convertGeomtetryTypeName(geometryType);
+				showAlert(
+					'Внимание',
+					`В загружаемых данных имеются объекты различных типов геометрии (топологии). Для объектов ${topology} топологии стиль будет предложено изменить вручную. Для остальных топологий будут использованы автоматически созданные стили.`
+				);
+				break;
+			}
+		}
+		newLayer.visible = true;
+		newLayer.set('kmlType', true);
+		newLayer.set('fileUri', pathToTempKMlStorage + '/' + innerLayerId);
+		let style = new Style({
+			stroke: new Stroke({
+				color: '#fa2375',
+				width: 3,
+			}),
+		});
+
+		switch (geometryType) {
+			case 'Point':
+				style = new Style({
+					image: new Circle({
+						fill: new Fill({ color: generateColor() }),
+						radius: 3,
+					}),
+				});
+				break;
+			case 'LineString':
+				style = new Style({
+					stroke: new Stroke({
+						color: generateColor(),
+						width: 2,
+					}),
+				});
+				break;
+			case 'Polygon':
+				style = new Style({
+					fill: new Fill({
+						color: generateColor(),
+					}),
+					stroke: new Stroke({
+						color: 'rgb(0,0,0)',
+						width: 1,
+					}),
+				});
+				break;
+		}
+
+		newLayer.setStyle(style);
+		features.forEach(feature => {
+			feature.setStyle(style);
+		});
+		newLayer.atribs = getKMLAttributes(features, xmlDoc);
+		newLayer.enabled = true;
+
+		const path = pathToTempKMlStorage + '/';
+		const kmlFileName = innerLayerId;
+		const text_ = text;
+		saveFile(
+			path,
+			kmlFileName,
+			text_,
+			() => {
+				addLayerToMap(newLayer);
+				addLayerToList(newLayer);
+				addKMLLayerFileToConfig(innerLayerId);
+				showAlert('Слой добавлен', `Слой «${descrLayerId}» успешно добавлен на карту.`);
+			},
+			onError
+		);
+
+		function onError() {
+			showAlert('Ошибка', 'Не удалось сохранить файл слоя. Слой не добавлен.');
+		}
 	} catch (e) {
 		console.error('addNewLayer error:', e);
 		showAlert('Ошибка', 'Не удалось добавить слой: ' + (e?.message || String(e)));
@@ -218,60 +197,6 @@ async function addKMLLayerFileToConfig(kmlFile) {
 	} catch (error) {
 		console.error('Ошибка при добавлении файла в конфигурационный файл:', error);
 	}
-}
-
-function addMissingIdsToKml(kmlContent, features) {
-	const parser = new DOMParser();
-	const xmlDoc = parser.parseFromString(kmlContent, 'application/xml');
-
-	let schema = xmlDoc.querySelector('Schema');
-	if (!schema) {
-		const document = xmlDoc.querySelector('Document') || xmlDoc.documentElement;
-		if (!document) return kmlContent;
-		schema = xmlDoc.createElement('Schema');
-		schema.setAttribute('name', 'DefaultSchema');
-		schema.setAttribute('id', 'DefaultSchema');
-		document.insertBefore(schema, document.firstChild);
-	}
-
-	let idField = Array.from(schema.querySelectorAll('SimpleField')).find(
-		field => field.getAttribute('name') === 'ID'
-	);
-
-	if (!idField) {
-		idField = xmlDoc.createElement('SimpleField');
-		idField.setAttribute('name', 'ID');
-		idField.setAttribute('type', 'string');
-		schema.appendChild(idField);
-	}
-
-	const placemarks = xmlDoc.querySelectorAll('Placemark');
-
-	placemarks.forEach((placemark, index) => {
-		const schemaData = placemark.querySelector('SchemaData');
-		if (!schemaData) return;
-
-		const idData = placemark.querySelector('SimpleData[name="ID"]');
-		if (idData) {
-			return;
-		}
-
-		const newId = `${index}`;
-		if (features[index]) {
-			features[index].set('ID', newId);
-		}
-
-		const newIdData = xmlDoc.createElement('SimpleData');
-		newIdData.setAttribute('name', 'ID');
-		newIdData.textContent = newId;
-
-		schemaData.appendChild(newIdData);
-	});
-
-	const serializer = new XMLSerializer();
-	const updatedKml = serializer.serializeToString(xmlDoc);
-
-	return updatedKml;
 }
 
 export function getFileNameFromUri(uri) {

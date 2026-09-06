@@ -29,7 +29,6 @@ export async function addNewFeature(layer, feature) {
 		}, {});
 	const atribNames = Object.keys(filteredProps);
 	const atribValues = Object.values(filteredProps).map(toSqlValue);
-	const feautureString = writeFeatureInKML(feature);
 	feature.isNew = true;
 
 	try {
@@ -37,6 +36,7 @@ export async function addNewFeature(layer, feature) {
 		if (kmlType) {
 			await syncChangesWithKML(layer.id);
 		} else {
+			const feautureString = writeFeatureInKML(feature);
 			const query = `
 			              INSERT INTO ${layer.table} (${atribNames.join(', ')}, Geometry)
 			              VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
@@ -45,7 +45,7 @@ export async function addNewFeature(layer, feature) {
 			await requestToDBPromise(query);
 		}
 
-		feature.id = feature.get('id');
+		feature.id = layer.get('kmlType') ? feature.get('ID') : feature.get('id');
 		feature.layerID = layer.id;
 
 		feature.type = filteredProps[layer.styleTypeColumn] ?? 'default';
