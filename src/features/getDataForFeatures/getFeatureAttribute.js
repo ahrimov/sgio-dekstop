@@ -1,6 +1,4 @@
 import { requestToDBPromise } from '../../legacy/DBManage';
-
-
 function roundNumericValue(value, atrib) {
 	if (
 		window.showAllPrecision ||
@@ -37,19 +35,8 @@ export async function getFeatureAttributes(layer, featureId) {
 
 	const featureData = result.rows.item(0);
 
+	// Keep ENUM codes for editing and saving; the form displays their option labels.
 	layer.atribs.forEach(atrib => {
-		if (atrib.type === 'ENUM' && atrib.options) {
-			let value = featureData[atrib.name];
-
-			if (Array.isArray(atrib.options)) {
-				const found = atrib.options.find(opt => opt.value == value);
-				if (found) featureData[atrib.name] = found.label;
-			} else if (typeof atrib.options === 'object') {
-				if (Object.prototype.hasOwnProperty.call(atrib.options, value)) {
-					featureData[atrib.name] = atrib.options[value];
-				}
-			}
-		}
 		featureData[atrib.name] = roundNumericValue(featureData[atrib.name], atrib);
 	});
 
