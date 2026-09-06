@@ -2,7 +2,8 @@ import { protocol } from 'electron';
 import path from 'path';
 
 import { getAppDataPath, getResourcesPath } from '../ipc/pathHandlers.js';
-import { TILE_SCHEME } from './tilePathResolver.js';
+import { readRasterConfig } from './rasterConfig.js';
+import { TILE_SCHEME, createTileRules } from './tilePathResolver.js';
 import { createTileProtocolHandler } from './tileProtocolHandler.js';
 
 export function registerTileSchemePrivileges() {
@@ -25,6 +26,10 @@ export function registerTileProtocol(
 ) {
 	protocol.handle(
 		TILE_SCHEME,
-		createTileProtocolHandler(tileResourcesPath, fallbackResourcesPath)
+		createTileProtocolHandler(
+			tileResourcesPath,
+			fallbackResourcesPath,
+			createTileRules(readRasterConfig(tileResourcesPath))
+		)
 	);
 }

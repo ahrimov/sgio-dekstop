@@ -2,14 +2,15 @@ import { readFile } from 'fs/promises';
 
 import { getEmptyTilePath, resolveTilePath, TilePathError } from './tilePathResolver.js';
 
-const IMMUTABLE_CACHE_HEADERS = {
+const TILE_HEADERS = {
 	'Access-Control-Allow-Origin': '*',
-	'Cache-Control': 'public, max-age=31536000, immutable',
+	'Cache-Control': 'no-store',
 };
 
 export function createTileProtocolHandler(
 	tileResourcesPath,
-	fallbackResourcesPath = tileResourcesPath
+	fallbackResourcesPath = tileResourcesPath,
+	tileRules
 ) {
 	const emptyTilePromise = readFile(getEmptyTilePath(fallbackResourcesPath));
 
@@ -17,7 +18,7 @@ export function createTileProtocolHandler(
 		let tile;
 
 		try {
-			tile = resolveTilePath(tileResourcesPath, request.url);
+			tile = resolveTilePath(tileResourcesPath, request.url, tileRules);
 		} catch (error) {
 			const status = error instanceof TilePathError ? error.status : 400;
 			return new Response(error.message, {
@@ -48,7 +49,7 @@ function createImageResponse(data, contentType) {
 	return new Response(data, {
 		status: 200,
 		headers: {
-			...IMMUTABLE_CACHE_HEADERS,
+			...TILE_HEADERS,
 			'Content-Type': contentType,
 		},
 	});

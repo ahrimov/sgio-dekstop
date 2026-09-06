@@ -132,7 +132,6 @@
 	backdrop-filter: blur(10px);
 	color: rgb(76, 147, 194);
 	opacity: 0.9;
-	
 }
 
 .app-menu-dropdown .ant-dropdown-menu-title-content {
@@ -153,4 +152,32 @@
 	top: 21px;
 	right: 6px;
 	z-index: 1000;
+}
+
+.map-network-status {
+	position: absolute;
+	bottom: 9px;
+	left: 50px;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 1px 6px;
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.9);
+	color: #005e9a;
+	font-size: 12px;
+	line-height: 18px;
+	pointer-events: none;
+}
+
+.map-network-status-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #8c8c8c;
+}
+
+.map-network-status-dot.online {
+	background: #389e0d;
 }

@@ -30,6 +30,9 @@
 		<RasterLayers>
 			<!-- Режим растровых слоёв: offline или online. Применяется после перезапуска. -->
 			<RasterMode>offline</RasterMode>
+			<!-- Лимит общего размера PNG/JPG в tiletrees, ГиБ (1024³ байт).
+			     При достижении запись прекращается до перезапуска; файлы не удаляются. -->
+			<OnlineTileCacheLimitGb>10</OnlineTileCacheLimitGb>
 			<!-- Локальные и сетевые источники задаются для каждого слоя в JSON -->
 			<!-- Путь к JSON-файлу с описанием базовых растровых слоёв и оверлеев -->
 			<PathToBaseRasterLayers>rasterLayers.json</PathToBaseRasterLayers>

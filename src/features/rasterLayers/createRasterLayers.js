@@ -1,6 +1,8 @@
 import TileLayer from 'ol/layer/Tile.js';
 import { get as getProjection } from 'ol/proj.js';
 import XYZ from 'ol/source/XYZ.js';
+import TileState from 'ol/TileState.js';
+import { warnTileCacheLimit } from './tileCacheWarning.js';
 
 const LOCAL_TILE_ORIGIN = 'sgio-tile://tiles';
 const SUPPORTED_PROJECTIONS = new Set(['EPSG:3857', 'EPSG:3395']);
@@ -25,11 +27,11 @@ export function createRasterLayers(configs, options = {}) {
 
 	return [...configs]
 		.sort((left, right) => right.order - left.order)
-		.filter(config => mode === 'offline' || Boolean(config.remoteUrl))
 		.flatMap((config, index) => {
 			try {
-				validateRasterLayerConfig(config, mode);
-				return [createRasterLayer(config, index, mode)];
+				const layerMode = config.remoteUrl ? mode : 'offline';
+				validateRasterLayerConfig(config, layerMode);
+				return [createRasterLayer(config, index, layerMode)];
 			} catch (error) {
 				onError(`Растровый слой «${config?.id || 'без id'}» пропущен: ${error.message}`);
 				return [];
@@ -103,6 +105,7 @@ function createRasterLayer(config, fallbackZIndex, mode) {
 		? `${LOCAL_TILE_ORIGIN}/${config.tree}/${config.urlTemplate}`
 		: config.remoteUrl;
 
+	let layer;
 	const source = new XYZ({
 		projection: config.projection,
 		url,
@@ -111,9 +114,17 @@ function createRasterLayer(config, fallbackZIndex, mode) {
 		tileSize: config.tileSize,
 		crossOrigin: isOffline ? 'anonymous' : undefined,
 		wrapX: !isOffline,
+		...(!isOffline && {
+			tileLoadFunction: createOnlineTileLoader(config.tree, available =>
+				layer.set('onlineAvailable', available)
+			),
+		}),
 	});
 
-	return new TileLayer({
+	layer = new TileLayer({
+		rasterConfig: { ...config },
+		// null means the online source has not been checked yet.
+		onlineAvailable: isOffline ? false : null,
 		id: config.id,
 		descr: config.descr,
 		visible: config.visible,
@@ -134,6 +145,7 @@ function createRasterLayer(config, fallbackZIndex, mode) {
 		cacheSize: 128,
 		source,
 	});
+	return layer;
 }
 
 function validateZoomRange(minZoom, maxZoom) {
@@ -175,4 +187,47 @@ function assertNonEmptyString(value, fieldName) {
 
 function defaultErrorHandler(message) {
 	console.error(message);
+}
+
+export function createOnlineTileLoader(tree, onAvailability = () => {}) {
+	let lastFailure;
+	const reportAvailability = (available, reason) => {
+		onAvailability(available);
+		if (!available && reason !== lastFailure) {
+			console.warn('Онлайн-тайлы недоступны:', tree, reason);
+		}
+		lastFailure = available ? undefined : reason;
+	};
+	return async (tile, url) => {
+		try {
+			const { data, contentType, origin, networkError, cacheLimit } =
+				await window.electronAPI.loadOnlineTile(tree, url);
+			if (cacheLimit) warnTileCacheLimit(cacheLimit.limitBytes);
+			const objectUrl = URL.createObjectURL(new Blob([data], { type: contentType }));
+			const image = tile.getImage();
+			const cleanup = event => {
+				const available = event.type === 'load' && origin === 'network';
+				reportAvailability(
+					available,
+					event.type === 'error'
+						? 'Не удалось декодировать изображение тайла'
+						: origin === 'device'
+							? `Использован файл с устройства: ${networkError || 'сетевая загрузка не удалась'}`
+							: origin !== 'network'
+								? 'IPC не вернул источник тайла. Полностью перезапустите Electron после обновления кода.'
+								: undefined
+				);
+				URL.revokeObjectURL(objectUrl);
+				image.removeEventListener('load', cleanup);
+				image.removeEventListener('error', cleanup);
+			};
+			image.addEventListener('load', cleanup);
+			image.addEventListener('error', cleanup);
+			image.src = objectUrl;
+		} catch (error) {
+			reportAvailability(false, error.message);
+			console.error('Не удалось загрузить тайл:', error);
+			tile.setState(TileState.ERROR);
+		}
+	};
 }

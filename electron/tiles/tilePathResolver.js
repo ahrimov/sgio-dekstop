@@ -3,9 +3,10 @@ import path from 'path';
 export const TILE_SCHEME = 'sgio-tile';
 export const TILE_HOST = 'tiles';
 
+// File storage supports online detail levels; offline visibility is set in rasterLayers.json.
 const TILE_RULES = {
-	yand_map: [{ extension: 'png', minZoom: 1, maxZoom: 14 }],
-	Yandex: [{ extension: 'jpg', minZoom: 1, maxZoom: 10 }],
+	yand_map: [{ extension: 'png', minZoom: 1, maxZoom: 19 }],
+	Yandex: [{ extension: 'jpg', minZoom: 1, maxZoom: 19 }],
 	RosReestrWms: [{ extension: 'png', minZoom: 1, maxZoom: 11 }],
 };
 
@@ -17,7 +18,7 @@ export class TilePathError extends Error {
 	}
 }
 
-export function resolveTilePath(resourcesPath, requestUrl) {
+export function resolveTilePath(resourcesPath, requestUrl, tileRules = TILE_RULES) {
 	let url;
 
 	try {
@@ -52,7 +53,7 @@ export function resolveTilePath(resourcesPath, requestUrl) {
 		throw new TilePathError('Координаты тайла должны быть целыми неотрицательными числами');
 	}
 
-	const rules = TILE_RULES[tree];
+	const rules = Object.hasOwn(tileRules, tree) ? tileRules[tree] : null;
 
 	if (!rules) {
 		throw new TilePathError('Дерево тайлов не разрешено', 403);
@@ -66,6 +67,14 @@ export function resolveTilePath(resourcesPath, requestUrl) {
 
 	if (!matchingRule) {
 		throw new TilePathError('Формат или уровень тайла не разрешён', 403);
+	}
+
+	if (
+		[Number(xText), Number(fileMatch[1])].some(
+			value => !Number.isSafeInteger(value) || value >= 2 ** zoom
+		)
+	) {
+		throw new TilePathError('Координаты тайла выходят за пределы уровня');
 	}
 
 	const tileRoot = path.resolve(resourcesPath, 'tiletrees');
@@ -84,4 +93,28 @@ export function resolveTilePath(resourcesPath, requestUrl) {
 
 export function getEmptyTilePath(resourcesPath) {
 	return path.resolve(resourcesPath, 'images', 'empty_tile.png');
+}
+
+// Build file permissions from the editable config, including both display modes.
+export function createTileRules(configs) {
+	const rules = Object.create(null);
+	for (const config of configs) {
+		if (!config || !/^[A-Za-z0-9_-]+$/.test(config.tree || '')) continue;
+		const match = /^\{z\}\/\{x\}\/\{(?:-?y)\}\.(png|jpg)$/.exec(config.urlTemplate || '');
+		if (!match) continue;
+		const ranges = [[config.minZoom, config.maxZoom]];
+		if (config.remoteUrl) ranges.push([config.remoteMinZoom, config.remoteMaxZoom]);
+		for (const [minZoom, maxZoom] of ranges) {
+			if (
+				!Number.isInteger(minZoom) ||
+				!Number.isInteger(maxZoom) ||
+				minZoom < 0 ||
+				maxZoom > 42 ||
+				minZoom > maxZoom
+			)
+				continue;
+			(rules[config.tree] ||= []).push({ extension: match[1], minZoom, maxZoom });
+		}
+	}
+	return rules;
 }

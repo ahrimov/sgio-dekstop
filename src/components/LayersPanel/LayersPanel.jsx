@@ -3,6 +3,7 @@ import { MenuOutlined, PlusOutlined } from '@ant-design/icons';
 import './LayersPanel.css';
 import styled from 'styled-components';
 import { icons } from '../../icons';
+import { RasterLayerMoreActionsPopup } from './RasterLayerMoreActionsPopup.jsx';
 import { LayerMoreActionsPopup } from './LayerMoreActionsPopup.jsx';
 import { Button, Collapse, Typography, Checkbox } from 'antd';
 import { ReactSortable } from 'react-sortablejs';
@@ -129,6 +130,7 @@ const DraggableRasterLayer = ({ layer, toggleVisibility }) => {
 			>
 				{layer.get('descr')}
 			</Text>
+			<RasterLayerMoreActionsPopup layer={layer} />
 		</RasterLayerElementContainer>
 	);
 };
@@ -333,7 +335,7 @@ const RasterLayerElementContainer = styled.div.withConfig({
 	shouldForwardProp: prop => prop !== 'active' && prop !== 'showTitle' && prop !== 'isDragging',
 })`
 	display: grid;
-	grid-template-columns: 30px 30px 40px 1fr; /* DragHandle + Checkbox + Icon + Text */
+	grid-template-columns: 30px 30px 40px minmax(0, 1fr) 24px; /* DragHandle + Checkbox + Icon + Text */
 	align-content: center;
 	border-top: 1px solid ${MEDIUM_BLUE};
 	padding: 2px;

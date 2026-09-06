@@ -24,7 +24,14 @@ import { MenuOutlined } from '@ant-design/icons';
 
 const MapComponent = () => {
 	const mapContainerRef = useRef(null);
-	const { isMapReady, updateMapSize, map, measureControlPanel, areaMeasureControlPanel } = useMap(mapContainerRef);
+	const {
+		isMapReady,
+		updateMapSize,
+		map,
+		mapStatus,
+		measureControlPanel,
+		areaMeasureControlPanel,
+	} = useMap(mapContainerRef);
 	const [currentFeature, setCurrentFeature] = useState(null);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const showCrosshair = useUnit($showCrosshair);
@@ -52,11 +59,9 @@ const MapComponent = () => {
 		const { layer, featureIds } = showOnMapFeatures;
 		const source = layer.getSource();
 		const allFeatures = source.getFeatures();
-		
+
 		// Находим все выбранные объекты
-		const foundFeatures = allFeatures.filter(feature =>
-			featureIds.includes(feature.id)
-		);
+		const foundFeatures = allFeatures.filter(feature => featureIds.includes(feature.id));
 
 		if (foundFeatures.length === 0) return;
 
@@ -93,7 +98,7 @@ const MapComponent = () => {
 			map.getView().fit(combinedExtent, {
 				duration: 200,
 				maxZoom: 18,
-				padding: [40, 40, 40, 40]
+				padding: [40, 40, 40, 40],
 			});
 
 			if (
@@ -171,7 +176,9 @@ const MapComponent = () => {
 			<div className={`map-wrapper ${isFullscreen ? 'map-fullscreen' : ''}`}>
 				<div ref={mapContainerRef} className="map-container" />
 
-				{showCrosshair && <img className="crosshair" src={crosshairImage} alt="crosshair" />}
+				{showCrosshair && (
+					<img className="crosshair" src={crosshairImage} alt="crosshair" />
+				)}
 
 				<FullscreenButton isFullscreen={isFullscreen} onToggle={toggleFullscreen} />
 
@@ -204,8 +211,12 @@ const MapComponent = () => {
 				<MapButtonsContainer />
 
 				<BottomLeftButtonsContainer />
-	
+
 				<ScaleText map={map} />
+				<div className="map-network-status" role="status" aria-live="polite">
+					<span className={`map-network-status-dot ${mapStatus}`} aria-hidden="true" />
+					{mapStatus === 'online' ? 'Онлайн' : 'Оффлайн'}
+				</div>
 
 				{controlButtons}
 
@@ -213,20 +224,17 @@ const MapComponent = () => {
 
 				{areaMeasureControlPanel}
 
-				<LayerSelector
-					onCancel={handleCancelLayerSelector}
-					vectorLayers={layers}
-				/>
+				<LayerSelector onCancel={handleCancelLayerSelector} vectorLayers={layers} />
 
 				{currentFeature && layer && (
-						<InfoAttributeView
-							featureId={currentFeature.get('id') || currentFeature.ol_uid}
-							layer={layer}
-							onClose={handleCloseAttributeView}
-							onAfterSave={handleAfterSave}
-							initialFeature={currentFeature}
-						/>
-					)}
+					<InfoAttributeView
+						featureId={currentFeature.get('id') || currentFeature.ol_uid}
+						layer={layer}
+						onClose={handleCloseAttributeView}
+						onAfterSave={handleAfterSave}
+						initialFeature={currentFeature}
+					/>
+				)}
 				{!isMapReady ? <div className="map-loading">Загрузка карты...</div> : null}
 			</div>
 		</div>

@@ -278,8 +278,31 @@ export const useMap = containerRef => {
 	}, [rasterLayers]);
 
 	useEffect(() => {
-		const isOnline = rasterLayers.some(layer => layer.get('sourceType') === 'remoteXYZ');
-		setMapStatus(isOnline ? 'online' : 'offline');
+		const updateStatus = () => {
+			// The indicator represents enabled layer modes, not network availability.
+			const isOnline = rasterLayers.some(
+				layer => layer.getVisible() && !layer.get('useLocalTiles')
+			);
+			setMapStatus(isOnline ? 'online' : 'offline');
+		};
+		const handleOnline = () => {
+			rasterLayers.forEach(layer => {
+				if (layer.getVisible() && !layer.get('useLocalTiles')) layer.getSource().refresh();
+			});
+		};
+		rasterLayers.forEach(layer => {
+			layer.on('change:useLocalTiles', updateStatus);
+			layer.on('change:visible', updateStatus);
+		});
+		window.addEventListener('online', handleOnline);
+		updateStatus();
+		return () => {
+			rasterLayers.forEach(layer => {
+				layer.un('change:useLocalTiles', updateStatus);
+				layer.un('change:visible', updateStatus);
+			});
+			window.removeEventListener('online', handleOnline);
+		};
 	}, [rasterLayers]);
 
 	const handleMapMoveEnd = () => {

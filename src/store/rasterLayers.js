@@ -1,13 +1,31 @@
 import { createEvent, createStore } from 'effector';
+import { createRasterLayers } from '../features/rasterLayers/createRasterLayers.js';
 
 export const setRasterLayers = createEvent();
 export const toggleRasterLayerVisibility = createEvent();
+export const toggleRasterLayerLocalTiles = createEvent();
 export const reorderRasterLayers = createEvent();
 
 export const $rasterLayers = createStore([])
 	.on(setRasterLayers, (_, rasterLayers) => [...rasterLayers])
 	.on(toggleRasterLayerVisibility, (rasterLayers, layerId) =>
 		applyRasterLayerVisibilityToggle(rasterLayers, layerId)
+	)
+	.on(toggleRasterLayerLocalTiles, (rasterLayers, layerId) =>
+		rasterLayers.map(layer => {
+			if (layer.get('id') !== layerId || !layer.get('remoteUrl')) return layer;
+			const [replacement] = createRasterLayers(
+				[
+					{
+						...layer.get('rasterConfig'),
+						visible: layer.getVisible(),
+						order: layer.getZIndex(),
+					},
+				],
+				{ mode: layer.get('useLocalTiles') ? 'online' : 'offline' }
+			);
+			return replacement || layer;
+		})
 	)
 	.on(reorderRasterLayers, (rasterLayers, indexes) =>
 		applyRasterLayerReorder(rasterLayers, indexes)

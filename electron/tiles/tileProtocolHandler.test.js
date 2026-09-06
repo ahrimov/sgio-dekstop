@@ -19,7 +19,7 @@ test('возвращает существующий тайл с MIME и cache he
 	assert.equal(response.status, 200);
 	assert.equal(response.headers.get('Content-Type'), 'image/png');
 	assert.equal(response.headers.get('Access-Control-Allow-Origin'), '*');
-	assert.match(response.headers.get('Cache-Control'), /immutable/);
+	assert.equal(response.headers.get('Cache-Control'), 'no-store');
 
 	const expected = await readFile(path.join(resourcesPath, 'tiletrees/yand_map/10/666/708.png'));
 	assert.deepEqual(Buffer.from(await response.arrayBuffer()), expected);

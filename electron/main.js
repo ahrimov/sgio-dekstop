@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import { registerOnlineTileIpc } from './ipc/onlineTileHandlers.js';
 import { createMainWindow } from './mainWindow.js';
 import { registerFsIpc } from './ipc/fsHandlers.js';
 import { registerPathIpc } from './ipc/pathHandlers.js';
@@ -15,6 +16,7 @@ registerTileSchemePrivileges();
 app.whenReady().then(async () => {
 	await ensureProjectResources();
 	registerTileProtocol();
+	await registerOnlineTileIpc();
 	createMainWindow();
 	registerFsIpc();
 	registerPathIpc();

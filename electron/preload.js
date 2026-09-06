@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+	loadOnlineTile: (tree, url) => ipcRenderer.invoke('tiles-load-online', tree, url),
 	readFile: filePath => ipcRenderer.invoke('fs-readFile', filePath),
 	readFileBase64: filePath => ipcRenderer.invoke('fs-readFileBase64', filePath),
 	writeFile: (filePath, data) => ipcRenderer.invoke('fs-writeFile', filePath, data),

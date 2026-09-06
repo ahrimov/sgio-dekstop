@@ -39,10 +39,15 @@ export async function ensureProjectResources() {
 		console.log('Project resources need update');
 
 		if (fs.existsSync(appProjectPath)) {
-			clearDirectoryExcept(appProjectPath, new Set(['tiletrees']));
+			clearDirectoryExcept(appProjectPath, new Set(['tiletrees', 'rasterLayers.json']));
 		}
 
-		await copyRecursiveAsync(sourceProjectPath, appProjectPath);
+		await copyRecursiveAsync(
+			sourceProjectPath,
+			appProjectPath,
+			null,
+			new Set(['rasterLayers.json'])
+		);
 
 		fs.writeFileSync(infoFile, JSON.stringify(sourceInfo, null, 2), 'utf8');
 		console.log(
@@ -50,6 +55,12 @@ export async function ensureProjectResources() {
 		);
 	} else {
 		console.log('Project resources are up to date');
+	}
+
+	// Restore the editable default if the user deleted it, even without a resource update.
+	const rasterConfigPath = path.join(appProjectPath, 'rasterLayers.json');
+	if (!fs.existsSync(rasterConfigPath)) {
+		fs.copyFileSync(path.join(sourceProjectPath, 'rasterLayers.json'), rasterConfigPath);
 	}
 
 	await ensureTileResources(sourceTiletreesPath, appTiletreesPath);
@@ -139,7 +150,7 @@ function getResourceInfo(dirPath) {
 // duplicate at sgio-data/Project/db/default.db.
 const EXCLUDED_PROJECT_DIRS = new Set(['db']);
 
-async function copyRecursiveAsync(src, dest, rootSrc = null) {
+async function copyRecursiveAsync(src, dest, rootSrc = null, preservedFiles = new Set()) {
 	if (!fs.existsSync(dest)) {
 		fs.mkdirSync(dest, { recursive: true });
 	}
@@ -152,6 +163,8 @@ async function copyRecursiveAsync(src, dest, rootSrc = null) {
 	for (const file of files) {
 		const srcPath = path.join(src, file);
 		const destPath = path.join(dest, file);
+
+		if (src === rootSrc && preservedFiles.has(file) && fs.existsSync(destPath)) continue;
 
 		const stat = fs.statSync(srcPath);
 
