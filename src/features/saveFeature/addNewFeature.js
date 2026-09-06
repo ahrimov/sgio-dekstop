@@ -48,16 +48,10 @@ export async function addNewFeature(layer, feature) {
 		feature.id = feature.get('id');
 		feature.layerID = layer.id;
 
-		const typeIndex = atribNames.indexOf(layer.styleTypeColumn);
-		if (typeIndex >= 0) {
-			feature.type = filteredProps[typeIndex];
-		} else {
-			feature.type = 'default';
-		}
+		feature.type = filteredProps[layer.styleTypeColumn] ?? 'default';
 
-		const labelIndex = atribNames.indexOf(layer.labelColumn);
-		if (labelIndex >= 0) {
-			feature.label = filteredProps[labelIndex];
+		if (filteredProps[layer.labelColumn] !== undefined) {
+			feature.label = filteredProps[layer.labelColumn];
 		}
 
 		feature.changed();
