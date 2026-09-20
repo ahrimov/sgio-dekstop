@@ -7,6 +7,7 @@ import { editVirtMarker } from '../../../features/VirtMarker/editVirtMarker.js';
 import { filterSystemProperties } from '../../../utils/filterSystemProperties.js';
 import { showAlert, showConfirm } from '../../../store/modalDialog.js';
 import KML from 'ol/format/KML';
+import { formatKMLForExport } from '../../../features/KMLLayer/kmlDocument.js';
 import { map } from '../../../legacy/globals.js';
 
 const VIRT_MARKER_LAYER_ID = 'SGIO_ILI_DATA_VIRT_MARKER';
@@ -193,7 +194,7 @@ export function useFeatureActions(
 			});
 
 			// Форматируем KML
-			kmlContent = kmlContent.replace(/,0/g, ',nan');
+			kmlContent = formatKMLForExport(kmlContent, layer);
 			kmlContent = kmlContent.replace(/<\/\w*>/g, '$&\n');
 			kmlContent = kmlContent.replace(/\/>/g, '$&\n');
 			kmlContent = kmlContent.replace(/\\\\/g, '\\');

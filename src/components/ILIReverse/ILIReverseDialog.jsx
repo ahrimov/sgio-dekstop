@@ -3,11 +3,7 @@ import { Modal } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { useUnit } from 'effector-react';
 import styled from 'styled-components';
-import {
-	$iliReverseState,
-	closeIliReverseDialog,
-	iliReverseError,
-} from '../../store/iliReverse';
+import { $iliReverseState, closeIliReverseDialog, iliReverseError } from '../../store/iliReverse';
 import { runIliReverseReport } from '../../features/ILIReverse/reverseILIReport';
 import { DARK_BLUE, MEDIUM_DARK_BLUE } from '../../consts/style';
 import '../ModalDialog/ModalDialog.css';
@@ -73,11 +69,13 @@ export const ILIReverseDialog = ({ dbPath }) => {
 
 			<BodyWrapper>
 				<p className="modal-dialog-message">
-					Вы уверены, что хотите развернуть отчёт ВТД и выполнить расчёт координат дефектов?
+					Внимание! Если Вы внесли в данный отчёт виртуальные реперы, то необходимо их
+					удалить перед выполнением разворота. Иначе геодезическая привязка будет
+					искажена.
 				</p>
 				<p className="modal-dialog-message">
-					Внимание! Если Вы внесли в данный отчёт виртуальные реперы, то необходимо их удалить
-					перед выполнением разворота. Иначе геодезическая привязка будет искажена.
+					Вы уверены, что хотите развернуть отчёт ВТД и выполнить расчёт координат
+					дефектов?
 				</p>
 			</BodyWrapper>
 		</StyledModal>
@@ -150,4 +148,8 @@ const ControlButton = styled.button`
 
 const BodyWrapper = styled.div`
 	padding: 16px 6px 18px 6px;
+
+	.modal-dialog-message + .modal-dialog-message {
+		margin-top: 16px;
+	}
 `;

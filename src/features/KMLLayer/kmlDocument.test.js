@@ -5,7 +5,13 @@ import KML from 'ol/format/KML.js';
 import VectorSource from 'ol/source/Vector.js';
 import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
-import { prepareKMLFeatures, getKMLAttributes, updateKMLDocument } from './kmlDocument.js';
+import {
+	prepareKMLFeatures,
+	getKMLAttributes,
+	updateKMLDocument,
+	formatKMLForExport,
+	kmlElements,
+} from './kmlDocument.js';
 
 // Supply the browser XML APIs used by OpenLayers for these Node regression tests.
 globalThis.DOMParser = DOMParser;
@@ -117,3 +123,60 @@ test('legacy files without SchemaData can be edited, deleted, and extended witho
 			.every(v => Math.abs(v) < 1e-6)
 	);
 });
+
+test('desktop export uses the web KML structure and valid coordinates', () => {
+	const source =
+		'<kml xmlns="http://www.opengis.net/kml/2.2">' +
+		'<Placemark><description>Тест</description><ExtendedData>' +
+		data('id', '1301413') +
+		'</ExtendedData><MultiGeometry><LineString>' +
+		'<coordinates>54.23015451000225,56.61221645000137,NaN 54.230169509999,56.61224744999981,3.57</coordinates>' +
+		'</LineString></MultiGeometry></Placemark></kml>';
+	const layer = {
+		id: 'pods_route',
+		atribs: [{ name: 'id' }, { name: 'description' }],
+	};
+
+	const exported = formatKMLForExport(source, layer);
+	const doc = new DOMParser().parseFromString(exported, 'application/xml');
+	const documentNode = kmlElements(doc, 'Document')[0];
+	const schema = kmlElements(doc, 'Schema')[0];
+	const folder = kmlElements(doc, 'Folder')[0];
+	const schemaData = kmlElements(doc, 'SchemaData')[0];
+	const simpleData = Object.fromEntries(
+		kmlElements(schemaData, 'SimpleData').map(node => [
+			node.getAttribute('name'),
+			node.textContent,
+		])
+	);
+
+	assert.match(exported, /^<\?xml version="1\.0" encoding="utf-8" \?>/);
+	assert.equal(documentNode.getAttribute('id'), 'root_doc');
+	assert.equal(schema.getAttribute('name'), 'PODS_ROUTE');
+	assert.equal(schema.getAttribute('id'), 'PODS_ROUTE');
+	assert.deepEqual(
+		kmlElements(schema, 'SimpleField').map(node => node.getAttribute('name')),
+		['ID', 'DESCRIPTION']
+	);
+	assert.equal(childText(folder, 'name'), 'PODS_ROUTE');
+	assert.equal(schemaData.getAttribute('schemaUrl'), '#PODS_ROUTE');
+	assert.deepEqual(simpleData, { ID: '1301413', DESCRIPTION: 'Тест' });
+	assert.equal(kmlElements(doc, 'MultiGeometry').length, 0);
+	assert.equal(
+		kmlElements(doc, 'coordinates')[0].textContent,
+		'54.23015451,56.61221645,0 54.23016951,56.61224745,3.57'
+	);
+	assert.doesNotMatch(exported, /nan/i);
+
+	const importedFeatures = format.readFeatures(exported, {
+		dataProjection: 'EPSG:4326',
+		featureProjection: 'EPSG:4326',
+	});
+	assert.equal(importedFeatures.length, 1);
+	assert.equal(importedFeatures[0].get('ID'), '1301413');
+	assert.ok(importedFeatures[0].getGeometry().getCoordinates().flat().every(Number.isFinite));
+});
+
+function childText(node, name) {
+	return Array.from(node.childNodes).find(childNode => childNode.localName === name)?.textContent;
+}

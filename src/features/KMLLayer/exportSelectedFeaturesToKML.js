@@ -2,6 +2,7 @@ import KML from 'ol/format/KML';
 import { map } from '../../legacy/globals';
 import { requestToDBPromise } from '../../legacy/DBManage';
 import { showAlert } from '../../store/modalDialog.js';
+import { formatKMLForExport } from './kmlDocument.js';
 
 export async function exportSelectedFeaturesToKML(layer, featureIds) {
 	if (!layer || !featureIds || featureIds.length === 0) {
@@ -63,6 +64,7 @@ export async function exportSelectedFeaturesToKML(layer, featureIds) {
 		});
 
 		// Форматирование KML
+		kml = formatKMLForExport(kml, layer);
 		kml = kml.replace(/<\/\w*>/g, '$&\n');
 		kml = kml.replace(/\/>/g, '$&\n');
 

@@ -30,7 +30,7 @@ export async function addNewLayer(fullPath) {
 			return;
 		}
 
-		const fileName = fullPath.split('/').pop();
+		const fileName = fullPath.split(/[\\/]/).pop();
 		const fileNameNoExt = fileName.replace(/\.kml$/i, '');
 
 		let descrLayerId = '';
@@ -51,7 +51,10 @@ export async function addNewLayer(fullPath) {
 		}
 
 		const date = new Date();
-		const innerLayerId = descrLayerId + formatDate(date) + '.kml';
+		const safeFileName = Array.from(descrLayerId, character =>
+			/[<>:"/\\|?*]/.test(character) || character.charCodeAt(0) < 32 ? '_' : character
+		).join('');
+		const innerLayerId = safeFileName + formatDate(date) + '.kml';
 
 		const regex = new RegExp(`^${descrLayerId}(_\\d)?`);
 		const similarLayers = layers.filter(layer => regex.test(layer.label));
