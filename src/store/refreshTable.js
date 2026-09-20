@@ -31,6 +31,12 @@ const ILI_LAYER_IDS = [
  */
 export const virtMarkerChanged = createEvent();
 
+const VIRT_MARKER_SUCCESS_MESSAGES = {
+	added: 'Виртуальный репер добавлен, отчёт ВТД успешно пересчитан',
+	updated: 'Виртуальный репер изменён, отчёт ВТД успешно пересчитан',
+	deleted: 'Виртуальный репер удалён, отчёт ВТД успешно пересчитан',
+};
+
 /**
  * Zoom the map to the extent of all features in the SGIO_ILI_DATA layer
  * by dispatching showMultipleOnMap — handled by MapComponent via useUnit($showOnMapFeatures).
@@ -82,9 +88,10 @@ function getSgioLayerIds() {
  * running coordinate recalculation (without reper linking) first so that all
  * VTD objects get their x_coord / y_coord recomputed from the updated PIKET table.
  *
+ * @param {'added'|'updated'|'deleted'} [operation] Completed marker operation.
  * @returns {Promise<void>}
  */
-export async function refreshAfterVirtMarkerChange() {
+export async function refreshAfterVirtMarkerChange(operation) {
 	startVirtMarkerRecalc('Пересчёт координат...');
 	let reportRecalculated = false;
 
@@ -140,12 +147,15 @@ export async function refreshAfterVirtMarkerChange() {
 	}
 
 	if (reportRecalculated) {
-		showAlert('Виртуальный репер', 'Виртуальный репер добавлен, отчет ВТД успешно пересчитан');
+		const message =
+			VIRT_MARKER_SUCCESS_MESSAGES[operation] ??
+			'Изменения виртуального репера сохранены, отчёт ВТД успешно пересчитан';
+		showAlert('Виртуальный репер', message);
 	}
 }
 
-virtMarkerChanged.watch(() => {
-	refreshAfterVirtMarkerChange().catch(err => {
+virtMarkerChanged.watch(operation => {
+	refreshAfterVirtMarkerChange(operation).catch(err => {
 		console.error('[virtMarkerChanged] error:', err);
 	});
 });

@@ -20,7 +20,9 @@ export async function exportSelectedFeaturesToKML(layer, featureIds) {
 
 		// Находим выбранные объекты
 		const selectedIds = new Set(featureIds.map(String));
-		const selectedFeatures = allFeatures.filter(feature => selectedIds.has(String(feature.id)));
+		const selectedFeatures = allFeatures.filter(feature =>
+			selectedIds.has(String(getFeatureId(feature, layer)))
+		);
 
 		if (selectedFeatures.length === 0) {
 			await showAlert('Предупреждение', 'Выбранные объекты не найдены на карте');
@@ -31,24 +33,20 @@ export async function exportSelectedFeaturesToKML(layer, featureIds) {
 			? null
 			: await loadSelectedAttributes(
 					layer,
-					selectedFeatures.map(feature => feature.id)
+					selectedFeatures.map(feature => getFeatureId(feature, layer))
 				);
 		const exportedFeatures = [];
 
 		for (const feature of selectedFeatures) {
 			const clonedFeature = feature.clone();
+			const featureId = getFeatureId(feature, layer);
+			clonedFeature.setId(String(featureId));
 			if (attributesById) {
-				const row = attributesById.get(String(feature.id));
+				const row = attributesById.get(String(featureId));
 				if (!row) {
-					throw new Error(`Не найдены атрибуты объекта ${feature.id}`);
+					throw new Error(`Не найдены атрибуты объекта ${featureId}`);
 				}
-				for (const atrib of layer.atribs || []) {
-					let value = row[atrib.name] ?? '';
-					if (atrib.type === 'DATE' && typeof value === 'string') {
-						value = value.replace(/^(\d{4})-(\d{2})-(\d{2})(.*)$/, '$3.$2.$1');
-					}
-					clonedFeature.set(atrib.name, value);
-				}
+				clonedFeature.setProperties(getExportAttributes(row, layer.atribs));
 			}
 
 			// Трансформируем геометрию в WGS84 для KML
@@ -88,6 +86,23 @@ export async function exportSelectedFeaturesToKML(layer, featureIds) {
 		console.error('Export error:', e);
 		await showAlert('Ошибка', `Не удалось экспортировать объекты\n${String(e)}`);
 	}
+}
+
+function getFeatureId(feature, layer) {
+	const pk = layer.primaryKey || 'id';
+	return feature.id ?? feature.getId?.() ?? feature.get?.(pk) ?? feature.get?.('ID');
+}
+
+export function getExportAttributes(row, attributes = []) {
+	return Object.fromEntries(
+		attributes.map(atrib => {
+			let value = row[atrib.name] ?? '';
+			if (atrib.type === 'DATE' && typeof value === 'string') {
+				value = value.replace(/^(\d{4})-(\d{2})-(\d{2})(.*)$/, '$3.$2.$1');
+			}
+			return [atrib.name, value];
+		})
+	);
 }
 
 // Map features only contain geometry and styling fields; export attributes from the DB.

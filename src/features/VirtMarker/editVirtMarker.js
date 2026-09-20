@@ -51,5 +51,5 @@ export async function editVirtMarker(layer, featureId, feature, attributes) {
 	});
 
 	console.log('[editVirtMarker] update done — refreshing layers');
-	await refreshAfterVirtMarkerChange();
+	await refreshAfterVirtMarkerChange('updated');
 }

@@ -648,6 +648,7 @@
         <query>
           UPDATE sgio_ili_data
           SET control_point_lf = 'N',
+              ref_event_id = null,
               calibrated_measure = null,
               certainty_interval = null
           WHERE ili_data_id = {ID}

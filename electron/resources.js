@@ -28,7 +28,8 @@ export async function ensureProjectResources() {
 			needCopy =
 				!savedInfo ||
 				savedInfo.latestModTime < sourceInfo.latestModTime ||
-				savedInfo.fileCount !== sourceInfo.fileCount;
+				savedInfo.fileCount !== sourceInfo.fileCount ||
+				savedInfo.totalSize !== sourceInfo.totalSize;
 			console.log(savedInfo);
 		} catch {
 			needCopy = true;

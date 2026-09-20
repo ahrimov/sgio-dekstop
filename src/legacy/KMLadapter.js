@@ -170,13 +170,8 @@ export async function importKML(
 						values.push(props[dict[key]]);
 					}
 
-					let geom = feature.getGeometry();
-					geom.transform('EPSG:4326', 'EPSG:3857');
-
-					const format = new WKT();
-					let feautureString = format.writeFeature(feature);
-					feautureString = convertToGeometryType(feautureString, layer.geometryType);
-					updates.push(`Geometry = GeomFromText('${feautureString}', 3857)`);
+					const geometrySql = prepareGeometrySql(feature, layer);
+					updates.push(...geometrySql.updates);
 					query = `UPDATE ${layer.table} SET ${updates.join(', ')} WHERE ${layer.atribs[0].name} = ${feature_id} `;
 					await requestToDBPromise(query);
 					for (let old_feature of layer.getSource().getFeatures()) {
@@ -211,14 +206,12 @@ export async function importKML(
 					values.push(props[dict[key]]);
 				}
 
-				let geom = feature.getGeometry();
-				geom.transform('EPSG:4326', 'EPSG:3857');
-				const format = new WKT();
-				let feautureString = format.writeFeature(feature);
-				feautureString = convertToGeometryType(feautureString, layer.geometryType);
+				const geometrySql = prepareGeometrySql(feature, layer);
+				atribNames.push(...geometrySql.columns);
+				atribValues.push(...geometrySql.values);
 				let query = `
-				             INSERT INTO ${layer.table} (${atribNames.join(', ')}, Geometry)
-				             VALUES (${atribValues.join(',')}, GeomFromText('${feautureString}', 3857));
+				             INSERT INTO ${layer.table} (${atribNames.join(', ')})
+				             VALUES (${atribValues.join(',')});
 				         ;`;
 				console.log('kml insert: ', query);
 				await requestToDBPromise(query);
@@ -279,6 +272,45 @@ export async function importKML(
 			return `${type} Z(${wkt.match(/\(.*\)/)[0]})`;
 		}
 		return wkt;
+	}
+
+	function prepareGeometrySql(feature, layer) {
+		const geometry = feature.getGeometry();
+		const geometryExpression = (layer.geometryColumn || '').toLowerCase();
+		const coordinateColumns = geometryExpression.includes('x_coord_start')
+			? ['x_coord_start', 'y_coord_start', 'x_coord_end', 'y_coord_end']
+			: /\bx_coord\b/.test(geometryExpression) && /\by_coord\b/.test(geometryExpression)
+				? ['x_coord', 'y_coord']
+				: null;
+
+		if (coordinateColumns) {
+			const first = geometry.getFirstCoordinate();
+			const coordinates =
+				coordinateColumns.length === 4
+					? [first[0], first[1], geometry.getLastCoordinate()[0], geometry.getLastCoordinate()[1]]
+					: [first[0], first[1]];
+
+			if (!coordinates.every(Number.isFinite)) {
+				throw new Error('В KML указаны некорректные координаты');
+			}
+
+			geometry.transform('EPSG:4326', 'EPSG:3857');
+			return {
+				updates: coordinateColumns.map((column, index) => `${column} = ${coordinates[index]}`),
+				columns: coordinateColumns,
+				values: coordinates.map(String),
+			};
+		}
+
+		geometry.transform('EPSG:4326', 'EPSG:3857');
+		const format = new WKT();
+		let featureString = format.writeFeature(feature);
+		featureString = convertToGeometryType(featureString, layer.geometryType);
+		return {
+			updates: [`Geometry = GeomFromText('${featureString}', 3857)`],
+			columns: ['Geometry'],
+			values: [`GeomFromText('${featureString}', 3857)`],
+		};
 	}
 
 }

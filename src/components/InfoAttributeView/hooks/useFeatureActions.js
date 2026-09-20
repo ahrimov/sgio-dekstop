@@ -15,6 +15,7 @@ export function useFeatureActions(
 	layer,
 	featureId,
 	feature,
+	featureData,
 	form,
 	isNewFeature,
 	config,
@@ -97,50 +98,50 @@ export function useFeatureActions(
 				});
 
 				if (isNewFeature) {
-						await addNewFeature(layer, feature);
-						setFeatureData(prev => ({
-							...prev,
-							...processedValues,
-						}));
-						messageApi.success('Объект успешно создан');
+					await addNewFeature(layer, feature);
+					setFeatureData(prev => ({
+						...prev,
+						...processedValues,
+					}));
+					messageApi.success('Объект успешно создан');
+					if (onAfterSave) {
+						onAfterSave();
+					} else {
+						onClose();
+					}
+				} else if (layer.id === VIRT_MARKER_LAYER_ID) {
+					// Virtual reper — re-project geometry onto route and update via IPC
+					try {
+						await editVirtMarker(layer, featureId, feature, processedValues);
+						setFeatureData(prev => ({ ...prev, ...processedValues }));
+						messageApi.success('Виртуальный репер обновлён');
 						if (onAfterSave) {
 							onAfterSave();
 						} else {
 							onClose();
 						}
-				} else if (layer.id === VIRT_MARKER_LAYER_ID) {
-						// Virtual reper — re-project geometry onto route and update via IPC
-						try {
-							await editVirtMarker(layer, featureId, feature, processedValues);
-							setFeatureData(prev => ({ ...prev, ...processedValues }));
-							messageApi.success('Виртуальный репер обновлён');
-							if (onAfterSave) {
-								onAfterSave();
-							} else {
-								onClose();
-							}
-						} catch (err) {
-							console.error('[editVirtMarker] error:', err);
-							messageApi.error(`Ошибка обновления: ${err.message}`);
-						}
-					} else {
-						updateFeatureAttributes(
-							layer,
-							featureId,
-							processedValues,
-							() => {
-								setFeatureData(prev => ({
-									...prev,
-									...processedValues,
-								}));
-								messageApi.success('Изменения успешно сохранены');
-							},
-							error => {
-								console.log(`Ошибка сохранения: ${error.message}`);
-								messageApi.error(`Ошибка сохранения: ${error.message}`);
-							}
-						);
+					} catch (err) {
+						console.error('[editVirtMarker] error:', err);
+						messageApi.error(`Ошибка обновления: ${err.message}`);
 					}
+				} else {
+					updateFeatureAttributes(
+						layer,
+						featureId,
+						processedValues,
+						() => {
+							setFeatureData(prev => ({
+								...prev,
+								...processedValues,
+							}));
+							messageApi.success('Изменения успешно сохранены');
+						},
+						error => {
+							console.log(`Ошибка сохранения: ${error.message}`);
+							messageApi.error(`Ошибка сохранения: ${error.message}`);
+						}
+					);
+				}
 			}
 		} catch (error) {
 			console.error('Error saving feature:', error);
@@ -172,7 +173,14 @@ export function useFeatureActions(
 
 			// Клонируем объект для экспорта
 			const clonedFeature = feature.clone();
-			
+			if (featureData) {
+				const exportAttributes = Object.fromEntries(
+					(layer.atribs || []).map(atrib => [atrib.name, featureData[atrib.name] ?? ''])
+				);
+				clonedFeature.setProperties(exportAttributes);
+			}
+			clonedFeature.setId(String(featureId ?? feature.id ?? feature.getId?.() ?? ''));
+
 			// Трансформируем геометрию в WGS84 для KML
 			const geometry = clonedFeature.getGeometry();
 			if (geometry) {
@@ -191,13 +199,13 @@ export function useFeatureActions(
 			kmlContent = kmlContent.replace(/\\\\/g, '\\');
 
 			// Генерируем имя файла на основе названия слоя и ID объекта
-			const layerName = layer.get ? layer.get('descr') : (layer.descr || layer.id || 'layer');
+			const layerName = layer.get ? layer.get('descr') : layer.descr || layer.id || 'layer';
 			const objectId = featureId || feature.getId() || 'unknown';
-			
+
 			// Очищаем название слоя от недопустимых символов для имени файла
 			const cleanLayerName = layerName.replace(/[<>:"/\\|?*]/g, '_');
 			const cleanObjectId = String(objectId).replace(/[<>:"/\\|?*]/g, '_');
-			
+
 			const fileName = `${cleanLayerName}_${cleanObjectId}.kml`;
 
 			// Сохраняем файл
@@ -216,7 +224,7 @@ export function useFeatureActions(
 			console.error('Error exporting feature to KML:', error);
 			showAlert('Ошибка', `Не удалось экспортировать объект в KML: ${error.message}`);
 		}
-	}, [feature, messageApi]);
+	}, [feature, featureData, featureId, layer, messageApi]);
 
 	return {
 		handleShowOnMap,

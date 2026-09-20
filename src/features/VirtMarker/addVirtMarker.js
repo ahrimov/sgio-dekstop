@@ -67,6 +67,6 @@ export async function addVirtMarker(layer, feature) {
 		throw insertErr;
 	}
 
-	await refreshAfterVirtMarkerChange();
+	await refreshAfterVirtMarkerChange('added');
 	console.log('[addVirtMarker] DONE');
 }

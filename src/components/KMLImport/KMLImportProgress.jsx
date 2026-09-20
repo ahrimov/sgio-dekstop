@@ -29,7 +29,7 @@ export const KMLImportProgress = ({
 			</CustomHeader>
 
 			<BodyWrapper>
-				<Space direction="vertical" style={{ width: '100%' }} size="middle">
+				<Space orientation="vertical" style={{ width: '100%' }} size="middle">
 					<Progress
 						style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', width: '100%' }}
 						percent={percent}

@@ -22,7 +22,7 @@ export async function deleteFeature(featureId, layer, callback) {
 			if (!dbPath) throw new Error('База данных не открыта');
 			await electronAPI.iliVirtMarkerDelete(dbPath, { id: featureId });
 			deleteFeatureFromLayer(featureId, layer);
-			await refreshAfterVirtMarkerChange();
+			await refreshAfterVirtMarkerChange('deleted');
 			if (callback) callback();
 		} catch (err) {
 			console.error('[deleteFeature] virtual reper soft-delete error:', err);
@@ -39,7 +39,7 @@ export async function deleteFeature(featureId, layer, callback) {
 
 	requestToDB(
 		deleteQuery,
-		_ => {
+		() => {
 			deleteFeatureFromLayer(featureId, layer);
 			setTimeout(() => refreshFeatureTable(), 100);
 			if (callback) callback();
