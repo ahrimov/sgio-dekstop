@@ -82,7 +82,9 @@
 			"!src/assets/resources/Project/db/default.db",
 			"!src/assets/resources/Project/db/default_prod.db",
 			"!src/assets/resources/tiletrees",
-			"!src/assets/resources/tiletrees/**/*"
+			"!src/assets/resources/tiletrees/**/*",
+			"!sgio-data/Project/tiletrees",
+			"!sgio-data/Project/tiletrees/**/*"
 		],
 		"linux": {
 			"target": [
@@ -112,10 +114,6 @@
 			{
 				"from": "src/assets/resources/Project/db/default_prod.db",
 				"to": "resources/Project/db/default.db"
-			},
-			{
-				"from": "src/assets/resources/tiletrees",
-				"to": "resources/tiletrees"
 			},
 			{
 				"from": "src/assets/resources/images",
