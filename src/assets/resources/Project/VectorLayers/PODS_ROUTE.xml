@@ -29,7 +29,7 @@
         </attribute>
         <attribute type="STRING">
           <id>description</id>
-          <label>Описание111</label>
+          <label>Описание</label>
           <required>0</required>
           <editable>0</editable>
         </attribute>
@@ -91,7 +91,7 @@
       <zoomMin>100</zoomMin>
       <LineStyle>
         <color>ff660099</color>
-        <width>3</width>
+        <width>2</width>
       </LineStyle>
       <LabelStyle>
         <color>ff660099</color>
@@ -170,13 +170,23 @@
         <zoomMin>100</zoomMin>
       </LabelStyle>
     </Style>
+
+    <Style>
+      <value>ROUTE_TYPE_10</value>
+      <zoomMax>200000</zoomMax>
+      <zoomMin>100</zoomMin>
+      <LineStyle>
+        <color>ffff0099</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
     <Style>
       <value>ROUTE_TYPE_10</value>
       <zoomMax>200000</zoomMax>
       <zoomMin>100</zoomMin>
       <LineStyle>
         <color>ff660099</color>
-        <width>3</width>
+        <width>2</width>
       </LineStyle>
       <LabelStyle>
         <color>ff660099</color>
