@@ -1,5 +1,23 @@
 [
 	{
+		"id": "OpenStreetMap",
+		"descr": "Карта OpenStreetMap",
+		"visible": false,
+		"order": 1,
+		"kind": "base",
+		"group": "base-map",
+		"icon": "OSMLogo.png",
+		"projection": "EPSG:3857",
+		"tileSize": [256, 256],
+		"tree": "OsmWms",
+		"urlTemplate": "{z}/{x}/{-y}.png",
+		"minZoom": 1,
+		"maxZoom": 14,
+		"remote_url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+		"remoteMinZoom": 1,
+		"remoteMaxZoom": 19
+	},
+	{
 		"id": "yandex-map-offline",
 		"descr": "Яндекс.Карта",
 		"visible": true,
@@ -36,8 +54,8 @@
 		"remoteMaxZoom": 19
 	},
 	{
-		"id": "rosreestr-wms-offline",
-		"descr": "Росреестр",
+		"id": "RosReestrWms_nspd-wms-offline",
+		"descr": "Кадастр, НСПД",
 		"visible": false,
 		"order": 30,
 		"kind": "overlay",
@@ -49,5 +67,21 @@
 		"urlTemplate": "{z}/{x}/{y}.png",
 		"minZoom": 1,
 		"maxZoom": 11
+	},
+	{
+		"id": "zouit_nspd-wms-offline",
+		"descr": "ЗОУИТ, НСПД",
+		"visible": false,
+		"order": 30,
+		"kind": "overlay",
+		"group": "overlays",
+		"icon": "RosreestrLogo.png",
+		"projection": "EPSG:3857",
+		"tileSize": [256, 256],
+		"tree": "zouit",
+		"urlTemplate": "{z}/{x}/{y}.png",
+		"minZoom": 1,
+		"maxZoom": 11
 	}
+
 ]

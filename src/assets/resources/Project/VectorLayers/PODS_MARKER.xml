@@ -65,5 +65,7 @@
         </Rule>
       </geometryStyle>
     </layerDb>
+  <zoomMax>27000</zoomMax>
+  <zoomMin>0</zoomMin>
   </layers>
 </template>

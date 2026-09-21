@@ -16,7 +16,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			lineHeight: '1.2',
 			fontSize: '16px',
 		},
-		item: { marginBottom: '4px' }
+		item: { marginBottom: '4px' },
 	};
 	const inputStyle = { color: DARK_BLUE, fontSize: '16px' };
 	const compactInputStyle = { color: DARK_BLUE, width: '150px', fontSize: '16px' };
@@ -26,14 +26,14 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
 		whiteSpace: 'nowrap',
-		fontSize: '16px'
+		fontSize: '16px',
 	};
-	
+
 	const totalItems = attributes.length;
 	const maxItemsPerColumn = 7;
-	
+
 	const columnsCount = Math.ceil(totalItems / maxItemsPerColumn);
-	
+
 	const columns = [];
 	for (let i = 0; i < columnsCount; i++) {
 		const start = i * maxItemsPerColumn;
@@ -42,8 +42,8 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			columns.push(attributes.slice(start, end));
 		}
 	}
-	
-	const renderFormItem = (atrib) => {
+
+	const renderFormItem = atrib => {
 		const commonProps = {
 			key: atrib.name,
 			name: atrib.name,
@@ -55,7 +55,16 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 		switch (atrib.type) {
 			case 'ENUM':
 				return (
-					<Form.Item {...commonProps} style={{ marginBottom: '4px' }}>
+					<Form.Item
+						{...commonProps}
+						getValueProps={value => ({
+							value:
+								value === undefined || value === null || value === ''
+									? undefined
+									: String(value),
+						})}
+						style={{ marginBottom: '4px' }}
+					>
 						<Select
 							className="compact-select"
 							style={selectStyle}
@@ -65,12 +74,14 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 								maxWidth: '400px',
 								fontSize: '16px',
 							}}
-							dropdownRender={(menu) => (
-								<div style={{
-									color: DARK_BLUE,
-									whiteSpace: 'normal',
-									fontSize: '16px',
-								}}>
+							dropdownRender={menu => (
+								<div
+									style={{
+										color: DARK_BLUE,
+										whiteSpace: 'normal',
+										fontSize: '16px',
+									}}
+								>
 									{menu}
 								</div>
 							)}
@@ -81,32 +92,34 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 							}}
 							optionLabelProp="label"
 						>
-							{Object.entries(atrib.options || {}).map(
-								([value, label], index) => (
-									<Option
-										key={index}
-										value={value}
-										label={label.length > 25 ? label.substring(0, 25) + '...' : label}
+							{Object.entries(atrib.options || {}).map(([value, label], index) => (
+								<Option
+									key={index}
+									value={value}
+									label={
+										label.length > 25 ? label.substring(0, 25) + '...' : label
+									}
+									style={{
+										color: DARK_BLUE,
+										whiteSpace: 'normal',
+										wordWrap: 'break-word',
+										height: 'auto',
+										padding: '5px 12px',
+										lineHeight: '1.4',
+										fontSize: '16px',
+									}}
+								>
+									<div
 										style={{
-											color: DARK_BLUE,
 											whiteSpace: 'normal',
 											wordWrap: 'break-word',
-											height: 'auto',
-											padding: '5px 12px',
-											lineHeight: '1.4',
 											fontSize: '16px',
 										}}
 									>
-										<div style={{
-											whiteSpace: 'normal',
-											wordWrap: 'break-word',
-											fontSize: '16px',
-										}}>
-											{label}
-										</div>
-									</Option>
-								)
-							)}
+										{label}
+									</div>
+								</Option>
+							))}
 						</Select>
 					</Form.Item>
 				);
@@ -115,7 +128,11 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 			case 'DOUBLE':
 				return (
 					<Form.Item {...commonProps} style={{ marginBottom: '4px', fontSize: '16px' }}>
-						<Input type="number" placeholder="Введите число" style={compactInputStyle} />
+						<Input
+							type="number"
+							placeholder="Введите число"
+							style={compactInputStyle}
+						/>
 					</Form.Item>
 				);
 
@@ -153,7 +170,7 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 				);
 		}
 	};
-	
+
 	return (
 		<Form
 			form={form}
@@ -165,7 +182,14 @@ export const AttributeEditForm = ({ form, attributes, ...props }) => {
 		>
 			<Flex gap={10} wrap="nowrap" style={{ overflowX: 'auto' }}>
 				{columns.map((columnAttribs, columnIndex) => (
-					<div key={columnIndex} style={{ flex: columnsCount > 1 ? '0 0 auto' : '1', minWidth: '300px', fontSize: '16px' }}>
+					<div
+						key={columnIndex}
+						style={{
+							flex: columnsCount > 1 ? '0 0 auto' : '1',
+							minWidth: '300px',
+							fontSize: '16px',
+						}}
+					>
 						{columnAttribs.map(atrib => renderFormItem(atrib))}
 					</div>
 				))}

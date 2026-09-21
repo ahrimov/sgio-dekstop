@@ -8,8 +8,8 @@
       <crs>3857</crs>
       <geometry>MULTILINESTRING</geometry>
   </layerDb>
-  <zoomMax>200000</zoomMax>
-  <zoomMin>100</zoomMin>
+  <zoomMax></zoomMax>
+  <zoomMin></zoomMin>
   <StyleTypeColumn>type_cl</StyleTypeColumn>
   <LabelColumn>description</LabelColumn>
       <attributes>
