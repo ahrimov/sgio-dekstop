@@ -53,17 +53,10 @@ export async function updateFeatureAttributes(
 			return;
 		}
 
-		let geometryUpdate = '';
-		const geometry = feature.getGeometry();
-		if (geometry) {
-			const featureString = writeFeatureInKML(feature);
-			geometryUpdate = `, Geometry = GeomFromText('${featureString}', 3857)`;
-		}
-
 		const pk = layer.primaryKey || 'id';
 		const query = `
 			UPDATE ${layer.table}
-			SET ${setClauses}${geometryUpdate}
+			SET ${setClauses}
 			WHERE ${pk} = ${featureId};
 		`;
 		await requestToDBPromise(query);
