@@ -4,6 +4,7 @@ import { useUnit } from 'effector-react';
 import { BaseMapButton } from './BaseMapButton.jsx';
 import { toggleCrosshair, $showCrosshair } from '../../store/showCrosshair.js';
 import crosshairIcon from '../../assets/resources/images/assets/80/sight.png';
+import crosshairDisabledIcon from '../../assets/resources/images/assets/80/sight_disabled.png';
 
 function decimalToDMS(decimal) {
 	const absolute = Math.abs(decimal);
@@ -76,12 +77,12 @@ export function ShowCenterCoordinatesButton() {
 				window.map.un('moveend', updateCoordinates);
 			}
 		};
-	}, [showCrosshair, window.map]);
+	}, [showCrosshair]);
 
 	return (
 		<>
 			<BaseMapButton
-				img={crosshairIcon}
+				img={showCrosshair ? crosshairIcon : crosshairDisabledIcon}
 				title="Показать/скрыть прицел и координаты"
 				onClick={handleClick}
 			/>
